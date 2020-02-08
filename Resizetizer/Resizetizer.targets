@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<ItemGroup>
+		<AvailableItemName Include="MobileImage" />
+	</ItemGroup>
+
+	<UsingTask
+      AssemblyFile="Resizetizer.dll"
+      TaskName="Resizetizer.ResizetizeMobileImages" />
+
+	<PropertyGroup>
+		<CleanDependsOn>
+			$(CleanDependsOn);
+			_CleanResizetizer;
+		</CleanDependsOn>
+
+		<_ResizetizerIsAndroid Condition="'$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroid>
+		<_ResizetizerIsiOS Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.iOS' And ('$(OutputType)' != 'Library' OR '$(IsAppExtension)'=='True')">True</_ResizetizerIsiOS>
+
+		<ResizetizeCollectImagesBeforeTargets Condition="'$(_ResizetizerIsiOS)' == 'True'">
+			$(ResizetizeCollectImagesBeforeTargets);
+			_CollectBundleResources;
+		</ResizetizeCollectImagesBeforeTargets>
+
+		<ResizetizeCollectImagesAfterTargets Condition="'$(_ResizetizerIsAndroid)' == 'True'">
+			$(ResizetizeCollectImagesBeforeTargets);
+			ResolveProjectReferences;
+		</ResizetizeCollectImagesAfterTargets>
+
+		<!--<_CollectBundleResourcesDependsOn Condition="'$(_ResizetizerIsiOS)' == 'True'">
+			ResizetizeCollectImages;
+			$(_CollectBundleResourcesDependsOn);
+		</_CollectBundleResourcesDependsOn>-->
+	</PropertyGroup>
+
+	<!-- Finds absolute paths to any MobileImage in this project -->
+	<!-- App head projects will invoke this target on their project references to collect images -->
+	<Target Name="GetMobileImages" Outputs="@(ExportedMobileImage)">
+		<ConvertToAbsolutePath Paths="@(MobileImage)">
+			<Output TaskParameter="AbsolutePaths" ItemName="ExportedMobileImage"/>
+		</ConvertToAbsolutePath>
+	</Target>
+
+	<!-- Collect images from referenced projects -->
+	<Target Name="ResizetizeCollectImages"
+		Condition="'$(_ResizetizerIsAndroid)' == 'True' Or '$(_ResizetizerIsiOS)' == 'True'"
+		BeforeTargets="$(ResizetizeCollectImagesBeforeTargets)"
+		AfterTargets="$(ResizetizeCollectImagesAfterTargets)">
+
+		<!-- Invoke the GetMobileImages target on all project references -->
+		<!-- This will accumulate images into our MobileImage group -->
+		<!--<MSBuild Targets="GetMobileImages" Projects="@(_MSBuildProjectReferenceExistent)">-->
+		<MSBuild Targets="GetMobileImages" Projects="@(ProjectReference)">
+			<Output
+				TaskParameter="TargetOutputs"
+				ItemName="MobileImage" />
+		</MSBuild>
+	</Target>
+
+
+	<Target Name="ResizetizeiOS"
+					Condition="'$(_ResizetizerIsiOS)' == 'True'"
+					Inputs="@(MobileImage)"
+					Outputs="$(IntermediateOutputPath)resizetizer.stamp"
+					AfterTargets="ResizetizeCollectImages">
+
+		<!-- Where in obj/ to store these -->
+		<PropertyGroup>
+			<ResizetizerIntermediateOutputPath>$(IntermediateOutputPath)resizetizer\</ResizetizerIntermediateOutputPath>
+		</PropertyGroup>
+
+		<ResizetizeMobileImages
+			PlatformType="ios"
+			IntermediateOutputPath="$(ResizetizerIntermediateOutputPath)"
+			MobileImages="@(MobileImage)">
+			<Output TaskParameter="CopiedResources" ItemName="ResizetizedImages" />
+		</ResizetizeMobileImages>
+
+		<ItemGroup>
+			<!-- If we had any images, add that obj/ folder as a resource directory -->
+			<BundleResource Include="@(ResizetizedImages)" />
+
+			<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
+
+			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)')" Include="$(ResizetizerIntermediateOutputPath)" />
+
+		</ItemGroup>
+
+	</Target>
+
+
+	<!-- This should copy images into the app's obj/ area and include them as android resources -->
+	<Target Name="ResizetizeAndroid"
+		Condition="'$(_ResizetizerIsAndroid)' == 'True'"
+		Inputs="@(MobileImage)"
+		Outputs="$(IntermediateOutputPath)resizetizer.stamp"
+		AfterTargets="ResizetizeCollectImages">
+
+		<!-- Where in obj/ to store these -->
+		<PropertyGroup>
+			<ResizetizerIntermediateOutputPath>$(IntermediateOutputPath)resizetizer\</ResizetizerIntermediateOutputPath>
+		</PropertyGroup>
+
+		<ResizetizeMobileImages
+			PlatformType="android"
+			IntermediateOutputPath="$(ResizetizerIntermediateOutputPath)"
+			MobileImages="@(MobileImage)">
+			<Output TaskParameter="CopiedResources" ItemName="FileWrites" />
+		</ResizetizeMobileImages>
+
+		<ItemGroup>
+			<!-- If we had any images, add that obj/ folder as a resource directory -->
+			<LibraryResourceDirectories Condition="Exists ('$(ResizetizerIntermediateOutputPath)')" Include="$(ResizetizerIntermediateOutputPath)">
+				<StampFile>$(IntermediateOutputPath)resizetizer.stamp</StampFile>
+			</LibraryResourceDirectories>
+
+			<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
+
+			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)')" Include="$(ResizetizerIntermediateOutputPath)" />
+
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_CleanResizetizer">
+		<PropertyGroup>
+			<ResizetizerIntermediateOutputPath>$(IntermediateOutputPath)resizetizer\</ResizetizerIntermediateOutputPath>
+		</PropertyGroup>
+
+		<RemoveDir Directories="$(ResizetizerIntermediateOutputPath)" Condition="Exists ('$(ResizetizerIntermediateOutputPath)' )" />
+	</Target>
+</Project>

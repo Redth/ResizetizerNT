@@ -1,0 +1,99 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resizetizer.targets" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resizetizer.targets">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+		
+		<!--<None Include="$(PkgSixLabors_ImageSharp)\lib\netstandard2.0\SixLabors.ImageSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="$(PkgSixLabors_Core)\lib\netstandard2.0\SixLabors.Core.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>-->
+
+		<None Include="$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSystem_Buffers)\lib\netstandard2.0\System.Buffers.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSystem_Numerics_Vectors)\lib\netstandard2.0\System.Numerics.Vectors.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<!--<None Include="$(PkgSystem_Drawing_Common)\lib\netstandard2.0\System.Drawing.Common.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSystem_ObjectModel)\lib\netstandard1.3\System.ObjectModel.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSvg)\lib\netstandard2.0\Svg.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgFizzler)\lib\netstandard2.0\Fizzler.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>-->
+
+		<None Include="$(PkgSystem_IO_UnmanagedMemoryStream)\lib\netstandard1.3\System.IO.UnmanagedMemoryStream.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSkiaSharp)\lib\net45\SkiaSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSkiaSharp)\runtimes\osx\native\libSkiaSharp.dylib" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSkiaSharp)\runtimes\win7-x86\native\libSkiaSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSkiaSharp_Svg)\lib\netstandard2.0\SkiaSharp.Extended.Svg.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+	</ItemGroup>
+
+  <ItemGroup>
+		<!--<PackageReference Include="Fizzler" Version="1.2.0" GeneratePathProperty="true" />-->
+    <PackageReference Include="Microsoft.Build.Framework" Version="16.4.0" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.4.0" />
+    <!--<PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" GeneratePathProperty="true" />
+		<PackageReference Include="SixLabors.Core" Version="1.0.0-beta0008" GeneratePathProperty="true" />-->
+		<PackageReference Include="SkiaSharp.Svg" Version="1.60.0" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp" Version="1.60.3" GeneratePathProperty="true" />
+		<!--<PackageReference Include="Svg" Version="3.0.102" GeneratePathProperty="true" />-->
+		<PackageReference Include="System.Memory" Version="4.5.3" GeneratePathProperty="true" />
+		<PackageReference Include="System.Buffers" Version="4.4.0" GeneratePathProperty="true" />
+		<PackageReference Include="System.IO.UnmanagedMemoryStream" Version="4.3.0" GeneratePathProperty="true" />
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" GeneratePathProperty="true" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" GeneratePathProperty="true" />
+		<!--<PackageReference Include="System.Drawing.Common" Version="4.7.0" GeneratePathProperty="true" />
+		<PackageReference Include="System.ObjectModel" Version="4.3.0" GeneratePathProperty="true" />-->
+
+		<!--<file src="packages/SkiaSharp.1.56.1/runtimes/osx/native/libSkiaSharp.dylib" target="build" />
+		<file src="packages/SkiaSharp.1.56.1/runtimes/win7-x86/native/libSkiaSharp.dll" target="build" />
+		<file src="packages/SkiaSharp.1.56.1/build/net45/SkiaSharp.dll.config" target="build" />-->
+	</ItemGroup>
+
+</Project>
