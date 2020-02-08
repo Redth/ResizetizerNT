@@ -56,7 +56,11 @@ namespace Resizetizer
 			}
 
 			// Need to output filewrites back as resources
-			CopiedResources = fileWrites.Select(s => new TaskItem(s)).ToArray();
+            if (PlatformType.Equals("ios", StringComparison.OrdinalIgnoreCase))
+				CopiedResources = fileWrites.Select(s => new TaskItem(Path.GetFullPath(s),
+                    new Dictionary<string, string> { { "LogicalName", Path.GetFileName(s) } })).ToArray();
+			else
+				CopiedResources = fileWrites.Select(s => new TaskItem(s)).ToArray();
 
 			return true;
 		}
@@ -223,9 +227,9 @@ namespace Resizetizer
 		public static DpiPath[] Ios
 			=> new []
 			{
-				new DpiPath("./", 1.0m),
-				new DpiPath("./", 2.0m, "@2x"),
-				new DpiPath("./", 3.0m, "@3x"),
+				new DpiPath("", 1.0m),
+				new DpiPath("", 2.0m, "@2x"),
+				new DpiPath("", 3.0m, "@3x"),
 			};
 
 		static DpiPath IosOriginal => new DpiPath("Resources", 1.0m);
