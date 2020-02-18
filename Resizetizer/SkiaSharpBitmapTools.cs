@@ -6,41 +6,54 @@ using System.Text;
 
 namespace Resizetizer
 {
-	internal class SkiaSharpBitmapTools
+	internal class SkiaSharpBitmapTools : IDisposable
 	{
-		public void Resize(SharedImageInfo image, DpiPath dpi, string destination, Action<string> logMessage)
+		public SkiaSharpBitmapTools(SharedImageInfo info, ILogger logger)
 		{
-			using (var bmp = SKBitmap.Decode(image.Filename))
+			Info = info;
+			Logger = logger;
+			bmp = SKBitmap.Decode(info.Filename);
+		}
+
+		public SharedImageInfo Info { get; private set; }
+		public ILogger Logger { get; private set; }
+
+		SKBitmap bmp;
+
+		public void Resize(DpiPath dpi, string destination)
+		{
+			Logger?.Log($"BMP: {Info.Filename}, W:{bmp.Width}");
+
+			int sourceNominalWidth = Info.BaseSize?.Width ?? bmp.Width;
+			int sourceNominalHeight = Info.BaseSize?.Height ?? bmp.Height;
+			var resizeRatio = dpi.Scale;
+
+			var sourceActualWidth = bmp.Width;
+			var sourceActualHeight = bmp.Height;
+
+			var nominalRatio = Math.Max((double)sourceNominalWidth / (double)sourceActualWidth, (double)sourceNominalHeight / (double)sourceActualHeight);
+
+			var adjustRatio = nominalRatio * Convert.ToDouble(resizeRatio);
+
+			Logger?.Log($"Ratio: {adjustRatio}");
+
+			var newWidth = (int)Math.Floor(bmp.Width * adjustRatio);
+			var newHeight = (int)Math.Floor(bmp.Height * adjustRatio);
+
+			Logger?.Log($"NewSize: {newWidth} * {newHeight}");
+
+			using (var rzBitmap = bmp.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High))
+			using (var img = SKImage.FromBitmap(rzBitmap))
+			using (var data = img.Encode(SKEncodedImageFormat.Png, 100))
+			using (var fs = File.Open(destination, FileMode.Create))
 			{
-
-				logMessage?.Invoke($"BMP: {image.Filename}, W:{bmp.Width}");
-
-				int sourceNominalWidth = image.BaseSize?.Width ?? bmp.Width;
-				int sourceNominalHeight = image.BaseSize?.Height ?? bmp.Height;
-				var resizeRatio = dpi.Scale;
-
-				var sourceActualWidth = bmp.Width;
-				var sourceActualHeight = bmp.Height;
-
-				var nominalRatio = Math.Max((double)sourceNominalWidth / (double)sourceActualWidth, (double)sourceNominalHeight / (double)sourceActualHeight);
-
-				var adjustRatio = nominalRatio * Convert.ToDouble(resizeRatio);
-
-				logMessage?.Invoke($"Ratio: {adjustRatio}");
-
-				var newWidth = (int)Math.Floor(bmp.Width * adjustRatio);
-				var newHeight = (int)Math.Floor(bmp.Height * adjustRatio);
-
-				logMessage?.Invoke($"NewSize: {newWidth} * {newHeight}");
-
-				using (var rzBitmap = bmp.Resize(new SKImageInfo(newWidth, newHeight), SKBitmapResizeMethod.Lanczos3))
-				using (var img = SKImage.FromBitmap(rzBitmap))
-				using (var data = img.Encode(SKEncodedImageFormat.Png, 100))
-				using (var fs = File.Open(destination, FileMode.Create))
-				{
-					data.SaveTo(fs);
-				}
+				data.SaveTo(fs);
 			}
+		}
+
+		public void Dispose()
+		{
+			bmp?.Dispose();
 		}
 	}
 }
