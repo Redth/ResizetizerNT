@@ -8,15 +8,15 @@ namespace Resizetizer
 {
 	internal class SkiaSharpBitmapTools
 	{
-		public void Resize(MobileImageInfo image, DpiPath dpi, string destination, Action<string> logMessage)
+		public void Resize(SharedImageInfo image, DpiPath dpi, string destination, Action<string> logMessage)
 		{
 			using (var bmp = SKBitmap.Decode(image.Filename))
 			{
 
 				logMessage?.Invoke($"BMP: {image.Filename}, W:{bmp.Width}");
 
-				int sourceNominalWidth = image.OriginalSize?.Width ?? bmp.Width;
-				int sourceNominalHeight = image.OriginalSize?.Height ?? bmp.Height;
+				int sourceNominalWidth = image.BaseSize?.Width ?? bmp.Width;
+				int sourceNominalHeight = image.BaseSize?.Height ?? bmp.Height;
 				var resizeRatio = dpi.Scale;
 
 				var sourceActualWidth = bmp.Width;

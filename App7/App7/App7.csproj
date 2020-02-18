@@ -11,7 +11,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<MobileImage Include="camera.svg" OriginalSize="44" />
+		<SharedImage Include="camera.svg" BaseSize="44" />
 	</ItemGroup>
 
   <ItemGroup>

@@ -2,12 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<ItemGroup>
-		<AvailableItemName Include="MobileImage" />
+		<AvailableItemName Include="SharedImage" />
 	</ItemGroup>
 
 	<UsingTask
       AssemblyFile="Resizetizer.dll"
-      TaskName="Resizetizer.ResizetizeMobileImages" />
+      TaskName="Resizetizer.ResizetizeSharedImages" />
 
 	<PropertyGroup>
 		<CleanDependsOn>
@@ -34,11 +34,11 @@
 		</_CollectBundleResourcesDependsOn>-->
 	</PropertyGroup>
 
-	<!-- Finds absolute paths to any MobileImage in this project -->
+	<!-- Finds absolute paths to any SharedImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
-	<Target Name="GetMobileImages" Outputs="@(ExportedMobileImage)">
-		<ConvertToAbsolutePath Paths="@(MobileImage)">
-			<Output TaskParameter="AbsolutePaths" ItemName="ExportedMobileImage"/>
+	<Target Name="GetSharedImages" Outputs="@(ExportedSharedImage)">
+		<ConvertToAbsolutePath Paths="@(SharedImage)">
+			<Output TaskParameter="AbsolutePaths" ItemName="ExportedSharedImage"/>
 		</ConvertToAbsolutePath>
 	</Target>
 
@@ -48,20 +48,20 @@
 		BeforeTargets="$(ResizetizeCollectImagesBeforeTargets)"
 		AfterTargets="$(ResizetizeCollectImagesAfterTargets)">
 
-		<!-- Invoke the GetMobileImages target on all project references -->
-		<!-- This will accumulate images into our MobileImage group -->
-		<!--<MSBuild Targets="GetMobileImages" Projects="@(_MSBuildProjectReferenceExistent)">-->
-		<MSBuild Targets="GetMobileImages" Projects="@(ProjectReference)">
+		<!-- Invoke the GetSharedImages target on all project references -->
+		<!-- This will accumulate images into our SharedImage group -->
+		<!--<MSBuild Targets="GetSharedImages" Projects="@(_MSBuildProjectReferenceExistent)">-->
+		<MSBuild Targets="GetSharedImages" Projects="@(ProjectReference)">
 			<Output
 				TaskParameter="TargetOutputs"
-				ItemName="MobileImage" />
+				ItemName="SharedImage" />
 		</MSBuild>
 	</Target>
 
 
 	<Target Name="ResizetizeiOS"
 					Condition="'$(_ResizetizerIsiOS)' == 'True'"
-					Inputs="@(MobileImage)"
+					Inputs="@(SharedImage)"
 					Outputs="$(IntermediateOutputPath)resizetizer.stamp"
 					AfterTargets="ResizetizeCollectImages">
 
@@ -70,12 +70,12 @@
 			<ResizetizerIntermediateOutputPath>$(IntermediateOutputPath)resizetizer\</ResizetizerIntermediateOutputPath>
 		</PropertyGroup>
 
-		<ResizetizeMobileImages
+		<ResizetizeSharedImages
 			PlatformType="ios"
 			IntermediateOutputPath="$(ResizetizerIntermediateOutputPath)"
-			MobileImages="@(MobileImage)">
+			SharedImages="@(SharedImage)">
 			<Output TaskParameter="CopiedResources" ItemName="ResizetizedImages" />
-		</ResizetizeMobileImages>
+		</ResizetizeSharedImages>
 
 		<ItemGroup>
 			<!-- If we had any images, add that obj/ folder as a resource directory -->
@@ -93,7 +93,7 @@
 	<!-- This should copy images into the app's obj/ area and include them as android resources -->
 	<Target Name="ResizetizeAndroid"
 		Condition="'$(_ResizetizerIsAndroid)' == 'True'"
-		Inputs="@(MobileImage)"
+		Inputs="@(SharedImage)"
 		Outputs="$(IntermediateOutputPath)resizetizer.stamp"
 		AfterTargets="ResizetizeCollectImages">
 
@@ -102,12 +102,12 @@
 			<ResizetizerIntermediateOutputPath>$(IntermediateOutputPath)resizetizer\</ResizetizerIntermediateOutputPath>
 		</PropertyGroup>
 
-		<ResizetizeMobileImages
+		<ResizetizeSharedImages
 			PlatformType="android"
 			IntermediateOutputPath="$(ResizetizerIntermediateOutputPath)"
-			MobileImages="@(MobileImage)">
+			SharedImages="@(SharedImage)">
 			<Output TaskParameter="CopiedResources" ItemName="FileWrites" />
-		</ResizetizeMobileImages>
+		</ResizetizeSharedImages>
 
 		<ItemGroup>
 			<!-- If we had any images, add that obj/ folder as a resource directory -->

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Resizetizer
 {
-	public class ResizetizeMobileImages : Task
+	public class ResizetizeSharedImages : Task
 	{
 		[Required]
 		public string PlatformType { get; set; } = "android";
@@ -18,14 +18,14 @@ namespace Resizetizer
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
-		public ITaskItem[] MobileImages { get; set; }
+		public ITaskItem[] SharedImages { get; set; }
 
 		[Output]
 		public ITaskItem[] CopiedResources { get; set; }
 
 		public override bool Execute()
 		{
-			var images = ParseImageTaskItems(MobileImages);
+			var images = ParseImageTaskItems(SharedImages);
 
 			var dpis = DpiPath.GetDpis(PlatformType);
 
@@ -65,7 +65,7 @@ namespace Resizetizer
 			return true;
 		}
 
-		string CopyFile(MobileImageInfo info, DpiPath dpi)
+		string CopyFile(SharedImageInfo info, DpiPath dpi)
 		{
 			var destination = GetFileDestination(info, dpi);
 
@@ -86,7 +86,7 @@ namespace Resizetizer
 			return destination;
 		}
 
-		string Resize(MobileImageInfo info, DpiPath dpi)
+		string Resize(SharedImageInfo info, DpiPath dpi)
 		{
 			Log.LogMessage("Resizing: {0}", info.Filename);
 
@@ -98,8 +98,8 @@ namespace Resizetizer
 				//var svg = Svg.SvgDocument.Open(info.Filename);
 				//var sourceActualWidth = svg.Width;
 				//var sourceActualHeight = svg.Height;
-				//var sourceNominalWidth = info.OriginalSize?.Width ?? svg.Width;
-				//var sourceNominalHeight = info.OriginalSize?.Height ?? svg.Height;
+				//var sourceNominalWidth = info.BaseSize?.Width ?? svg.Width;
+				//var sourceNominalHeight = info.BaseSize?.Height ?? svg.Height;
 
 				//var nominalRatio = Math.Max((decimal)sourceNominalWidth.Value / (decimal)sourceActualWidth.Value, (decimal)sourceNominalHeight.Value / (decimal)sourceActualHeight.Value);
 
@@ -119,8 +119,8 @@ namespace Resizetizer
 				//{
 				//	var sourceActualWidth = img.Width;
 				//	var sourceActualHeight = img.Height;
-				//	var sourceNominalWidth = info.OriginalSize?.Width ?? img.Width;
-				//	var sourceNominalHeight = info.OriginalSize?.Height ?? img.Height;
+				//	var sourceNominalWidth = info.BaseSize?.Width ?? img.Width;
+				//	var sourceNominalHeight = info.BaseSize?.Height ?? img.Height;
 
 				//	var nominalRatio = Math.Max((decimal)sourceNominalWidth / (decimal)sourceActualWidth, (decimal)sourceNominalHeight / (decimal)sourceActualHeight);
 
@@ -138,7 +138,7 @@ namespace Resizetizer
 			return destination;
 		}
 
-		string GetFileDestination(MobileImageInfo info, DpiPath dpi)
+		string GetFileDestination(SharedImageInfo info, DpiPath dpi)
 		{
 			var name = Path.GetFileNameWithoutExtension(info.Filename);
 			var ext = Path.GetExtension(info.Filename);
@@ -154,20 +154,20 @@ namespace Resizetizer
 			return destination;
 		}
 
-		List<MobileImageInfo> ParseImageTaskItems(ITaskItem[] images)
+		List<SharedImageInfo> ParseImageTaskItems(ITaskItem[] images)
 		{
-			var r = new List<MobileImageInfo>();
+			var r = new List<SharedImageInfo>();
 
 			if (images == null)
 				return r;
 
 			foreach (var image in images)
 			{
-				var info = new MobileImageInfo();
+				var info = new SharedImageInfo();
 
 				info.Filename = image.GetMetadata("FullPath");
 
-				var size = image.GetMetadata("OriginalSize");
+				var size = image.GetMetadata("BaseSize");
 				if (!string.IsNullOrWhiteSpace(size))
 				{
 					var parts = size.Split(new char[] { ',', ';' }, 2);
@@ -175,9 +175,9 @@ namespace Resizetizer
 					if (parts.Length > 0 && int.TryParse(parts[0], out var width))
 					{
 						if (parts.Length > 1 && int.TryParse(parts[1], out var height))
-							info.OriginalSize = new Size(width, height);
+							info.BaseSize = new Size(width, height);
 						else
-							info.OriginalSize = new Size(width, width);
+							info.BaseSize = new Size(width, width);
 					}
 				}
 
@@ -261,11 +261,11 @@ namespace Resizetizer
 		}
 	}
 
-	internal class MobileImageInfo
+	internal class SharedImageInfo
 	{
 		public string Filename { get; set; }
 
-		public Size? OriginalSize { get; set; }
+		public Size? BaseSize { get; set; }
 
 		public bool Resize { get; set; } = true;
 
@@ -275,7 +275,7 @@ namespace Resizetizer
 			=> Path.GetExtension(Filename)?.TrimStart('.')?.ToLowerInvariant()?.Equals("svg") ?? false;
 	}
 
-	public enum MobileImageType
+	public enum SharedImageType
 	{
 		Vector,
 		Bitmap

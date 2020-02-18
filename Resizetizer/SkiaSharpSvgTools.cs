@@ -16,7 +16,7 @@ namespace Resizetizer
 			@"style\s?=\s?""fill:(?<fill>.*?)""",
 		};
 
-		public void Resize(MobileImageInfo image, DpiPath dpi, string destination)
+		public void Resize(SharedImageInfo image, DpiPath dpi, string destination)
 		{
 			var fillColor = image.FillColor;
 
@@ -59,8 +59,8 @@ namespace Resizetizer
 				svg.Load(image.Filename);
 			}
 
-			int sourceNominalWidth = image.OriginalSize?.Width ?? (int)svg.Picture.CullRect.Width;
-			int sourceNominalHeight = image.OriginalSize?.Height ?? (int)svg.Picture.CullRect.Height;
+			int sourceNominalWidth = image.BaseSize?.Width ?? (int)svg.Picture.CullRect.Width;
+			int sourceNominalHeight = image.BaseSize?.Height ?? (int)svg.Picture.CullRect.Height;
 			var resizeRatio = dpi.Scale;
 
 			// Find the actual size of the SVG 
