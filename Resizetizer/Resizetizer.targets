@@ -81,10 +81,10 @@
 			<!-- If we had any images, add that obj/ folder as a resource directory -->
 			<BundleResource Include="@(ResizetizedImages)" />
 
+			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)') And '@(CopiedResources)' == '' " Include="$(ResizetizerIntermediateOutputPath)**\*" />
+
 			<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
-
-			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)')" Include="$(ResizetizerIntermediateOutputPath)" />
-
+			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
 		</ItemGroup>
 
 	</Target>
@@ -115,10 +115,10 @@
 				<StampFile>$(IntermediateOutputPath)resizetizer.stamp</StampFile>
 			</LibraryResourceDirectories>
 
+			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)') And '@(CopiedResources)' == '' " Include="$(ResizetizerIntermediateOutputPath)**\*" />
+
 			<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
-
-			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)')" Include="$(ResizetizerIntermediateOutputPath)" />
-
+			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
 		</ItemGroup>
 	</Target>
 
