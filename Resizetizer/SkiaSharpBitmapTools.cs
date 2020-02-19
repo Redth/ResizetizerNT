@@ -22,8 +22,6 @@ namespace Resizetizer
 
 		public void Resize(DpiPath dpi, string destination)
 		{
-			Logger?.Log($"BMP: {Info.Filename}, W:{bmp.Width}");
-
 			int sourceNominalWidth = Info.BaseSize?.Width ?? bmp.Width;
 			int sourceNominalHeight = Info.BaseSize?.Height ?? bmp.Height;
 			var resizeRatio = dpi.Scale;
@@ -35,12 +33,8 @@ namespace Resizetizer
 
 			var adjustRatio = nominalRatio * Convert.ToDouble(resizeRatio);
 
-			Logger?.Log($"Ratio: {adjustRatio}");
-
 			var newWidth = (int)Math.Floor(bmp.Width * adjustRatio);
 			var newHeight = (int)Math.Floor(bmp.Height * adjustRatio);
-
-			Logger?.Log($"NewSize: {newWidth} * {newHeight}");
 
 			using (var rzBitmap = bmp.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High))
 			using (var img = SKImage.FromBitmap(rzBitmap))

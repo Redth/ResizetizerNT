@@ -4,6 +4,7 @@ using Microsoft.Build.Utilities;
 //using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,8 @@ namespace Resizetizer
 
 		public override bool Execute()
 		{
+			Svg.SvgDocument.SkipGdiPlusCapabilityCheck = true;
+
 			var images = ParseImageTaskItems(SharedImages);
 
 			var dpis = DpiPath.GetDpis(PlatformType);
@@ -36,8 +39,13 @@ namespace Resizetizer
 
 			var fileWrites = new List<string>();
 
-			foreach (var img in images)
+			System.Threading.Tasks.Parallel.ForEach(images, img =>
 			{
+				var opStopwatch = new Stopwatch();
+				opStopwatch.Start();
+
+				var op = "Resize";
+
 				// By default we resize, but let's make sure
 				if (img.Resize)
 				{
@@ -51,14 +59,25 @@ namespace Resizetizer
 				}
 				else
 				{
+					op = "Copy";
 					// Otherwise just copy the thing over to the 1.0 scale
 					var dest = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, PlatformType.ToLower().Equals("android"));
 					fileWrites.Add(dest);
 				}
-			}
+
+				opStopwatch.Stop();
+
+				Log.LogMessage(MessageImportance.Low, $"{op} took {opStopwatch.ElapsedMilliseconds}ms");
+			});
+
+			var touchFile = Path.Combine(IntermediateOutputPath, "..", "resizetizer.stamp");
+			using (var touch = File.Open(touchFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
+				touch.Close();
+			File.SetLastWriteTimeUtc(touchFile, DateTime.UtcNow);
+			fileWrites.Add(touchFile);
 
 			// Need to output filewrites back as resources
-            if (PlatformType.Equals("ios", StringComparison.OrdinalIgnoreCase))
+			if (PlatformType.Equals("ios", StringComparison.OrdinalIgnoreCase))
 				CopiedResources = fileWrites.Select(s => new TaskItem(Path.GetFullPath(s),
                     new Dictionary<string, string> { { "LogicalName", Path.GetFileName(s) } })).ToArray();
 			else

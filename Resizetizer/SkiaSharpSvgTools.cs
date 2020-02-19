@@ -3,6 +3,7 @@ using Svg;
 using Svg.Skia;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -16,6 +17,9 @@ namespace Resizetizer
 		{
 			Info = info;
 			Logger = logger;
+
+			var sw = new Stopwatch();
+			sw.Start();
 
 			var svgDoc = SKSvg.Open(Info.Filename);
 
@@ -48,8 +52,26 @@ namespace Resizetizer
 					ChangeFill(elem);
 			}
 
+			Svg.SvgDocument.SkipGdiPlusCapabilityCheck = true;
+
+
+			//svgDoc.Write(Info.Filename + ".mod.svg");
+			sw.Stop();
+			Logger?.Log($"Open SVG took {sw.ElapsedMilliseconds}ms");
+			sw.Reset();
+			sw.Start();
+
+
 			svg = new SKSvg();
+			sw.Stop();
+			Logger?.Log($"new SKSvg() took {sw.ElapsedMilliseconds}ms");
+			sw.Reset();
+			sw.Start();
+
 			svg.FromSvgDocument(svgDoc);
+			sw.Stop();
+			Logger?.Log($"svg.FromSvgDocument took {sw.ElapsedMilliseconds}ms");
+
 		}
 
 		public SharedImageInfo Info { get; private set; }
@@ -78,10 +100,17 @@ namespace Resizetizer
 			//var scaledWidth = sourceActualWidth * adjustRatio;
 			//var scaledHeight = sourceActualHeight * adjustRatio;
 
+			var sw = new Stopwatch();
+			sw.Start();
+
 			using (var stream = File.OpenWrite(destination))
 			{
 				svg.Picture.ToImage(stream, SKColors.Empty, SKEncodedImageFormat.Png, 100, (float)adjustRatio, (float)adjustRatio, SKColorType.Argb4444, SKAlphaType.Premul);
 			}
+
+			sw.Stop();
+			Logger?.Log($"Save Image took {sw.ElapsedMilliseconds}ms");
+
 		}
 	}
 }
