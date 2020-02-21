@@ -6,11 +6,11 @@
              mc:Ignorable="d"
              x:Class="SampleApp.MainPage">
 
-    <StackLayout>
+    <StackLayout BackgroundColor="Black">
         <!-- Place new controls here -->
         <Label Text="Welcome to Xamarin.Forms!" 
            HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+           VerticalOptions="CenterAndExpand" TextColor="White" />
 
 		<Image Source="camera.png" HeightRequest="44" WidthRequest="44" />
 	</StackLayout>
