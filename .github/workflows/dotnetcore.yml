@@ -16,6 +16,8 @@ jobs:
         dotnet-version: 3.1.100
     - name: Setup Env
       run: mkdir ./output
+    - name: Build Project
+      run: dotnet build --configuration Release ./Resizetizer/Resizetizer.csproj
     - name: Build
       run: dotnet build --configuration Release
     - name: Test
