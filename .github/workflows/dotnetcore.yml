@@ -18,10 +18,10 @@ jobs:
       run: mkdir ./output
     - name: Build Project
       run: dotnet build --configuration Release ./Resizetizer/Resizetizer.csproj
-    - name: Build
-      run: dotnet build --configuration Release
-    - name: Test
-      run: dotnet test --configuration Release
+    #- name: Build
+    #  run: dotnet build --configuration Release
+    #- name: Test
+    #  run: dotnet test --configuration Release
     - name: Pack
       run: dotnet pack --output ./artifacts --configuration Release ./Resizetizer/Resizetizer.csproj
     - name: Artifacts
