@@ -1,31 +1,61 @@
-# Shared Images in Xamarin
+# Resizetizer NT (for Workgroups and fun individuals)
 
-Currently using images in Xamarin and Xamarin.Forms projects requires adding them to each individual app head project. It also often involves resizing images for multiple display densities. Basically, image management is currently tedious and very unintuitive in Xamarin apps.
+Take SVG's and PNG's and automagically have them resized to all the different resolutions and included in your Xamarin Android, iOS, and UWP projects!
 
-With this solution, Images can be added to shared projects one time and used in the app head projects without manually copying them or resizing them to multiple display densities.
-Images should be added to the project with a `SharedImage` build action (item group).
+## History
+A few years back I created a thing I called [Resizetizer](https://github.com/Redth/Resizetizer) which helped solve the pain of resizing images to every single target density/resolution for iOS, Android, and UWP.  
+
+The original incarnation required that you define a .yaml file with all of your inputs and desired outputs.  If you referenced this yaml file in your project and built it, the images would all be resized according to your config.  You also had to specify all the various resolutions you wanted to output in the config file.
+
+## NT (New Technology)
+
+This was great, but we could do better yet!  The Resizetizer NT (New Technology) improves the story in a few ways:
+1. Add your images to your shared (netstandard2) projects with the `SharedImage` build action
+2. The config file is no longer necessary (or even a thing at all)
+3. Ideal resolutions for each platform are automatically created
+4. Resized images are automatically included in your Xamarin iOS, Android and UWP app head projects
+
+## How to use it
+
+First you need to add the `ResizetizerNT` NuGet package to your shared code (netstandard2.0) project, as well as your Xamarin iOS/Android/UWP app projects.  It's important to install it in _all_ of your projects for this to work.
+
+Next, add the images to your shared code (netstandard2.0) project as `SharedImage` build actions:
 
 ```xml
-    <ItemGroup>
-      <SharedImage 
-        Include="img.png"
-        BaseSize="44,44" />
-    </ItemGroup>
+<ItemGroup>
+  <SharedImage 
+    Include="hamburger.svg"
+    BaseSize="40,20" />
+</ItemGroup>
 ```
 
-During builds of the app head projects, these items are discovered and copied to the app head intermediate output paths and includes as an appropriate resource type during the build.
-The user should never see the images in any of the app head projects.
-Both bitmap (png, jpeg) and vector (svg) formats should be supported.
+These images can be `.svg` or `.png` types.
+
+## BaseSize
+Notice the `BaseSize` attribute which you will need to manually add.  This is required for the resizer to know the baseline or nominal, or original (whatever you want to call it) density size.  This is the size you would use in your code to specify the image size (eg: `<Image Source="hamburger.png" WidthRequest="40" HeightRequest="20" />`).  In Android this is the `drawable-mdpi` resolution, on iOS you can consider it the `@1x` resolution, and on UWP it's the `scale-100` resolution.
+
+## Referencing the Resized Images
+When you build your app projects, they will invoke a target in your shared code project to collect all of the `SharedImage` items to process.  These items will all be resized and automatically included in your app project as the appropriate type for an image resource.
+
+You can reference images just like you normally would.  The important thing to note is that if your input image source is `.svg`, you will actually reference a `.png` in your app.
+
+In Xamarin Forms you would use something like:
+
+```xml
+<Image Source="hamburger.png" WidthRequest="40" HeightRequest="20" />
+```
+
+# Planning
 
 ## Bitmaps
-By default if no `BaseSize` attribute is specified on the `SharedImage` item, the image is not resized at all and is simply included as a standard image in the app head project (`Resources/drawable` on android, etc.).
-If an `BaseSize` is specified, then the resizing rules apply to the image and different copies of the image are made for the various display densities of each app head project.
+By default if no `BaseSize` attribute is specified on the `SharedImage` item, the image should not be resized at all and instead simply included as a standard image in the app head project (`Resources/drawable` on android, etc.).
+If an `BaseSize` is specified, then the resizing rules apply to the image and different copies of the image should be made for the various display densities of each app head project.
 
 ## Vectors
 Vectors provide the best results for resizing an image to the display densities of each device. 
-By default if no `BaseSize` attribute is specified on the `SharedImage` item, the vector is not resized at all and is simply included as a standard vector image in the app head project (`Resources/drawable` on android, etc.).  
+By default if no `BaseSize` attribute is specified on the `SharedImage` item, the vector should not resized at all and is simply included as a standard vector image in the app head project (`Resources/drawable` on android, etc.).  
 
-> On Android the vector will also be converted to a Vector Drawable format resource. 
+> On Android the vector should also be converted to a Vector Drawable format resource. 
 
 Since by its very nature a vector’s size is unknown, if it is to be resized, a `BaseSize` must be included to support resizing to different display densities. Resize rules apply here. 
 
@@ -99,13 +129,7 @@ There is an opportunity with things like vectors to provide some other interesti
     ```
 - AppIcons - on iOS these are asset catalogs? Maybe there should be an attribute or a new build action specifically for app icons which generates mipmap drawables on android and asset catalogs on iOS since this is a pretty specific use case
 
-## Image Manipulation Libraries
-
-The most difficult part of the implementation is turning out to be finding a reliable, appropriately licensed library to use for resizing the images and even more, finding one that can deal with SVG’s.
-
-- svg2ad - android drawables are a subset of svg. Basically just paths with different fills (gradients are supported). There are a couple of older open source efforts in converting svg to android drawables, we could use them as a starting point. Android studio also has an implementation of this and it appears to be open source. We could port this or just use the java code: [https://android.googlesource.com/platform/tools/base/+/refs/heads/mirror-goog-studio-master-dev/sdk-common/src/main/java/com/android/ide/common/vectordrawable/](https://android.googlesource.com/platform/tools/base/+/refs/heads/mirror-goog-studio-master-dev/sdk-common/src/main/java/com/android/ide/common/vectordrawable/)
-
-## Progress
+# Progress
 
 **Completed**
 - Android msbuild targets are working correctly. 
