@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
@@ -13,8 +13,6 @@
 		<summary>Easily and automatically resize your source image assets as part of your build process.</summary>
 		<PackageDescription>
 			Easily and automatically resize your source image assets as part of your build process.
-			
-			Add shared images to your shared project: `<ItemGroup><SharedImage Include="blah.svg" BaseSize="40,20" />` 
 		</PackageDescription>
 		<Copyright>Copyright © Redth</Copyright>
 		<projectUrl>https://github.com/redth/Resizetizer/</projectUrl>
@@ -24,16 +22,16 @@
 		<IncludeBuildOutput>False</IncludeBuildOutput>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Resizetizer.targets" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Resizetizer.targets" />
+	</ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
 		<None Include="$(TargetPath)" Pack="True" PackagePath="buildTransitive\" />
-    <Content Include="Resizetizer.targets" Pack="True" PackagePath="buildTransitive\">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-		
+		<Content Include="Resizetizer.targets" Pack="True" PackagePath="buildTransitive\">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+
 		<None Include="$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -61,11 +59,11 @@
 		<None Include="$(PkgSvg_Custom)\lib\netstandard2.0\Svg.Custom.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		
+
 		<None Include="$(PkgSvg_Skia)\lib\netstandard2.0\Svg.Skia.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		
+
 		<None Include="$(PkgFizzler)\lib\netstandard2.0\Fizzler.dll" Visible="False" Pack="True" PackagePath="buildTransitive\">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -87,10 +85,10 @@
 		</None>
 
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<None Include="$(TargetPath)" Pack="True" PackagePath="build\" />
-    <Content Include="Resizetizer.targets" Pack="True" PackagePath="build\" />
+		<Content Include="Resizetizer.targets" Pack="True" PackagePath="build\" />
 		<None Include="$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll" Visible="False" Pack="True" PackagePath="build\" />
 		<None Include="$(PkgSystem_Buffers)\lib\netstandard2.0\System.Buffers.dll" Visible="False" Pack="True" PackagePath="build\" />
 		<None Include="$(PkgSystem_Numerics_Vectors)\lib\netstandard2.0\System.Numerics.Vectors.dll" Visible="False" Pack="True" PackagePath="build\" />
