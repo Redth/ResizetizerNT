@@ -17,13 +17,13 @@ jobs:
     - name: Setup Env
       run: mkdir ./output
     - name: Build Project
-      run: dotnet build --configuration Release ./Resizetizer/Resizetizer.csproj
+      run: dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
     #- name: Build
     #  run: dotnet build --configuration Release
     #- name: Test
     #  run: dotnet test --configuration Release
     - name: Pack
-      run: dotnet pack --output ./artifacts --configuration Release ./Resizetizer/Resizetizer.csproj
+      run: dotnet pack --output ./artifacts --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
     - name: Artifacts
       uses: actions/upload-artifact@v1
       with:
