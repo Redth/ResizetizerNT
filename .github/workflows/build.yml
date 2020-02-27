@@ -50,10 +50,12 @@ jobs:
           with:
             dotnet-version: 3.1.100
         - name: Setup NuGet
-          uses: warrenbuckley/Setup-Nuget@v1
-        - name: Setup NuGet Source
-          run: nuget sources add -Name "GPR" -Source "https://nuget.pkg.github.com/redth/index.json" -UserName "redth" -Password "${{ secrets.GITHUB_TOKEN }}"
-          shell: cmd
-        - name: Publish NuGet
-          run: nuget push NuGet\*.nupkg -Source "GPR"
-          shell: cmd
+          uses: nuget/setup-nuget@v1
+          with:
+            nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+            nuget-version: 'latest'
+        - name: Push NuGet
+          run: |
+            nuget sources add -Name "GPR" -Source "https://nuget.pkg.github.com/Redth/index.json" -UserName Redth -Password ${{ secrets.GITHUB_TOKEN }}
+            nuget setApiKey ${{ secrets.NUGET_API_KEY }} -Source "GPR"
+            nuget push NuGet\*.nupkg -Source "GPR"
