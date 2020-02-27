@@ -12,11 +12,6 @@ jobs:
         NUPKG_MAJOR: 0.1
       runs-on: macos-latest
       steps:
-      - name: Define Version
-        run: echo "::set-env name=NUPKG_VER::$NUPKG_MAJOR-pre$GITHUB_RUN_ID"
-      - name: Define Release Version
-        if: github.event_name == 'release'
-        run: echo ::set-output name=NUPKG_VER::${GITHUB_REF/refs\/tags\//}
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup .NET Core
@@ -25,6 +20,11 @@ jobs:
           dotnet-version: 3.1.100
       - name: Setup Environment
         run: mkdir ./output
+      - name: Define Version
+        run: echo "::set-env name=NUPKG_VER::$NUPKG_MAJOR-pre$GITHUB_RUN_ID"
+      - name: Define Release Version
+        if: github.event_name == 'release'
+        run: echo ::set-output name=NUPKG_VER::${GITHUB_REF/refs\/tags\//}
       - name: Build Project
         run: dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
       - name: NuGet Pack
