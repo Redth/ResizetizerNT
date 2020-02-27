@@ -15,9 +15,9 @@
 			Easily and automatically resize your source image assets as part of your build process.
 		</PackageDescription>
 		<Copyright>Copyright © Redth</Copyright>
-		<projectUrl>https://github.com/redth/Resizetizer/</projectUrl>
+		<PackageProjectUrl>https://github.com/redth/Resizetizer</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<RepositoryUrl>https://github.com/redth/Resizetizer.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/redth/ResizetizerNT</RepositoryUrl>
 		<PackageOutputPath>..\output</PackageOutputPath>
 		<IncludeBuildOutput>False</IncludeBuildOutput>
 	</PropertyGroup>
