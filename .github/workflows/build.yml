@@ -55,5 +55,5 @@ jobs:
           run: nuget sources add -Name "GPR" -Source "https://nuget.pkg.github.com/redth/index.json" -UserName "redth" -Password "${{ secrets.GITHUB_TOKEN }}"
           shell: cmd
         - name: Publish NuGet
-          run: nuget push NuGet/*.nupkg -Source "GPR"
+          run: nuget push NuGet\*.nupkg -Source "GPR"
           shell: cmd
