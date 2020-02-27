@@ -15,8 +15,10 @@ jobs:
       - name: Define Version
         run: echo "::set-env name=NUPKG_VER::$NUPKG_MAJOR-pre$GITHUB_RUN_ID"
       - name: Define Release Version
+        env:
+          NUPKG_REL_VER: ${{ github.event.tag_name }}
         if: github.event_name == 'release'
-        run: echo "::set-env name=NUPKG_VER::$NUPKG_MAJOR"
+        run: echo "::set-env name=NUPKG_VER::$NUPKG_REL_VER"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup .NET Core
