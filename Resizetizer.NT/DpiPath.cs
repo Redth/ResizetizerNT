@@ -40,6 +40,17 @@ namespace Resizetizer
 
 		static DpiPath IosOriginal => new DpiPath("Resources", 1.0m);
 
+
+		public static DpiPath[] Uwp
+			=> new []
+			{
+				new DpiPath("Assets", 1.0m, ".scale-100"),
+				new DpiPath("Assets", 2.0m, ".scale-200"),
+				new DpiPath("Assets", 4.0m, ".scale-400"),
+			};
+
+		static DpiPath UwpOriginal => new DpiPath("Assets", 1.0m, ".scale-100");
+
 		public static DpiPath GetOriginal(string platform)
 		{
 			switch (platform.ToLowerInvariant())
@@ -48,6 +59,8 @@ namespace Resizetizer
 					return DpiPath.IosOriginal;
 				case "android":
 					return DpiPath.AndroidOriginal;
+				case "uwp":
+					return DpiPath.UwpOriginal;
 			}
 
 			return null;
@@ -61,6 +74,8 @@ namespace Resizetizer
 					return DpiPath.Ios;
 				case "android":
 					return DpiPath.Android;
+				case "uwp":
+					return DpiPath.Uwp;
 			}
 
 			return null;
