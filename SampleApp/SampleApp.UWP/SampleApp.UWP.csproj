@@ -143,7 +143,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Resizetizer">
+    <PackageReference Include="Resizetizer.NT">
       <Version>2.0.0-preview1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" />

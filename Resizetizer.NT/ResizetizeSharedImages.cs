@@ -74,12 +74,16 @@ namespace Resizetizer
 			using (var touch = File.Open(touchFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
 				touch.Close();
 			File.SetLastWriteTimeUtc(touchFile, DateTime.UtcNow);
-			fileWrites.Add(touchFile);
-
+			
 			// Need to output filewrites back as resources
 			if (PlatformType.Equals("ios", StringComparison.OrdinalIgnoreCase))
 				CopiedResources = fileWrites.Select(s => new TaskItem(Path.GetFullPath(s),
                     new Dictionary<string, string> { { "LogicalName", Path.GetFileName(s) } })).ToArray();
+			else if (PlatformType.Equals("uwp", StringComparison.OrdinalIgnoreCase))
+				CopiedResources = fileWrites.Select(s => new TaskItem(Path.GetFullPath(s),
+                    new Dictionary<string, string> { 
+						{ "TargetPath", "Assets\\" + Path.GetFileName(s) }
+					 })).ToArray();
 			else
 				CopiedResources = fileWrites.Select(s => new TaskItem(s)).ToArray();
 

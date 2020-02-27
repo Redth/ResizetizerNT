@@ -6,7 +6,7 @@
 	</ItemGroup>
 
 	<UsingTask
-      AssemblyFile="Resizetizer.dll"
+      AssemblyFile="Resizetizer.NT.dll"
       TaskName="Resizetizer.ResizetizeSharedImages" />
 
 	<PropertyGroup>
@@ -17,6 +17,7 @@
 
 		<_ResizetizerIsAndroid Condition="'$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroid>
 		<_ResizetizerIsiOS Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.iOS' And ('$(OutputType)' != 'Library' OR '$(IsAppExtension)'=='True')">True</_ResizetizerIsiOS>
+		<_ResizetizerIsUWP Condition="'$(TargetPlatformIdentifier)'=='UAP' And '$(OutputType)' == 'AppContainerExe'">True</_ResizetizerIsUWP>
 
 		<ResizetizeCollectImagesBeforeTargets Condition="'$(_ResizetizerIsiOS)' == 'True'">
 			$(ResizetizeCollectImagesBeforeTargets);
@@ -44,7 +45,7 @@
 
 	<!-- Collect images from referenced projects -->
 	<Target Name="ResizetizeCollectImages"
-		Condition="'$(_ResizetizerIsAndroid)' == 'True' Or '$(_ResizetizerIsiOS)' == 'True'"
+		Condition="'$(_ResizetizerIsAndroid)' == 'True' Or '$(_ResizetizerIsiOS)' == 'True' Or '$(_ResizetizerIsUWP)' == 'True'"
 		BeforeTargets="$(ResizetizeCollectImagesBeforeTargets)"
 		AfterTargets="$(ResizetizeCollectImagesAfterTargets)">
 
@@ -120,6 +121,37 @@
 			<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
 			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
 		</ItemGroup>
+	</Target>
+
+	<Target Name="ResizetizeUWP"
+					Condition="'$(_ResizetizerIsUWP)' == 'True'"
+					Inputs="@(SharedImage)"
+					Outputs="$(IntermediateOutputPath)resizetizer.stamp"
+					DependsOnTargets="ResizetizeCollectImages"
+					BeforeTargets="PrepareResourceNames">
+
+		<!-- Where in obj/ to store these -->
+		<PropertyGroup>
+			<ResizetizerIntermediateOutputPath>$(IntermediateOutputPath)resizetizer\</ResizetizerIntermediateOutputPath>
+		</PropertyGroup>
+
+		<ResizetizeSharedImages
+			PlatformType="uwp"
+			IntermediateOutputPath="$(ResizetizerIntermediateOutputPath)"
+			SharedImages="@(SharedImage)">
+			<Output TaskParameter="CopiedResources" ItemName="ResizetizedImages" />
+		</ResizetizeSharedImages>
+
+		<ItemGroup>
+			<!-- If we had any images, add that obj/ folder as a resource directory -->
+			<ContentWithTargetPath Include="@(ResizetizedImages)" />
+
+			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)') And '@(CopiedResources)' == '' " Include="$(ResizetizerIntermediateOutputPath)**\*" />
+
+			<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
+			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
+		</ItemGroup>
+
 	</Target>
 
 	<Target Name="_CleanResizetizer">
