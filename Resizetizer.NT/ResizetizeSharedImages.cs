@@ -82,7 +82,7 @@ namespace Resizetizer
 			else if (PlatformType.Equals("uwp", StringComparison.OrdinalIgnoreCase))
 				CopiedResources = fileWrites.Select(s => new TaskItem(Path.GetFullPath(s),
                     new Dictionary<string, string> { 
-						{ "TargetPath", "Assets\\" + Path.GetFileName(s) }
+						{ "TargetPath", Path.GetFileName(s) }
 					 })).ToArray();
 			else
 				CopiedResources = fileWrites.Select(s => new TaskItem(s)).ToArray();
