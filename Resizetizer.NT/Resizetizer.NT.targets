@@ -74,20 +74,27 @@
 		<ResizetizeSharedImages
 			PlatformType="ios"
 			IntermediateOutputPath="$(ResizetizerIntermediateOutputPath)"
-			SharedImages="@(SharedImage)">
+			SharedImages="@(SharedImage)"
+			IsMacEnabled="$(IsMacEnabled)">
 			<Output TaskParameter="CopiedResources" ItemName="ResizetizedImages" />
 		</ResizetizeSharedImages>
 
+		<CopyFilesToBuildServer
+			Condition="'$(IsMacEnabled)'=='true'"
+			SessionId="$(BuildSessionId)"
+			Files="@(ResizetizedImages)" />
+
+		<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
+		
 		<ItemGroup>
 			<!-- If we had any images, add that obj/ folder as a resource directory -->
 			<BundleResource Include="@(ResizetizedImages)" />
 
 			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)') And '@(CopiedResources)' == '' " Include="$(ResizetizerIntermediateOutputPath)**\*" />
 
-			<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
 			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
 		</ItemGroup>
-
+			
 	</Target>
 
 
@@ -110,6 +117,8 @@
 			<Output TaskParameter="CopiedResources" ItemName="FileWrites" />
 		</ResizetizeSharedImages>
 
+		<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
+
 		<ItemGroup>
 			<!-- If we had any images, add that obj/ folder as a resource directory -->
 			<LibraryResourceDirectories Condition="Exists ('$(ResizetizerIntermediateOutputPath)')" Include="$(ResizetizerIntermediateOutputPath)">
@@ -118,7 +127,6 @@
 
 			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)') And '@(CopiedResources)' == '' " Include="$(ResizetizerIntermediateOutputPath)**\*" />
 
-			<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
 			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
 		</ItemGroup>
 	</Target>
@@ -142,13 +150,14 @@
 			<Output TaskParameter="CopiedResources" ItemName="ResizetizedImages" />
 		</ResizetizeSharedImages>
 
+		<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
+
 		<ItemGroup>
 			<!-- If we had any images, add that obj/ folder as a resource directory -->
 			<ContentWithTargetPath Include="@(ResizetizedImages)" />
 
 			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)') And '@(CopiedResources)' == '' " Include="$(ResizetizerIntermediateOutputPath)**\*" />
 
-			<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
 			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
 		</ItemGroup>
 
