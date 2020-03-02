@@ -52,7 +52,11 @@
 		<!-- Invoke the GetSharedImages target on all project references -->
 		<!-- This will accumulate images into our SharedImage group -->
 		<!--<MSBuild Targets="GetSharedImages" Projects="@(_MSBuildProjectReferenceExistent)">-->
-		<MSBuild Targets="GetSharedImages" Projects="@(ProjectReference)">
+		<MSBuild
+			Targets="GetSharedImages"
+			Projects="@(ProjectReference)"
+			SkipNonexistentProjects="true"
+			SkipNonexistentTargets="true">
 			<Output
 				TaskParameter="TargetOutputs"
 				ItemName="SharedImage" />
