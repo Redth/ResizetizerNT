@@ -21,10 +21,10 @@ namespace Resizetizer
 
 		public ITaskItem[] SharedImages { get; set; }
 
-		public string IsMacEnabled { get; set; } = "false";
-
 		[Output]
 		public ITaskItem[] CopiedResources { get; set; }
+
+		public string IsMacEnabled { get;set; }
 
 		public override bool Execute()
 		{
@@ -39,7 +39,7 @@ namespace Resizetizer
 
 			var originalScaleDpi = DpiPath.GetOriginal(PlatformType);
 
-			var fileWrites = new List<string>();
+			var resizedImages = new List<string>();
 
 			System.Threading.Tasks.Parallel.ForEach(images, img =>
 			{
@@ -56,7 +56,7 @@ namespace Resizetizer
 					foreach (var dpi in dpis)
 					{
 						var r = resizer.Resize(dpi);
-						fileWrites.Add(r);
+						resizedImages.Add(r);
 					}
 				}
 				else
@@ -64,42 +64,24 @@ namespace Resizetizer
 					op = "Copy";
 					// Otherwise just copy the thing over to the 1.0 scale
 					var dest = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, PlatformType.ToLower().Equals("android"));
-					fileWrites.Add(dest);
+					resizedImages.Add(dest);
 				}
 
 				opStopwatch.Stop();
 
 				Log.LogMessage(MessageImportance.Low, $"{op} took {opStopwatch.ElapsedMilliseconds}ms");
 			});
-
-			// var touchFile = Path.Combine(IntermediateOutputPath, "..", "resizetizer.stamp");
-			// using (var touch = File.Open(touchFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
-			// 	touch.Close();
-			// File.SetLastWriteTimeUtc(touchFile, DateTime.UtcNow);
 			
-			Log.LogMessage($"IsMacEnabled? {IsMacEnabled}");
-
 			var copiedResources = new List<TaskItem>();
 
-			foreach (var f in fileWrites)
+			foreach (var f in resizedImages)
 			{
 				var attr = new Dictionary<string, string>();
 				string itemSpec = Path.GetFullPath(f);
 
-				if (PlatformType.Equals("ios", StringComparison.OrdinalIgnoreCase))
-				{
-					var fn = Path.GetFileName(itemSpec);
-					attr.Add("LogicalName", fn);
-					if (bool.TryParse(IsMacEnabled, out bool isMac) && isMac) {
-						attr.Add("TargetPath", fn);
-						itemSpec = f;
-					}
-				}
-				else if (PlatformType.Equals("uwp", StringComparison.OrdinalIgnoreCase))
-				{
-					attr.Add("TargetPath", Path.GetFileName(itemSpec));
-				}
-				
+				if (bool.TryParse(IsMacEnabled, out bool isMac) && isMac)
+					itemSpec = f;
+
 				copiedResources.Add(new TaskItem(itemSpec, attr));
 			}
 

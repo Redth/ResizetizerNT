@@ -78,24 +78,37 @@
 		<ResizetizeSharedImages
 			PlatformType="ios"
 			IntermediateOutputPath="$(ResizetizerIntermediateOutputPath)"
-			SharedImages="@(SharedImage)"
-			IsMacEnabled="$(IsMacEnabled)">
-			<Output TaskParameter="CopiedResources" ItemName="ResizetizedImages" />
+			SharedImages="@(SharedImage)">
 		</ResizetizeSharedImages>
 
+		<ItemGroup>
+			<!-- Get Images that were generated -->
+			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
+			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
+			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(ResizetizerIntermediateOutputPath)**\*" />
+
+			<!-- Batch the collectd items into BundleResource which iOS expects -->
+			<_ResizetizerCollectedBundleResourceImages Include="@(_ResizetizerCollectedImages->'%(FullPath)')">
+				<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
+				<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
+			</_ResizetizerCollectedBundleResourceImages>
+
+			<!-- iOS Expects images in this group -->
+			<BundleResource Include="@(_ResizetizerCollectedBundleResourceImages)" />
+		</ItemGroup>
+
+		<!-- If on Windows, using build host, copy the files over to build server host too -->
 		<CopyFilesToBuildServer
 			Condition="'$(IsMacEnabled)'=='true'"
 			SessionId="$(BuildSessionId)"
-			Files="@(ResizetizedImages)" />
+			Files="@(_ResizetizerCollectedBundleResourceImages)" />
 
+		<!-- Touch/create our stamp file for outputs -->
 		<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
-		
+
+		<!-- Include our images and stamp file as filewrites so they don't get rm'd -->
 		<ItemGroup>
-			<!-- If we had any images, add that obj/ folder as a resource directory -->
-			<BundleResource Include="@(ResizetizedImages)" />
-
-			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)') And '@(CopiedResources)' == '' " Include="$(ResizetizerIntermediateOutputPath)**\*" />
-
+			<FileWrites Include="@(_ResizetizerCollectedBundleResourceImages)" />
 			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
 		</ItemGroup>
 			
@@ -118,19 +131,25 @@
 			PlatformType="android"
 			IntermediateOutputPath="$(ResizetizerIntermediateOutputPath)"
 			SharedImages="@(SharedImage)">
-			<Output TaskParameter="CopiedResources" ItemName="FileWrites" />
+			<!-- <Output TaskParameter="CopiedResources" ItemName="FileWrites" /> -->
 		</ResizetizeSharedImages>
 
-		<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
-
 		<ItemGroup>
+			<!-- Get Images that were generated -->
+			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
+			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
+			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(ResizetizerIntermediateOutputPath)**\*" />
+
 			<!-- If we had any images, add that obj/ folder as a resource directory -->
 			<LibraryResourceDirectories Condition="Exists ('$(ResizetizerIntermediateOutputPath)')" Include="$(ResizetizerIntermediateOutputPath)">
 				<StampFile>$(IntermediateOutputPath)resizetizer.stamp</StampFile>
 			</LibraryResourceDirectories>
+		</ItemGroup>
 
-			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)') And '@(CopiedResources)' == '' " Include="$(ResizetizerIntermediateOutputPath)**\*" />
+		<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
 
+		<ItemGroup>
+			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
 		</ItemGroup>
 	</Target>
@@ -140,7 +159,7 @@
 					Inputs="@(SharedImage)"
 					Outputs="$(IntermediateOutputPath)resizetizer.stamp"
 					DependsOnTargets="ResizetizeCollectImages"
-					BeforeTargets="PrepareResourceNames">
+					BeforeTargets="AssignTargetPaths">
 
 		<!-- Where in obj/ to store these -->
 		<PropertyGroup>
@@ -151,16 +170,25 @@
 			PlatformType="uwp"
 			IntermediateOutputPath="$(ResizetizerIntermediateOutputPath)"
 			SharedImages="@(SharedImage)">
-			<Output TaskParameter="CopiedResources" ItemName="ResizetizedImages" />
+			<!-- <Output TaskParameter="CopiedResources" ItemName="FileWrites" /> -->
 		</ResizetizeSharedImages>
+
+		<ItemGroup>
+			<!-- Get Images that were generated -->
+			<!-- Either from the task, or if the task was skipped (up to date), use the wildcard lookup -->
+			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' != ''" Include="@(CopiedResources)" />
+			<_ResizetizerCollectedImages Condition="'@(CopiedResources)' == ''" Include="$(ResizetizerIntermediateOutputPath)**\*" />
+
+			<ContentWithTargetPath Include="@(_ResizetizerCollectedImages)">
+				<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
+			</ContentWithTargetPath>
+		</ItemGroup>
 
 		<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
 
 		<ItemGroup>
 			<!-- If we had any images, add that obj/ folder as a resource directory -->
-			<ContentWithTargetPath Include="@(ResizetizedImages)" />
-
-			<FileWrites Condition="Exists ('$(ResizetizerIntermediateOutputPath)') And '@(CopiedResources)' == '' " Include="$(ResizetizerIntermediateOutputPath)**\*" />
+			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 
 			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
 		</ItemGroup>
