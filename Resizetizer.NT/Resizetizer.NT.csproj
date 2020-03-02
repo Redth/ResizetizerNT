@@ -7,7 +7,7 @@
 
 		<PackageId>Resizetizer.NT</PackageId>
 		<Title>Resizetizer NT for Xamarin Image Assets</Title>
-		<Version>2.0-preview1</Version>
+		<Version>0.1-preview3</Version>
 		<Authors>Redth</Authors>
 		<Owners>Redth</Owners>
 		<summary>Easily and automatically resize your source image assets as part of your build process.</summary>
