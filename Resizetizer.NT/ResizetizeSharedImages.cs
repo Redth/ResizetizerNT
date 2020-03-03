@@ -63,7 +63,7 @@ namespace Resizetizer
 				{
 					op = "Copy";
 					// Otherwise just copy the thing over to the 1.0 scale
-					var dest = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, PlatformType.ToLower().Equals("android"));
+					var dest = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, this, PlatformType.ToLower().Equals("android"));
 					resizedImages.Add(dest);
 				}
 

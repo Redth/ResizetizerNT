@@ -12,11 +12,6 @@ namespace Resizetizer
 			Info = info;
 			Logger = logger;
 			IntermediateOutputPath = intermediateOutputPath;
-
-			if (Info.IsVector)
-				svgTools = new SkiaSharpSvgTools(Info, Logger);
-			else
-				bmpTools = new SkiaSharpBitmapTools(Info, Logger);
 		}
 
 		public ILogger Logger { get; private set; }
@@ -24,8 +19,8 @@ namespace Resizetizer
 
 		public SharedImageInfo Info { get; private set; }
 
-		readonly SkiaSharpBitmapTools bmpTools;
-		readonly SkiaSharpSvgTools svgTools;
+		SkiaSharpBitmapTools bmpTools;
+		SkiaSharpSvgTools svgTools;
 
 		public string GetFileDestination(DpiPath dpi)
 			=> GetFileDestination(Info, dpi, IntermediateOutputPath);
@@ -46,16 +41,25 @@ namespace Resizetizer
 			return destination;
 		}
 
-		public static string CopyFile(SharedImageInfo info, DpiPath dpi, string intermediateOutputPath, bool isAndroid = false)
+		public static string CopyFile(SharedImageInfo info, DpiPath dpi, string intermediateOutputPath, ILogger logger, bool isAndroid = false)
 		{
 			var destination = Resizer.GetFileDestination(info, dpi, intermediateOutputPath);
+			var androidVector = false;
 
 			if (isAndroid && info.IsVector && !info.Resize)
 			{
 				// TODO: Turn SVG into Vector Drawable format
 				// Update destination to be .xml file
 				destination = Path.ChangeExtension(info.Filename, ".xml");
+				androidVector = true;
+			}
 
+			if (IsUpToDate(info.Filename, destination, logger))
+				return destination;
+			
+			if (androidVector)
+			{
+				// TODO: Don't just copy, let's transform to android vector
 				File.Copy(info.Filename, destination, true);
 			}
 			else
@@ -67,6 +71,20 @@ namespace Resizetizer
 			return destination;
 		}
 
+		static bool IsUpToDate(string inputFile, string outputFile, ILogger logger)
+		{
+			var fileIn = new FileInfo(inputFile);
+			var fileOut = new FileInfo(outputFile);
+
+			if (fileIn.Exists && fileOut.Exists && fileIn.LastWriteTimeUtc <= fileOut.LastWriteTimeUtc)
+			{
+				logger.Log($"Skipping '{inputFile}' as output '{outputFile}' is already up to date.");
+				return true;
+			}
+
+			return false;
+		}
+
 		public string Resize(DpiPath dpi)
 		{
 			Logger?.Log($"Resizing: {Info.Filename}");
@@ -74,13 +92,23 @@ namespace Resizetizer
 			var destination = GetFileDestination(dpi);
 
 			if (Info.IsVector)
-			{
 				destination = Path.ChangeExtension(destination, ".png");
+
+			if (IsUpToDate(Info.Filename, destination, Logger))
+				return destination;
+
+			if (Info.IsVector)
+			{
+				if (svgTools == null)
+					svgTools = new SkiaSharpSvgTools(Info, Logger);
 
 				svgTools.Resize(dpi, destination);
 			}
 			else
 			{
+				if (bmpTools == null)
+					bmpTools = new SkiaSharpBitmapTools(Info, Logger);
+
 				bmpTools.Resize(dpi, destination);
 			}
 
