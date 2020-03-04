@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Resizetizer
 {
-	public class ResizetizeSharedImages : Task, ILogger
+	public class ResizetizeSharedImages : AsyncTask, ILogger
 	{
 		[Required]
 		public string PlatformType { get; set; } = "android";
@@ -30,6 +30,28 @@ namespace Resizetizer
 
 		public override bool Execute()
 		{
+			System.Threading.Tasks.Task.Run(async () =>
+			{
+				try
+				{
+					await DoExecute();
+				}
+				catch (Exception ex)
+				{
+					Log.LogErrorFromException(ex);
+				}
+				finally
+				{
+					Complete();
+				}
+
+			});
+
+			return base.Execute();
+		}
+
+		System.Threading.Tasks.Task DoExecute()
+		{
 			Svg.SvgDocument.SkipGdiPlusCapabilityCheck = true;
 
 			var images = ParseImageTaskItems(SharedImages);
@@ -37,7 +59,7 @@ namespace Resizetizer
 			var dpis = DpiPath.GetDpis(PlatformType);
 
 			if (dpis == null || dpis.Length <= 0)
-				return false;
+				return System.Threading.Tasks.Task.CompletedTask;
 
 			var originalScaleDpi = DpiPath.GetOriginal(PlatformType);
 
@@ -89,7 +111,7 @@ namespace Resizetizer
 
 			CopiedResources = copiedResources.ToArray();
 
-			return true;
+			return System.Threading.Tasks.Task.CompletedTask;
 		}
 
 		void ILogger.Log(string message)

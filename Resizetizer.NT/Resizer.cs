@@ -90,8 +90,6 @@ namespace Resizetizer
 
 		public string Resize(DpiPath dpi, string inputsFile)
 		{
-			Logger?.Log($"Resizing: {Info.Filename}");
-
 			var destination = GetFileDestination(dpi);
 
 			if (Info.IsVector)
