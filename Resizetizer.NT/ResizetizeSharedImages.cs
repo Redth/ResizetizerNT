@@ -19,6 +19,8 @@ namespace Resizetizer
 		[Required]
 		public string IntermediateOutputPath { get; set; }
 
+		public string InputsFile { get; set; }
+
 		public ITaskItem[] SharedImages { get; set; }
 
 		[Output]
@@ -55,7 +57,7 @@ namespace Resizetizer
 
 					foreach (var dpi in dpis)
 					{
-						var r = resizer.Resize(dpi);
+						var r = resizer.Resize(dpi, InputsFile);
 						resizedImages.Add(r);
 					}
 				}
@@ -63,7 +65,7 @@ namespace Resizetizer
 				{
 					op = "Copy";
 					// Otherwise just copy the thing over to the 1.0 scale
-					var dest = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, this, PlatformType.ToLower().Equals("android"));
+					var dest = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, InputsFile, this, PlatformType.ToLower().Equals("android"));
 					resizedImages.Add(dest);
 				}
 

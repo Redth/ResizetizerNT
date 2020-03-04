@@ -41,7 +41,7 @@ namespace Resizetizer
 			return destination;
 		}
 
-		public static string CopyFile(SharedImageInfo info, DpiPath dpi, string intermediateOutputPath, ILogger logger, bool isAndroid = false)
+		public static string CopyFile(SharedImageInfo info, DpiPath dpi, string intermediateOutputPath, string inputsFile, ILogger logger, bool isAndroid = false)
 		{
 			var destination = Resizer.GetFileDestination(info, dpi, intermediateOutputPath);
 			var androidVector = false;
@@ -54,7 +54,7 @@ namespace Resizetizer
 				androidVector = true;
 			}
 
-			if (IsUpToDate(info.Filename, destination, logger))
+			if (IsUpToDate(info.Filename, destination, inputsFile, logger))
 				return destination;
 			
 			if (androidVector)
@@ -71,12 +71,15 @@ namespace Resizetizer
 			return destination;
 		}
 
-		static bool IsUpToDate(string inputFile, string outputFile, ILogger logger)
+		static bool IsUpToDate(string inputFile, string outputFile, string inputsFile, ILogger logger)
 		{
 			var fileIn = new FileInfo(inputFile);
 			var fileOut = new FileInfo(outputFile);
+			var fileInputs = new FileInfo(inputsFile);
 
-			if (fileIn.Exists && fileOut.Exists && fileIn.LastWriteTimeUtc <= fileOut.LastWriteTimeUtc)
+			if (fileIn.Exists && fileOut.Exists && fileInputs.Exists
+				&& fileIn.LastWriteTimeUtc <= fileOut.LastWriteTimeUtc
+				&& fileInputs.LastWriteTimeUtc <= fileOut.LastWriteTimeUtc)
 			{
 				logger.Log($"Skipping '{inputFile}' as output '{outputFile}' is already up to date.");
 				return true;
@@ -85,7 +88,7 @@ namespace Resizetizer
 			return false;
 		}
 
-		public string Resize(DpiPath dpi)
+		public string Resize(DpiPath dpi, string inputsFile)
 		{
 			Logger?.Log($"Resizing: {Info.Filename}");
 
@@ -94,7 +97,7 @@ namespace Resizetizer
 			if (Info.IsVector)
 				destination = Path.ChangeExtension(destination, ".png");
 
-			if (IsUpToDate(Info.Filename, destination, Logger))
+			if (IsUpToDate(Info.Filename, destination, inputsFile, Logger))
 				return destination;
 
 			if (Info.IsVector)
