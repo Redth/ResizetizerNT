@@ -84,6 +84,18 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 
+		<None Include="$(PkgSkiaSharp_HarfBuzz)\lib\net45\SkiaSharp.HarfBuzz.dll" Visible="False" Pack="True" PackagePath="build\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgHarfBuzzSharp)\runtimes\osx\native\libHarfBuzzSharp.dylib" Visible="False" Pack="True" PackagePath="build\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgHarfBuzzSharp)\runtimes\win-x86\native\libHarfBuzzSharp.dll" Visible="False" Pack="True" PackagePath="build\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
 	</ItemGroup>
 
 	<!-- <ItemGroup>
@@ -106,9 +118,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="Fizzler" Version="1.2.0" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="HarfBuzzSharp" Version="2.6.1.1" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="16.4.0" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.4.0" PrivateAssets="all" />
 		<PackageReference Include="SkiaSharp" Version="1.68.1" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="SkiaSharp.HarfBuzz" Version="1.68.1" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="Svg.Skia" Version="0.1.6" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="Svg.Custom" Version="0.1.6" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.Memory" Version="4.5.3" GeneratePathProperty="true" PrivateAssets="all" />
