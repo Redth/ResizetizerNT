@@ -15,7 +15,7 @@ msbuild /t:Restore ./SampleApp/SampleApp.iOS/SampleApp.iOS.csproj
 msbuild /t:Rebuild ./SampleApp/SampleApp.iOS/SampleApp.iOS.csproj /bl:logs/ios.binlog
 
 # Touch the file to cause a change for incremental build
-touch ./SampleApp/camera.svg
+touch ./SampleApp/SampleApp/camera.svg
 
 # Run incremental builds
 msbuild /t:Build ./SampleApp/SampleApp.Android/SampleApp.Android.csproj /bl:logs/android-incremental.binlog
