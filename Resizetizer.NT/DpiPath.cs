@@ -49,6 +49,14 @@ namespace Resizetizer
 				new DpiPath("Assets", 4.0m, ".scale-400"),
 			};
 
+		public static DpiPath[] Wpf
+			=> new[]
+			{
+				new DpiPath("", 4.0m, ""),
+			};
+
+		static DpiPath WpfOriginal => new DpiPath("", 4.0m, "");
+
 		static DpiPath UwpOriginal => new DpiPath("Assets", 1.0m, ".scale-100");
 
 		public static DpiPath GetOriginal(string platform)
@@ -61,6 +69,8 @@ namespace Resizetizer
 					return DpiPath.AndroidOriginal;
 				case "uwp":
 					return DpiPath.UwpOriginal;
+				case "wpf":
+					return DpiPath.WpfOriginal;
 			}
 
 			return null;
@@ -76,6 +86,8 @@ namespace Resizetizer
 					return DpiPath.Android;
 				case "uwp":
 					return DpiPath.Uwp;
+				case "wpf":
+					return DpiPath.Wpf;
 			}
 
 			return null;

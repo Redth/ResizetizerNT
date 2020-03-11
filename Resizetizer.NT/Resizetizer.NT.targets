@@ -18,6 +18,7 @@
 		<_ResizetizerIsAndroid Condition="'$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroid>
 		<_ResizetizerIsiOS Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.iOS' And ('$(OutputType)' != 'Library' OR '$(IsAppExtension)'=='True')">True</_ResizetizerIsiOS>
 		<_ResizetizerIsUWP Condition="'$(TargetPlatformIdentifier)'=='UAP' And '$(OutputType)' == 'AppContainerExe'">True</_ResizetizerIsUWP>
+		<_ResizetizerIsWPF Condition="'$(IsApplication)' == 'True' And '$(NuGetRuntimeIdentifier)' == 'win' And '$(TargetPlatformIdentifier)'=='Windows'">True</_ResizetizerIsWPF>
 
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)resizetizer.inputs</_ResizetizerInputsFile>
 	</PropertyGroup>
@@ -67,6 +68,21 @@
 		</ResizetizeBeforeTargets>
 	</PropertyGroup>
 
+	<!-- WPF -->
+	<PropertyGroup Condition="'$(_ResizetizerIsWPF)' == 'True'">
+		<ResizetizerPlatformType>wpf</ResizetizerPlatformType>
+
+		<ResizetizeDependsOnTargets>
+			$(ResizetizeDependsOnTargets);
+			ResizetizeCollectImages;
+		</ResizetizeDependsOnTargets>
+
+		<ResizetizeBeforeTargets>
+			$(ResizetizeBeforeTargets);
+			FileClassification;
+		</ResizetizeBeforeTargets>
+	</PropertyGroup>
+
 	<!-- Finds absolute paths to any SharedImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
 	<Target Name="GetSharedImages" Outputs="@(ExportedSharedImage)">
@@ -77,7 +93,7 @@
 
 	<!-- Collect images from referenced projects -->
 	<Target Name="ResizetizeCollectImages"
-		Condition="'$(_ResizetizerIsAndroid)' == 'True' Or '$(_ResizetizerIsiOS)' == 'True' Or '$(_ResizetizerIsUWP)' == 'True'"
+		Condition="'$(_ResizetizerIsAndroid)' == 'True' Or '$(_ResizetizerIsiOS)' == 'True' Or '$(_ResizetizerIsUWP)' == 'True' Or '$(_ResizetizerIsWPF)' == 'True'"
 		BeforeTargets="$(ResizetizeCollectImagesBeforeTargets)"
 		AfterTargets="$(ResizetizeCollectImagesAfterTargets)">
 
@@ -172,6 +188,15 @@
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 
+		<!-- WPF -->
+		<ItemGroup Condition="'$(_ResizetizerIsWPF)' == 'True'">
+			<Resource Include="@(_ResizetizerCollectedImages)">
+				<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
+				<Link>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</Link>
+			</Resource>
+			<FileWrites Include="@(_ResizetizerCollectedImages)" />
+		</ItemGroup>
+
 		<!-- Touch/create our stamp file for outputs -->
 		<Touch Files="$(IntermediateOutputPath)resizetizer.stamp" AlwaysCreate="True" />
 
@@ -179,7 +204,6 @@
 		<ItemGroup>
 			<FileWrites Include="$(IntermediateOutputPath)resizetizer.stamp" />
 		</ItemGroup>
-			
 	</Target>
 
 	<Target Name="_CleanResizetizer">
