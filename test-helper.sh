@@ -18,5 +18,5 @@ msbuild /t:Rebuild ./SampleApp/SampleApp.iOS/SampleApp.iOS.csproj /bl:logs/ios.b
 touch ./SampleApp/camera.svg
 
 # Run incremental builds
-msbuild /t:Build ./ampleApp/ampleApp.Android/ampleApp.Android.csproj /bl:logs/android-incremental.binlog
-msbuild /t:Build ./ampleApp/ampleApp.iOS/ampleApp.iOS.csproj /bl:logs/ios-incremental.binlog
+msbuild /t:Build ./SampleApp/SampleApp.Android/SampleApp.Android.csproj /bl:logs/android-incremental.binlog
+msbuild /t:Build ./SampleApp/SampleApp.iOS/SampleApp.iOS.csproj /bl:logs/ios-incremental.binlog
