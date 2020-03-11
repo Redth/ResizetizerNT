@@ -165,7 +165,7 @@
 		<!-- iOS Only -->
 		<!-- If on Windows, using build host, copy the files over to build server host too -->
 		<CopyFilesToBuildServer
-			Condition="'$(_ResizetizerIsiOS)' == 'True' And '$(IsMacEnabled)'=='true'"
+			Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOS)' == 'True' And '$(IsMacEnabled)'=='true'"
 			SessionId="$(BuildSessionId)"
 			Files="@(_ResizetizerCollectedBundleResourceImages)" />
 

@@ -56,11 +56,19 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 
-		<None Include="$(PkgSvg_Custom)\lib\netstandard2.0\Svg.Custom.dll" Visible="False" Pack="True" PackagePath="build\">
+		<None Include="$(PkgSvg_Custom)\lib\net452\Svg.Custom.dll" Visible="False" Pack="True" PackagePath="build\">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 
-		<None Include="$(PkgSvg_Skia)\lib\netstandard2.0\Svg.Skia.dll" Visible="False" Pack="True" PackagePath="build\">
+		<None Include="$(PkgSvg_Custom)\lib\net452\Svg.Custom.pdb" Visible="False" Pack="True" PackagePath="build\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSvg_Skia)\lib\net452\Svg.Skia.dll" Visible="False" Pack="True" PackagePath="build\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgSvg_Skia)\lib\net452\Svg.Skia.pdb" Visible="False" Pack="True" PackagePath="build\">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 
