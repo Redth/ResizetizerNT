@@ -15,7 +15,7 @@ msbuild /t:Restore ./SampleApp/SampleApp.iOS/SampleApp.iOS.csproj
 msbuild /t:Rebuild ./SampleApp/SampleApp.iOS/SampleApp.iOS.csproj /bl:logs/ios.binlog
 
 # Touch the file to cause a change for incremental build
-(Get-ChildItem ./SampleApp/camera.svg).LastWriteTime = Get-Date
+touch ./SampleApp/camera.svg
 
 # Run incremental builds
 msbuild /t:Build ./ampleApp/ampleApp.Android/ampleApp.Android.csproj /bl:logs/android-incremental.binlog
