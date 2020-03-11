@@ -22,7 +22,7 @@ Remove-Item .\SampleApp\packages\resizetizer.nt -Force -Recurse
 & msbuild /t:Rebuild .\SampleApp\SampleApp.WPF\SampleApp.WPF.csproj /bl:logs\wpf.binlog
 
 # Touch the file to cause a change for incremental build
-(Get-ChildItem .\SampleApp\camera.svg).LastWriteTime = Get-Date
+(Get-ChildItem ".\SampleApp\SampleApp\camera.svg").LastWriteTime = Get-Date
 
 # Run incremental builds
 & msbuild /t:Build .\SampleApp\SampleApp.Android\SampleApp.Android.csproj /bl:logs\android-incremental.binlog
