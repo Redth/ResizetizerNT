@@ -88,6 +88,10 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 
+		<None Include="$(PkgHarfBuzzSharp)\lib\net45\HarfBuzzSharp.dll" Visible="False" Pack="True" PackagePath="build\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
 		<None Include="$(PkgHarfBuzzSharp)\runtimes\osx\native\libHarfBuzzSharp.dylib" Visible="False" Pack="True" PackagePath="build\">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
