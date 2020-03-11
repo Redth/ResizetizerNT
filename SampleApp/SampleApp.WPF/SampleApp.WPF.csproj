@@ -110,8 +110,5 @@
       <Version>4.5.0.356</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="testimage.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
