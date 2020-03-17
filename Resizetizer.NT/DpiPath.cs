@@ -30,6 +30,20 @@ namespace Resizetizer
 			};
 
 		static DpiPath AndroidOriginal => new DpiPath("drawable", 1.0m);
+
+
+		public static DpiPath[] Tizen
+			=> new[]
+			{
+				new DpiPath("MDPI", 1.0m),
+				new DpiPath("HDPI", 1.5m),
+				new DpiPath("XHDPI", 2.0m),
+				new DpiPath("XXHDPI", 3.0m),
+				new DpiPath("XXXHDPI", 4.0m),
+			};
+
+		static DpiPath TizenOriginal => new DpiPath("MDPI", 1.0m);
+
 		public static DpiPath[] Ios
 			=> new []
 			{
@@ -71,6 +85,8 @@ namespace Resizetizer
 					return DpiPath.UwpOriginal;
 				case "wpf":
 					return DpiPath.WpfOriginal;
+				case "tizen":
+					return DpiPath.TizenOriginal;
 			}
 
 			return null;
@@ -88,6 +104,8 @@ namespace Resizetizer
 					return DpiPath.Uwp;
 				case "wpf":
 					return DpiPath.Wpf;
+				case "tizen":
+					return DpiPath.Tizen;
 			}
 
 			return null;

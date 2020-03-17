@@ -21,6 +21,9 @@ Remove-Item .\SampleApp\packages\resizetizer.nt -Force -Recurse
 & msbuild /t:Restore .\SampleApp\SampleApp.WPF\SampleApp.WPF.csproj
 & msbuild /t:Rebuild .\SampleApp\SampleApp.WPF\SampleApp.WPF.csproj /bl:logs\wpf.binlog
 
+& msbuild /t:Restore .\SampleApp\SampleApp.Tizen.Mobile\SampleApp.Tizen.Mobile.csproj
+& msbuild /t:Rebuild .\SampleApp\SampleApp.Tizen.Mobile\SampleApp.Tizen.Mobile.csproj /bl:logs\tizen.binlog
+
 # Touch the file to cause a change for incremental build
 (Get-ChildItem ".\SampleApp\SampleApp\camera.svg").LastWriteTime = Get-Date
 
@@ -29,3 +32,4 @@ Remove-Item .\SampleApp\packages\resizetizer.nt -Force -Recurse
 & msbuild /t:Build .\SampleApp\SampleApp.iOS\SampleApp.iOS.csproj /bl:logs\ios-incremental.binlog
 & msbuild /t:Build .\SampleApp\SampleApp.UWP\SampleApp.UWP.csproj /bl:logs\uwp-incremental.binlog
 & msbuild /t:Build .\SampleApp\SampleApp.WPF\SampleApp.WPF.csproj /bl:logs\wpf-incremental.binlog
+& msbuild /t:Build .\SampleApp\SampleApp.Tizen.Mobile\SampleApp.Tizen.Mobile.csproj /bl:logs\tizen-incremental.binlog
