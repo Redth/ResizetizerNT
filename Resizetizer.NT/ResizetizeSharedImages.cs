@@ -107,10 +107,6 @@ namespace Resizetizer
 				if (bool.TryParse(IsMacEnabled, out bool isMac) && isMac)
 					itemSpec = img.Filename;
 
-				// Add DPI info to the itemspec so we can use it in the targets
-				attr.Add("_ResizetizerDpiPath", img.Dpi.Path);
-				attr.Add("_ResizetizerDpiScale", img.Dpi.Scale.ToString());
-
 				copiedResources.Add(new TaskItem(itemSpec, attr));
 			}
 

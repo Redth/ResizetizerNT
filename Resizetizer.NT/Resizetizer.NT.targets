@@ -19,7 +19,7 @@
 		<_ResizetizerIsiOS Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.iOS' And ('$(OutputType)' != 'Library' OR '$(IsAppExtension)'=='True')">True</_ResizetizerIsiOS>
 		<_ResizetizerIsUWP Condition="'$(TargetPlatformIdentifier)'=='UAP' And '$(OutputType)' == 'AppContainerExe'">True</_ResizetizerIsUWP>
 		<_ResizetizerIsWPF Condition="'$(IsApplication)' == 'True' And '$(NuGetRuntimeIdentifier)' == 'win' And '$(TargetPlatformIdentifier)'=='Windows'">True</_ResizetizerIsWPF>
-		<_ResizetizerIsTizen Condition="'$(TargetFrameworkIdentifer)'=='Tizen'">True</_ResizetizerIsTizen>
+		<_ResizetizerIsTizen Condition="'$(TargetFrameworkIdentifier)'=='Tizen'">True</_ResizetizerIsTizen>
 		
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)resizetizer.inputs</_ResizetizerInputsFile>
 	</PropertyGroup>
@@ -95,6 +95,7 @@
 
 		<ResizetizeBeforeTargets>
 			$(ResizetizeBeforeTargets);
+			PrepareResources;
 		</ResizetizeBeforeTargets>
 	</PropertyGroup>
 
@@ -214,9 +215,22 @@
 		
 		<!-- Tizen -->
 		<ItemGroup Condition="'$(_ResizetizerIsTizen)' == 'True'">
-			<TizenTpkUserIncludeFiles Include="$(@_ResizetizerCollectedImages)">
-				<TizenTpkSubDir>res\content\%(_ResizetizerCollectedImages._ResizetizerDpiPath)\%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TizenTpkSubDir>
+			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\MDPI\*.png">
+				<TizenTpkSubDir>res\content\MDPI\</TizenTpkSubDir>
 			</TizenTpkUserIncludeFiles>
+			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\HDPI\*.png">
+				<TizenTpkSubDir>res\content\HDPI\</TizenTpkSubDir>
+			</TizenTpkUserIncludeFiles>
+			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\XHDPI\*.png">
+				<TizenTpkSubDir>res\content\XHDPI\</TizenTpkSubDir>
+			</TizenTpkUserIncludeFiles>
+			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\XXHDPI\*.png">
+				<TizenTpkSubDir>res\content\XXHDPI\</TizenTpkSubDir>
+			</TizenTpkUserIncludeFiles>
+			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\XXXHDPI\*.png">
+				<TizenTpkSubDir>res\content\XXXHDPI\</TizenTpkSubDir>
+			</TizenTpkUserIncludeFiles>
+			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
 
 		<!-- Touch/create our stamp file for outputs -->
