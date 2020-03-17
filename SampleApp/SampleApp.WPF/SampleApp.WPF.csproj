@@ -103,9 +103,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Resizetizer.NT">
-      <Version>0.1.0-preview8</Version>
-    </PackageReference>
     <PackageReference Include="Xamarin.Forms.Platform.WPF">
       <Version>4.5.0.356</Version>
     </PackageReference>
