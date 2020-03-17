@@ -41,7 +41,7 @@ namespace Resizetizer
 			return destination;
 		}
 
-		public static string CopyFile(SharedImageInfo info, DpiPath dpi, string intermediateOutputPath, string inputsFile, ILogger logger, bool isAndroid = false)
+		public static ResizedImageInfo CopyFile(SharedImageInfo info, DpiPath dpi, string intermediateOutputPath, string inputsFile, ILogger logger, bool isAndroid = false)
 		{
 			var destination = Resizer.GetFileDestination(info, dpi, intermediateOutputPath);
 			var androidVector = false;
@@ -55,7 +55,7 @@ namespace Resizetizer
 			}
 
 			if (IsUpToDate(info.Filename, destination, inputsFile, logger))
-				return destination;
+				return new ResizedImageInfo { Filename = destination, Dpi = dpi };
 			
 			if (androidVector)
 			{
@@ -68,7 +68,7 @@ namespace Resizetizer
 				File.Copy(info.Filename, destination, true);
 			}
 
-			return destination;
+			return new ResizedImageInfo { Filename = destination, Dpi = dpi };
 		}
 
 		static bool IsUpToDate(string inputFile, string outputFile, string inputsFile, ILogger logger)
@@ -88,7 +88,7 @@ namespace Resizetizer
 			return false;
 		}
 
-		public string Resize(DpiPath dpi, string inputsFile)
+		public ResizedImageInfo Resize(DpiPath dpi, string inputsFile)
 		{
 			var destination = GetFileDestination(dpi);
 
@@ -96,7 +96,7 @@ namespace Resizetizer
 				destination = Path.ChangeExtension(destination, ".png");
 
 			if (IsUpToDate(Info.Filename, destination, inputsFile, Logger))
-				return destination;
+				return new ResizedImageInfo { Filename = destination, Dpi = dpi };
 
 			if (Info.IsVector)
 			{
@@ -113,7 +113,13 @@ namespace Resizetizer
 				bmpTools.Resize(dpi, destination);
 			}
 
-			return destination;
+			return new ResizedImageInfo { Filename = destination, Dpi = dpi };
 		}
+	}
+
+	internal class ResizedImageInfo
+	{
+		public string Filename { get; set; }
+		public DpiPath Dpi { get; set; }
 	}
 }

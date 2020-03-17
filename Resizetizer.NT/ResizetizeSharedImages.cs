@@ -63,7 +63,7 @@ namespace Resizetizer
 
 			var originalScaleDpi = DpiPath.GetOriginal(PlatformType);
 
-			var resizedImages = new List<string>();
+			var resizedImages = new List<ResizedImageInfo>();
 
 			System.Threading.Tasks.Parallel.ForEach(images, img =>
 			{
@@ -87,8 +87,8 @@ namespace Resizetizer
 				{
 					op = "Copy";
 					// Otherwise just copy the thing over to the 1.0 scale
-					var dest = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, InputsFile, this, PlatformType.ToLower().Equals("android"));
-					resizedImages.Add(dest);
+					var r = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, InputsFile, this, PlatformType.ToLower().Equals("android"));
+					resizedImages.Add(r);
 				}
 
 				opStopwatch.Stop();
@@ -98,13 +98,18 @@ namespace Resizetizer
 			
 			var copiedResources = new List<TaskItem>();
 
-			foreach (var f in resizedImages)
+			foreach (var img in resizedImages)
 			{
 				var attr = new Dictionary<string, string>();
-				string itemSpec = Path.GetFullPath(f);
+				string itemSpec = Path.GetFullPath(img.Filename);
 
+				// Fix the item spec to be relative for mac
 				if (bool.TryParse(IsMacEnabled, out bool isMac) && isMac)
-					itemSpec = f;
+					itemSpec = img.Filename;
+
+				// Add DPI info to the itemspec so we can use it in the targets
+				attr.Add("_ResizetizerDpiPath", img.Dpi.Path);
+				attr.Add("_ResizetizerDpiScale", img.Dpi.Scale.ToString());
 
 				copiedResources.Add(new TaskItem(itemSpec, attr));
 			}
