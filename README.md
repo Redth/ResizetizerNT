@@ -1,6 +1,14 @@
 # Resizetizer NT (for Workgroups and fun individuals)
 
-Take SVG's and PNG's and automagically have them resized to all the different resolutions and included in your Xamarin Android, iOS, and UWP projects!
+Take SVG's and PNG's and automagically have them resized to all the different resolutions and included in your Xamarin Android, iOS, UWP, and WPF projects!
+
+[![NuGet](https://badgen.net/nuget/v/Resizetizer.NT)](https://www.nuget.org/packages/Resizetizer.NT)
+
+Blog Post: [redth.codes/resizetizer-nt-shared-images-for-xamarin](https://redth.codes/resizetizer-nt-shared-images-for-xamarin/)
+
+Video:
+
+[![Shared Images in Xamarin with Resizetizer NT](http://img.youtube.com/vi/O7a7HKiFypw/0.jpg)](http://www.youtube.com/watch?v=O7a7HKiFypw "Shared Images in Xamarin with Resizetizer NT")
 
 ## History
 A few years back I created a thing I called [Resizetizer](https://github.com/Redth/Resizetizer) which helped solve the pain of resizing images to every single target density/resolution for iOS, Android, and UWP.  
@@ -90,6 +98,9 @@ There are some default densities depending on target platform:
 - 2.0 `scale-200`
 - 3.0 `scale-300` ?
 - 4.0 `scale-400` ?
+
+### WPF
+- 4.0
 
  > Not sure if 3.0 and 4.0 scales are used in UWP or common.  Need to decide if we should generate these or not. Interestingly UWP also allows for high vs low contrast images.  Might be something to think about down the road.
 
