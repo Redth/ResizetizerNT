@@ -220,19 +220,19 @@
 			</TizenTpkUserIncludeFiles>
 
 			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\MDPI\*.png">
-				<TizenTpkSubDir>res\content\MDPI\</TizenTpkSubDir>
+				<TizenTpkSubDir>res\contents\default_All-MDPI\</TizenTpkSubDir>
 			</TizenTpkUserIncludeFiles>
 			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\HDPI\*.png">
-				<TizenTpkSubDir>res\content\HDPI\</TizenTpkSubDir>
+				<TizenTpkSubDir>res\contents\default_All-HDPI\</TizenTpkSubDir>
 			</TizenTpkUserIncludeFiles>
 			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\XHDPI\*.png">
-				<TizenTpkSubDir>res\content\XHDPI\</TizenTpkSubDir>
+				<TizenTpkSubDir>res\contents\default_All-XHDPI\</TizenTpkSubDir>
 			</TizenTpkUserIncludeFiles>
 			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\XXHDPI\*.png">
-				<TizenTpkSubDir>res\content\XXHDPI\</TizenTpkSubDir>
+				<TizenTpkSubDir>res\contents\default_All-XXHDPI\</TizenTpkSubDir>
 			</TizenTpkUserIncludeFiles>
 			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\XXXHDPI\*.png">
-				<TizenTpkSubDir>res\content\XXXHDPI\</TizenTpkSubDir>
+				<TizenTpkSubDir>res\contents\default_All-XXXHDPI\</TizenTpkSubDir>
 			</TizenTpkUserIncludeFiles>
 			<FileWrites Include="@(_ResizetizerCollectedImages)" />
 		</ItemGroup>
