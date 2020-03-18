@@ -216,6 +216,10 @@
 		<!-- Tizen -->
 		<ItemGroup Condition="'$(_ResizetizerIsTizen)' == 'True'">
 			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\MDPI\*.png">
+				<TizenTpkSubDir>res\</TizenTpkSubDir>
+			</TizenTpkUserIncludeFiles>
+
+			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\MDPI\*.png">
 				<TizenTpkSubDir>res\content\MDPI\</TizenTpkSubDir>
 			</TizenTpkUserIncludeFiles>
 			<TizenTpkUserIncludeFiles Include="$(ResizetizerIntermediateOutputPath)\HDPI\*.png">
