@@ -21,6 +21,9 @@
 		<_ResizetizerIsWPF Condition="'$(IsApplication)' == 'True' And '$(NuGetRuntimeIdentifier)' == 'win' And '$(TargetPlatformIdentifier)'=='Windows'">True</_ResizetizerIsWPF>
 
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)resizetizer.inputs</_ResizetizerInputsFile>
+
+		<ResizetizerIncludeAllImages Condition="'$(ResizetizerIncludeAllImages)' == ''">False</ResizetizerIncludeAllImages>
+		<ResizetizerIncludeSelfProject Condition="'$(ResizetizerIncludeSelfProject)' == ''">False</ResizetizerIncludeSelfProject>
 	</PropertyGroup>
 
 	<!-- iOS -->
@@ -86,9 +89,18 @@
 	<!-- Finds absolute paths to any SharedImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
 	<Target Name="GetSharedImages" Outputs="@(ExportedSharedImage)">
+
+		<!-- Include None="" items which are .svg or .png if the property is set -->
+		<ItemGroup Condition="'$(ResizetizerIncludeAllImages)' == 'True'">
+			<SharedImage
+				Include="@(None)"
+				Condition="'%(Extension)' == '.svg' Or '%(Extension)' == '.png'" />
+		</ItemGroup>
+
 		<ConvertToAbsolutePath Paths="@(SharedImage)">
 			<Output TaskParameter="AbsolutePaths" ItemName="ExportedSharedImage"/>
 		</ConvertToAbsolutePath>
+		
 	</Target>
 
 	<!-- Collect images from referenced projects -->
@@ -96,6 +108,12 @@
 		Condition="'$(_ResizetizerIsAndroid)' == 'True' Or '$(_ResizetizerIsiOS)' == 'True' Or '$(_ResizetizerIsUWP)' == 'True' Or '$(_ResizetizerIsWPF)' == 'True'"
 		BeforeTargets="$(ResizetizeCollectImagesBeforeTargets)"
 		AfterTargets="$(ResizetizeCollectImagesAfterTargets)">
+
+		<CallTarget Targets="GetSharedImages" Condition="'$(ResizetizerIncludeSelfProject)' == 'True'">
+			<Output
+				TaskParameter="TargetOutputs"
+				ItemName="SharedImage" />
+		</CallTarget>
 
 		<!-- Invoke the GetSharedImages target on all project references -->
 		<!-- This will accumulate images into our SharedImage group -->
