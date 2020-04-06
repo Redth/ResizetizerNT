@@ -24,7 +24,7 @@
 	</PropertyGroup>
 
 	<!-- iOS -->
-	<PropertyGroup Condition="'$(_ResizetizerIsiOS)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsiOS)' == 'True' Or '$(ResizetizeriOS)' == 'True'">
 		<ResizetizerPlatformType>ios</ResizetizerPlatformType>
 
 		<ResizetizeCollectImagesBeforeTargets>
@@ -39,7 +39,7 @@
 	</PropertyGroup>
 
 	<!-- Android -->
-	<PropertyGroup Condition="'$(_ResizetizerIsAndroid)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsAndroid)' == 'True' Or '$(ResizetizerAndroid)' == 'True'">
 		<ResizetizerPlatformType>android</ResizetizerPlatformType>
 
 		<ResizetizeCollectImagesAfterTargets>
@@ -54,7 +54,7 @@
 	</PropertyGroup>
 
 	<!-- UWP -->
-	<PropertyGroup Condition="'$(_ResizetizerIsUWP)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsUWP)' == 'True' Or '$(ResizetizerUWP)' == 'True'">
 		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
 
 		<ResizetizeDependsOnTargets>
@@ -69,7 +69,7 @@
 	</PropertyGroup>
 
 	<!-- WPF -->
-	<PropertyGroup Condition="'$(_ResizetizerIsWPF)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsWPF)' == 'True' Or '$(ResizetizerWPF)' == 'True'">
 		<ResizetizerPlatformType>wpf</ResizetizerPlatformType>
 
 		<ResizetizeDependsOnTargets>
