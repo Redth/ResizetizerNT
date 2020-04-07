@@ -110,7 +110,7 @@
 
 	</ItemGroup>
 
-	<!-- <ItemGroup>
+	<ItemGroup>
 		<None Include="$(TargetPath)" Pack="True" PackagePath="buildTransitive\" />
 		<Content Include="Resizetizer.NT.targets" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
@@ -119,14 +119,20 @@
 		<None Include="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgSystem_Drawing_Common)\lib\netstandard2.0\System.Drawing.Common.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgSystem_ObjectModel)\lib\netstandard1.3\System.ObjectModel.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
-		<None Include="$(PkgSvg_Custom)\lib\netstandard2.0\Svg.Custom.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
-		<None Include="$(PkgSvg_Skia)\lib\netstandard2.0\Svg.Skia.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+		<None Include="$(PkgSvg_Custom)\lib\net452\Svg.Custom.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+		<None Include="$(PkgSvg_Custom)\lib\net452\Svg.Custom.pdb" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+		<None Include="$(PkgSvg_Skia)\lib\net452\Svg.Skia.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+		<None Include="$(PkgSvg_Skia)\lib\net452\Svg.Skia.pdb" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgFizzler)\lib\netstandard2.0\Fizzler.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgSystem_IO_UnmanagedMemoryStream)\lib\netstandard1.3\System.IO.UnmanagedMemoryStream.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgSkiaSharp)\lib\net45\SkiaSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgSkiaSharp)\runtimes\osx\native\libSkiaSharp.dylib" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgSkiaSharp)\runtimes\win-x86\native\libSkiaSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
-	</ItemGroup> -->
+		<None Include="$(PkgSkiaSharp_HarfBuzz)\lib\net45\SkiaSharp.HarfBuzz.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+		<None Include="$(PkgHarfBuzzSharp)\lib\net45\HarfBuzzSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+		<None Include="$(PkgHarfBuzzSharp)\runtimes\osx\native\libHarfBuzzSharp.dylib" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+		<None Include="$(PkgHarfBuzzSharp)\runtimes\win-x86\native\libHarfBuzzSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Fizzler" Version="1.2.0" GeneratePathProperty="true" PrivateAssets="all" />
