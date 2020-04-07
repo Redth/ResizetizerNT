@@ -22,7 +22,7 @@
 
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)resizetizer.inputs</_ResizetizerInputsFile>
 
-		<ResizetizerIncludeAllImages Condition="'$(ResizetizerIncludeAllImages)' == ''">False</ResizetizerIncludeAllImages>
+		<!-- <ResizetizerIncludeAllImages Condition="'$(ResizetizerIncludeAllImages)' == ''">False</ResizetizerIncludeAllImages> -->
 		<ResizetizerIncludeSelfProject Condition="'$(ResizetizerIncludeSelfProject)' == ''">False</ResizetizerIncludeSelfProject>
 	</PropertyGroup>
 
@@ -91,11 +91,11 @@
 	<Target Name="GetSharedImages" Outputs="@(ExportedSharedImage)">
 
 		<!-- Include None="" items which are .svg or .png if the property is set -->
-		<ItemGroup Condition="'$(ResizetizerIncludeAllImages)' == 'True'">
+		<!-- <ItemGroup Condition="'$(ResizetizerIncludeAllImages)' == 'True'">
 			<SharedImage
 				Include="@(None)"
 				Condition="'%(Extension)' == '.svg' Or '%(Extension)' == '.png'" />
-		</ItemGroup>
+		</ItemGroup> -->
 
 		<ConvertToAbsolutePath Paths="@(SharedImage)">
 			<Output TaskParameter="AbsolutePaths" ItemName="ExportedSharedImage"/>
