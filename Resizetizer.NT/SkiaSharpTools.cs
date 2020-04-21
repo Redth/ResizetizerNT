@@ -24,9 +24,10 @@ namespace Resizetizer
 			var sw = new Stopwatch();
 			sw.Start();
 
+			// Allocate
 			using (var tempBitmap = new SKBitmap(scaledSize.Width, scaledSize.Height))
 			{
-				// Draw
+				// Draw (copy)
 				using (var canvas = new SKCanvas(tempBitmap))
 				{
 					canvas.Clear(SKColors.Transparent);
@@ -35,7 +36,7 @@ namespace Resizetizer
 					DrawUnscaled(canvas);
 				}
 
-				// Save
+				// Save (encode)
 				using (var pixmap = tempBitmap.PeekPixels())
 				using (var wrapper = new SKFileWStream(destination))
 				{
