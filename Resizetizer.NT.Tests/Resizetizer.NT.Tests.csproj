@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+		<PackageReference Include="SkiaSharp" Version="1.68.1.1" />
+		<PackageReference Include="xunit" Version="2.4.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+		<PackageReference Include="coverlet.collector" Version="1.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Resizetizer.NT\Resizetizer.NT.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="images\camera.png" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="images\camera.svg" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="images\camera_color.png" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="images\camera_color.svg" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="images\loginbg.png" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+</Project>

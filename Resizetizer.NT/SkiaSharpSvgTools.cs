@@ -2,22 +2,17 @@
 using Svg;
 using Svg.Skia;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Resizetizer
 {
-	internal class SkiaSharpSvgTools
+	internal class SkiaSharpSvgTools : SkiaSharpTools, IDisposable
 	{
-		public SkiaSharpSvgTools(SharedImageInfo info, ILogger logger)
-		{
-			Info = info;
-			Logger = logger;
+		SKSvg svg;
 
+		public SkiaSharpSvgTools(SharedImageInfo info, ILogger logger)
+			: base(info, logger)
+		{
 			var sw = new Stopwatch();
 			sw.Start();
 
@@ -74,43 +69,16 @@ namespace Resizetizer
 
 		}
 
-		public SharedImageInfo Info { get; private set; }
+		protected override SKSize GetOriginalSize() =>
+			svg.Picture.CullRect.Size;
 
-		public ILogger Logger { get; private set; }
+		protected override void DrawUnscaled(SKCanvas canvas) =>
+			canvas.DrawPicture(svg.Picture);
 
-		SKSvg svg;
-
-		public void Resize(DpiPath dpi, string destination)
+		public void Dispose()
 		{
-			int sourceNominalWidth = Info.BaseSize?.Width ?? (int)svg.Picture.CullRect.Width;
-			int sourceNominalHeight = Info.BaseSize?.Height ?? (int)svg.Picture.CullRect.Height;
-			var resizeRatio = dpi.Scale;
-
-			// Find the actual size of the SVG 
-			var sourceActualWidth = svg.Picture.CullRect.Width;
-			var sourceActualHeight = svg.Picture.CullRect.Height;
-
-			// Figure out what the ratio to convert the actual image size to the nominal size is
-			var nominalRatio = Math.Max((double)sourceNominalWidth / (double)sourceActualWidth, (double)sourceNominalHeight / (double)sourceActualHeight);
-
-			// Multiply nominal ratio by the resize ratio to get our final ratio we actually adjust by
-			var adjustRatio = nominalRatio * (double)resizeRatio;
-
-			// Figure out our scaled width and height to make a new canvas for
-			//var scaledWidth = sourceActualWidth * adjustRatio;
-			//var scaledHeight = sourceActualHeight * adjustRatio;
-
-			var sw = new Stopwatch();
-			sw.Start();
-
-			using (var stream = File.OpenWrite(destination))
-			{
-				svg.Picture.ToImage(stream, SKColors.Empty, SKEncodedImageFormat.Png, 100, (float)adjustRatio, (float)adjustRatio, SKColorType.Rgba8888, SKAlphaType.Premul);
-			}
-
-			sw.Stop();
-			Logger?.Log($"Save Image took {sw.ElapsedMilliseconds}ms");
-
+			svg?.Dispose();
+			svg = null;
 		}
 	}
 }
