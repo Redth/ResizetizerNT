@@ -132,7 +132,7 @@
 		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
 		<WriteLinesToFile
 			File="$(_ResizetizerInputsFile)"
-			Lines="@(SharedImage->'File=%(Identity);BaseSize=%(BaseSize)')"
+			Lines="@(SharedImage->'File=%(Identity);BaseSize=%(BaseSize);TintColor=%(TintColor)')"
 			Overwrite="true"
 			WriteOnlyWhenDifferent="true" />
 

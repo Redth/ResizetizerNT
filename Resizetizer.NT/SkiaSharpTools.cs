@@ -29,7 +29,7 @@ namespace Resizetizer
 				// Draw
 				using (var canvas = new SKCanvas(tempBitmap))
 				{
-					canvas.Clear();
+					canvas.Clear(SKColors.Transparent);
 					canvas.Save();
 					canvas.Scale(scale, scale);
 					DrawUnscaled(canvas);

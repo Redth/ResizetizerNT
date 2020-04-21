@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <SharedImage Include="camera.svg" BaseSize="44" />
+    <SharedImage Include="camera2.svg" BaseSize="44" TintColor="#FF00FF00" />
     <SharedImage Include="loginbg.png" BaseSize="123,105" />
   </ItemGroup>
 </Project>

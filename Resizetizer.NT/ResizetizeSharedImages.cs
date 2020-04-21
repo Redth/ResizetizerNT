@@ -137,40 +137,12 @@ namespace Resizetizer
 
 				info.Filename = image.GetMetadata("FullPath");
 
-				var size = image.GetMetadata("BaseSize");
-				if (!string.IsNullOrWhiteSpace(size))
-				{
-					var parts = size.Split(new char[] { ',', ';' }, 2);
-
-					if (parts.Length > 0 && int.TryParse(parts[0], out var width))
-					{
-						if (parts.Length > 1 && int.TryParse(parts[1], out var height))
-							info.BaseSize = new Size(width, height);
-						else
-							info.BaseSize = new Size(width, width);
-					}
-				}
+				info.BaseSize = Utils.ParseSizeString(image.GetMetadata("BaseSize"));
 
 				if (bool.TryParse(image.GetMetadata("Resize"), out var rz))
 					info.Resize= rz;
 
-				var tint = image.GetMetadata("TintColor");
-
-				if (!string.IsNullOrWhiteSpace(tint))
-				{
-					try
-					{
-						var hx = "0x" + tint.Trim('#');
-						var c = Color.FromArgb(int.Parse(hx));
-
-						info.TintColor = c;
-					}
-					catch
-					{
-						try { info.TintColor = Color.FromName(tint); }
-						catch { }
-					}
-				}
+				info.TintColor = Utils.ParseColorString(image.GetMetadata("TintColor"));
 
 				// TODO:
 				// - Parse out custom DPI's
