@@ -105,7 +105,7 @@ namespace Resizetizer
 
 			using (var stream = File.OpenWrite(destination))
 			{
-				svg.Picture.ToImage(stream, SKColors.Empty, SKEncodedImageFormat.Png, 100, (float)adjustRatio, (float)adjustRatio, SKColorType.Argb4444, SKAlphaType.Premul);
+				svg.Picture.ToImage(stream, SKColors.Empty, SKEncodedImageFormat.Png, 100, (float)adjustRatio, (float)adjustRatio, SKColorType.Rgba8888, SKAlphaType.Premul);
 			}
 
 			sw.Stop();
