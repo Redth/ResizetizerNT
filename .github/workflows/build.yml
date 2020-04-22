@@ -29,6 +29,8 @@ jobs:
         run: dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
       - name: NuGet Pack
         run: dotnet pack --output ./artifacts -p:PackageVersion=$NUPKG_VER -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
+      - name: Run Tests
+        run: dotnet test --configuration Release ./Resizetizer.NT.Tests/Resizetizer.NT.Tests.csproj
       - name: Upload Artifacts
         uses: actions/upload-artifact@v1
         with:

@@ -1,7 +1,5 @@
-If(!(test-path .\logs\))
-{
-	New-Item -ItemType Directory -Path .\logs\
-}
+New-Item -ItemType Directory -Path .\logs\ -Force
+New-Item -ItemType Directory -Path .\output\ -Force
 
 & msbuild /t:Restore .\Resizetizer.NT\Resizetizer.NT.csproj
 & msbuild /t:Rebuild .\Resizetizer.NT\Resizetizer.NT.csproj /bl:logs\resizetizer.binlog

@@ -19,8 +19,7 @@ namespace Resizetizer
 
 		public SharedImageInfo Info { get; private set; }
 
-		SkiaSharpBitmapTools bmpTools;
-		SkiaSharpSvgTools svgTools;
+		SkiaSharpTools tools;
 
 		public string GetFileDestination(DpiPath dpi)
 			=> GetFileDestination(Info, dpi, IntermediateOutputPath);
@@ -98,20 +97,15 @@ namespace Resizetizer
 			if (IsUpToDate(Info.Filename, destination, inputsFile, Logger))
 				return new ResizedImageInfo { Filename = destination, Dpi = dpi };
 
-			if (Info.IsVector)
+			if (tools == null)
 			{
-				if (svgTools == null)
-					svgTools = new SkiaSharpSvgTools(Info, Logger);
-
-				svgTools.Resize(dpi, destination);
+				if (Info.IsVector)
+					tools = new SkiaSharpSvgTools(Info, Logger);
+				else
+					tools = new SkiaSharpBitmapTools(Info, Logger);
 			}
-			else
-			{
-				if (bmpTools == null)
-					bmpTools = new SkiaSharpBitmapTools(Info, Logger);
 
-				bmpTools.Resize(dpi, destination);
-			}
+			tools.Resize(dpi, destination);
 
 			return new ResizedImageInfo { Filename = destination, Dpi = dpi };
 		}

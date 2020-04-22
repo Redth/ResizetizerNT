@@ -1,53 +1,35 @@
 ﻿using SkiaSharp;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+using System.Diagnostics;
 
 namespace Resizetizer
 {
-	internal class SkiaSharpBitmapTools : IDisposable
+	internal class SkiaSharpBitmapTools : SkiaSharpTools, IDisposable
 	{
-		public SkiaSharpBitmapTools(SharedImageInfo info, ILogger logger)
-		{
-			Info = info;
-			Logger = logger;
-			bmp = SKBitmap.Decode(info.Filename);
-		}
-
-		public SharedImageInfo Info { get; private set; }
-		public ILogger Logger { get; private set; }
-
 		SKBitmap bmp;
 
-		public void Resize(DpiPath dpi, string destination)
+		public SkiaSharpBitmapTools(SharedImageInfo info, ILogger logger)
+			: base(info, logger)
 		{
-			int sourceNominalWidth = Info.BaseSize?.Width ?? bmp.Width;
-			int sourceNominalHeight = Info.BaseSize?.Height ?? bmp.Height;
-			var resizeRatio = dpi.Scale;
+			var sw = new Stopwatch();
+			sw.Start();
 
-			var sourceActualWidth = bmp.Width;
-			var sourceActualHeight = bmp.Height;
+			bmp = SKBitmap.Decode(info.Filename);
 
-			var nominalRatio = Math.Max((double)sourceNominalWidth / (double)sourceActualWidth, (double)sourceNominalHeight / (double)sourceActualHeight);
-
-			var adjustRatio = nominalRatio * Convert.ToDouble(resizeRatio);
-
-			var newWidth = (int)Math.Floor(bmp.Width * adjustRatio);
-			var newHeight = (int)Math.Floor(bmp.Height * adjustRatio);
-
-			using (var rzBitmap = bmp.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High))
-			using (var img = SKImage.FromBitmap(rzBitmap))
-			using (var data = img.Encode(SKEncodedImageFormat.Png, 100))
-			using (var fs = File.Open(destination, FileMode.Create))
-			{
-				data.SaveTo(fs);
-			}
+			sw.Stop();
+			Logger?.Log($"Open RASTER took {sw.ElapsedMilliseconds}ms");
 		}
+
+		protected override SKSize GetOriginalSize() =>
+			bmp.Info.Size;
+
+		protected override void DrawUnscaled(SKCanvas canvas) =>
+			canvas.DrawBitmap(bmp, 0, 0, Paint);
 
 		public void Dispose()
 		{
 			bmp?.Dispose();
+			bmp = null;
 		}
 	}
 }
