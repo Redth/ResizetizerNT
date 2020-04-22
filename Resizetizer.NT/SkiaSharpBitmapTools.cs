@@ -24,7 +24,7 @@ namespace Resizetizer
 			bmp.Info.Size;
 
 		protected override void DrawUnscaled(SKCanvas canvas) =>
-			canvas.DrawBitmap(bmp, 0, 0);
+			canvas.DrawBitmap(bmp, 0, 0, Paint);
 
 		public void Dispose()
 		{

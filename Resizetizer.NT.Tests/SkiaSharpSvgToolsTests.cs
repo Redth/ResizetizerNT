@@ -46,6 +46,90 @@ namespace Resizetizer.NT.Tests
 			}
 
 			[Fact]
+			public void BasicWithDownScaleReturnsDownScaledSize()
+			{
+				var info = new SharedImageInfo();
+				info.Filename = "images/camera.svg";
+				var tools = new SkiaSharpSvgTools(info, Logger);
+				var dpiPath = new DpiPath("", 0.5m);
+
+				tools.Resize(dpiPath, DestinationFilename);
+
+				using var resultImage = SKBitmap.Decode(DestinationFilename);
+				Assert.Equal(896, resultImage.Width);
+				Assert.Equal(896, resultImage.Height);
+
+				using var pixmap = resultImage.PeekPixels();
+				Assert.Equal(SKColors.Empty, pixmap.GetPixelColor(10, 10));
+				Assert.Equal(SKColors.White, pixmap.GetPixelColor(175, 175));
+			}
+
+			[Fact]
+			public void BasicWithColorsKeepsColors()
+			{
+				var info = new SharedImageInfo();
+				info.Filename = "images/camera_color.svg";
+				var tools = new SkiaSharpSvgTools(info, Logger);
+				var dpiPath = new DpiPath("", 1);
+
+				tools.Resize(dpiPath, DestinationFilename);
+
+				using var resultImage = SKBitmap.Decode(DestinationFilename);
+				Assert.Equal(256, resultImage.Width);
+				Assert.Equal(256, resultImage.Height);
+
+				using var pixmap = resultImage.PeekPixels();
+				Assert.Equal(SKColors.Empty, pixmap.GetPixelColor(10, 10));
+				Assert.Equal(SKColors.Red, pixmap.GetPixelColor(37, 137));
+				Assert.Equal(SKColors.Lime, pixmap.GetPixelColor(81, 137));
+				Assert.Equal(SKColors.Blue, pixmap.GetPixelColor(125, 137));
+			}
+
+			[Fact]
+			public void WithBaseSizeResizes()
+			{
+				var info = new SharedImageInfo();
+				info.Filename = "images/camera_color.svg";
+				info.BaseSize = new Size(512, 512);
+				var tools = new SkiaSharpSvgTools(info, Logger);
+				var dpiPath = new DpiPath("", 1);
+
+				tools.Resize(dpiPath, DestinationFilename);
+
+				using var resultImage = SKBitmap.Decode(DestinationFilename);
+				Assert.Equal(512, resultImage.Width);
+				Assert.Equal(512, resultImage.Height);
+
+				using var pixmap = resultImage.PeekPixels();
+				Assert.Equal(SKColors.Empty, pixmap.GetPixelColor(10, 10));
+				Assert.Equal(SKColors.Red, pixmap.GetPixelColor(74, 274));
+				Assert.Equal(SKColors.Lime, pixmap.GetPixelColor(162, 274));
+				Assert.Equal(SKColors.Blue, pixmap.GetPixelColor(250, 274));
+			}
+
+			[Fact]
+			public void WithBaseSizeAndScaleResizes()
+			{
+				var info = new SharedImageInfo();
+				info.Filename = "images/camera_color.svg";
+				info.BaseSize = new Size(512, 512);
+				var tools = new SkiaSharpSvgTools(info, Logger);
+				var dpiPath = new DpiPath("", 0.5m);
+
+				tools.Resize(dpiPath, DestinationFilename);
+
+				using var resultImage = SKBitmap.Decode(DestinationFilename);
+				Assert.Equal(256, resultImage.Width);
+				Assert.Equal(256, resultImage.Height);
+
+				using var pixmap = resultImage.PeekPixels();
+				Assert.Equal(SKColors.Empty, pixmap.GetPixelColor(10, 10));
+				Assert.Equal(SKColors.Red, pixmap.GetPixelColor(37, 137));
+				Assert.Equal(SKColors.Lime, pixmap.GetPixelColor(81, 137));
+				Assert.Equal(SKColors.Blue, pixmap.GetPixelColor(125, 137));
+			}
+
+			[Fact]
 			public void ColorizedReturnsColored()
 			{
 				var info = new SharedImageInfo();
@@ -106,46 +190,6 @@ namespace Resizetizer.NT.Tests
 			}
 
 			[Fact]
-			public void BasicWithDownScaleReturnsDownScaledSize()
-			{
-				var info = new SharedImageInfo();
-				info.Filename = "images/camera.svg";
-				var tools = new SkiaSharpSvgTools(info, Logger);
-				var dpiPath = new DpiPath("", 0.5m);
-
-				tools.Resize(dpiPath, DestinationFilename);
-
-				using var resultImage = SKBitmap.Decode(DestinationFilename);
-				Assert.Equal(896, resultImage.Width);
-				Assert.Equal(896, resultImage.Height);
-
-				using var pixmap = resultImage.PeekPixels();
-				Assert.Equal(SKColors.Empty, pixmap.GetPixelColor(10, 10));
-				Assert.Equal(SKColors.White, pixmap.GetPixelColor(175, 175));
-			}
-
-			[Fact]
-			public void BasicWithColorsKeepsColors()
-			{
-				var info = new SharedImageInfo();
-				info.Filename = "images/camera_color.svg";
-				var tools = new SkiaSharpSvgTools(info, Logger);
-				var dpiPath = new DpiPath("", 1);
-
-				tools.Resize(dpiPath, DestinationFilename);
-
-				using var resultImage = SKBitmap.Decode(DestinationFilename);
-				Assert.Equal(256, resultImage.Width);
-				Assert.Equal(256, resultImage.Height);
-
-				using var pixmap = resultImage.PeekPixels();
-				Assert.Equal(SKColors.Empty, pixmap.GetPixelColor(10, 10));
-				Assert.Equal(SKColors.Red, pixmap.GetPixelColor(37, 137));
-				Assert.Equal(SKColors.Lime, pixmap.GetPixelColor(81, 137));
-				Assert.Equal(SKColors.Blue, pixmap.GetPixelColor(125, 137));
-			}
-
-			[Fact]
 			public void ColorizedWithColorsReplacesColors()
 			{
 				var info = new SharedImageInfo();
@@ -187,50 +231,6 @@ namespace Resizetizer.NT.Tests
 				Assert.Equal(SKColors.Red.WithAlpha(127), pixmap.GetPixelColor(37, 137));
 				Assert.Equal(SKColors.Red.WithAlpha(127), pixmap.GetPixelColor(81, 137));
 				Assert.Equal(SKColors.Red.WithAlpha(127), pixmap.GetPixelColor(125, 137));
-			}
-
-			[Fact]
-			public void WithBaseSizeResizes()
-			{
-				var info = new SharedImageInfo();
-				info.Filename = "images/camera_color.svg";
-				info.BaseSize = new Size(512, 512);
-				var tools = new SkiaSharpSvgTools(info, Logger);
-				var dpiPath = new DpiPath("", 1);
-
-				tools.Resize(dpiPath, DestinationFilename);
-
-				using var resultImage = SKBitmap.Decode(DestinationFilename);
-				Assert.Equal(512, resultImage.Width);
-				Assert.Equal(512, resultImage.Height);
-
-				using var pixmap = resultImage.PeekPixels();
-				Assert.Equal(SKColors.Empty, pixmap.GetPixelColor(10, 10));
-				Assert.Equal(SKColors.Red, pixmap.GetPixelColor(74, 274));
-				Assert.Equal(SKColors.Lime, pixmap.GetPixelColor(162, 274));
-				Assert.Equal(SKColors.Blue, pixmap.GetPixelColor(250, 274));
-			}
-
-			[Fact]
-			public void WithBaseSizeAndScaleResizes()
-			{
-				var info = new SharedImageInfo();
-				info.Filename = "images/camera_color.svg";
-				info.BaseSize = new Size(512, 512);
-				var tools = new SkiaSharpSvgTools(info, Logger);
-				var dpiPath = new DpiPath("", 0.5m);
-
-				tools.Resize(dpiPath, DestinationFilename);
-
-				using var resultImage = SKBitmap.Decode(DestinationFilename);
-				Assert.Equal(256, resultImage.Width);
-				Assert.Equal(256, resultImage.Height);
-
-				using var pixmap = resultImage.PeekPixels();
-				Assert.Equal(SKColors.Empty, pixmap.GetPixelColor(10, 10));
-				Assert.Equal(SKColors.Red, pixmap.GetPixelColor(37, 137));
-				Assert.Equal(SKColors.Lime, pixmap.GetPixelColor(81, 137));
-				Assert.Equal(SKColors.Blue, pixmap.GetPixelColor(125, 137));
 			}
 		}
 	}

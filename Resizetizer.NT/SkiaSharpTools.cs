@@ -1,6 +1,7 @@
 ﻿using SkiaSharp;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace Resizetizer
 {
@@ -10,11 +11,24 @@ namespace Resizetizer
 		{
 			Info = info;
 			Logger = logger;
+
+			if (Info.TintColor is Color tint)
+			{
+				var color = new SKColor(unchecked((uint)tint.ToArgb()));
+				Logger?.Log($"Detected a tint color of {color}");
+
+				Paint = new SKPaint
+				{
+					ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.SrcIn)
+				};
+			}
 		}
 
 		public SharedImageInfo Info { get; }
 
 		public ILogger Logger { get; }
+
+		public SKPaint Paint { get; }
 
 		public void Resize(DpiPath dpi, string destination)
 		{

@@ -9,22 +9,10 @@ namespace Resizetizer
 	internal class SkiaSharpSvgTools : SkiaSharpTools, IDisposable
 	{
 		SKSvg svg;
-		SKPaint paint;
 
 		public SkiaSharpSvgTools(SharedImageInfo info, ILogger logger)
 			: base(info, logger)
 		{
-			if (Info.TintColor is Color tint)
-			{
-				var color = new SKColor(unchecked((uint)tint.ToArgb()));
-				Logger?.Log($"Detected a tint color of {color}");
-
-				paint = new SKPaint
-				{
-					ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.SrcIn)
-				};
-			}
-			
 			var sw = new Stopwatch();
 			sw.Start();
 
@@ -39,7 +27,7 @@ namespace Resizetizer
 			svg.Picture.CullRect.Size;
 
 		protected override void DrawUnscaled(SKCanvas canvas) =>
-			canvas.DrawPicture(svg.Picture, paint);
+			canvas.DrawPicture(svg.Picture, Paint);
 
 		public void Dispose()
 		{
