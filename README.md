@@ -53,6 +53,11 @@ In Xamarin Forms you would use something like:
 <Image Source="hamburger.png" WidthRequest="40" HeightRequest="20" />
 ```
 
+## TintColor
+If you'd like to render your images with a tint, you can set the `TintColor` attribute property on the `SharedImage` element.  This renders your image with a color filter of "Source In" in SkiaSharp.  This is particularly useful in cases where you have icons or simple images you'd like to render in different color than the source.
+
+Example: `<Image Source="hamburger.png" TintColor="#66b3ff" />`
+
 # Planning
 
 ## Bitmaps
