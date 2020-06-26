@@ -150,6 +150,7 @@
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.Drawing.Common" Version="4.7.0" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.ObjectModel" Version="4.3.0" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="Svg2VectorDrawable.Net" Version="0.1.0" />
 	</ItemGroup>
 
 </Project>
