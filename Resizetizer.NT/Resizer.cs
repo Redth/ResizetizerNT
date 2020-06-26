@@ -47,7 +47,6 @@ namespace Resizetizer
 
 			if (isAndroid && info.IsVector && !info.Resize)
 			{
-				// TODO: Turn SVG into Vector Drawable format
 				// Update destination to be .xml file
 				destination = Path.ChangeExtension(info.Filename, ".xml");
 				androidVector = true;
@@ -58,8 +57,8 @@ namespace Resizetizer
 			
 			if (androidVector)
 			{
-				// TODO: Don't just copy, let's transform to android vector
-				File.Copy(info.Filename, destination, true);
+				// Transform into an android vector drawable
+				Svg2VectorDrawable.Svg2Vector.Convert(info.Filename, destination);
 			}
 			else
 			{
@@ -99,10 +98,7 @@ namespace Resizetizer
 
 			if (tools == null)
 			{
-				if (Info.IsVector)
-					tools = new SkiaSharpSvgTools(Info, Logger);
-				else
-					tools = new SkiaSharpBitmapTools(Info, Logger);
+				tools = SkiaSharpTools.Create(Info.IsVector, Info.Filename, Info.BaseSize, Info.TintColor, Logger);
 			}
 
 			tools.Resize(dpi, destination);
