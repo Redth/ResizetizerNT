@@ -66,13 +66,18 @@ namespace Resizetizer
 
 			var resizedImages = new ConcurrentBag<ResizedImageInfo>();
 
-			System.Threading.Tasks.Parallel.ForEach(images, img =>
-			{
+			// System.Threading.Tasks.Parallel.ForEach(images, img =>
+			// {
+			foreach (var img in images) {
 				if (img.IsAppIcon)
 				{
+					Log.LogMessage(MessageImportance.Low, $"App Icon");
+
 					// Apple and Android have special additional files to generate for app icons
 					if (PlatformType == "android")
 					{
+						Log.LogMessage(MessageImportance.Low, $"Android Adaptive Icon Generator");
+					
 						var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, IntermediateOutputPath, this);
 						var iconsGenerated = adaptiveIconGen.Generate();
 
@@ -80,12 +85,16 @@ namespace Resizetizer
 					}
 					else if (PlatformType == "ios")
 					{
+						Log.LogMessage(MessageImportance.Low, $"iOS Icon Assets Generator");
+					
 						var appleAssetGen = new AppleIconAssetsGenerator(img, IntermediateOutputPath, this);
 
 						var assetsGenerated = appleAssetGen.Generate();
 
 						resizedImages.AddRange(assetsGenerated);
 					}
+					
+					Log.LogMessage(MessageImportance.Low, $"Generating App Icon Bitmaps for DPIs");
 					
 					// Generate the actual bitmap app icons themselves
 					var appIconDpis = DpiPath.GetAppIconDpis(PlatformType);
@@ -94,7 +103,10 @@ namespace Resizetizer
 
 					foreach (var dpi in appIconDpis)
 					{
-						appTool.Resize(dpi, Resizer.GetFileDestination(img, dpi, IntermediateOutputPath));
+						Log.LogMessage(MessageImportance.Low, $"App Icon: " + dpi);
+					
+						var destination = Resizer.GetFileDestination(img, dpi, IntermediateOutputPath);
+						appTool.Resize(dpi, Path.ChangeExtension(destination, ".png"));
 					}
 				}
 				else
@@ -111,23 +123,30 @@ namespace Resizetizer
 
 						foreach (var dpi in dpis)
 						{
+							Log.LogMessage(MessageImportance.Low, $"Resizing {img.Filename}");
+					
 							var r = resizer.Resize(dpi, InputsFile);
 							resizedImages.Add(r);
+
+							Log.LogMessage(MessageImportance.Low, $"Resized {img.Filename}");
 						}
 					}
 					else
 					{
 						op = "Copy";
+
+						Log.LogMessage(MessageImportance.Low, $"Copying {img.Filename}");
 						// Otherwise just copy the thing over to the 1.0 scale
 						var r = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, InputsFile, this, PlatformType.ToLower().Equals("android"));
 						resizedImages.Add(r);
+						Log.LogMessage(MessageImportance.Low, $"Copied {img.Filename}");
 					}
 
 					opStopwatch.Stop();
 
 					Log.LogMessage(MessageImportance.Low, $"{op} took {opStopwatch.ElapsedMilliseconds}ms");
 				}
-			});
+			} //);
 			
 			var copiedResources = new List<TaskItem>();
 
@@ -186,7 +205,11 @@ namespace Resizetizer
 				var fgFile = image.GetMetadata("Foreground");
 				if (!string.IsNullOrEmpty(fgFile))
 				{
+					Log.LogMessage(MessageImportance.Low, $"AppIcon Foreground: " + fgFile);
+					
 					fgFile = Path.GetFullPath(fgFile);
+					Log.LogMessage(MessageImportance.Low, $"AppIcon Foreground FullPath: " + fgFile);
+					
 					if (File.Exists(fgFile))
 						info.ForegroundFilename = fgFile;
 				}

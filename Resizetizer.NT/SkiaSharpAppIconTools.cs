@@ -55,15 +55,19 @@ namespace Resizetizer
 
 					backgroundTools.DrawUnscaled(canvas);
 
-					var (fgScaledSize, fgScale) = foregroundTools.GetScaledSize(foregroundOriginalSize, dpi);
 
-					// Multiply by user input scale
-					fgScale *= (float)Info.ForegroundScale;
+					if (hasForeground)
+					{
+						var (fgScaledSize, fgScale) = foregroundTools.GetScaledSize(foregroundOriginalSize, dpi);
 
-					// Foreground 
-					canvas.Scale(fgScale, fgScale, bgScaledSize.Width / 2, bgScaledSize.Height / 2);
+						// Multiply by user input scale
+						fgScale *= (float)Info.ForegroundScale;
 
-					foregroundTools.DrawUnscaled(canvas);
+						// Foreground 
+						canvas.Scale(fgScale, fgScale, bgScaledSize.Width / 2, bgScaledSize.Height / 2);
+
+						foregroundTools.DrawUnscaled(canvas);
+					}
 				}
 
 				// Save (encode)
