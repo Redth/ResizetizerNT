@@ -10,6 +10,11 @@ namespace Resizetizer
 	{
 		SKSvg svg;
 
+		public SkiaSharpSvgTools(SharedImageInfo info, ILogger logger)
+			: this(info.Filename, info.BaseSize, info.TintColor, logger)
+		{
+		}
+
 		public SkiaSharpSvgTools(string filename, Size? baseSize, Color? tintColor, ILogger logger)
 			: base(filename, baseSize, tintColor, logger)
 		{
@@ -20,7 +25,7 @@ namespace Resizetizer
 			svg.Load(filename);
 
 			sw.Stop();
-			Logger?.Log($"Open SVG took {sw.ElapsedMilliseconds}ms");
+			Logger?.Log($"Open SVG took {sw.ElapsedMilliseconds}ms ({filename})");
 		}
 
 		public override SKSize GetOriginalSize() =>

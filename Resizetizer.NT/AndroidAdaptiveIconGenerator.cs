@@ -50,10 +50,16 @@ namespace Resizetizer
 			if (backgroundIsVector && (foregroundIsVector || !foregroundExists))
 			{
 				var backgroundDestination = Path.Combine(fullIntermediateOutputPath.FullName, "drawable-v24", name + "_background.xml");
+				var fileInfo = new FileInfo(backgroundDestination);
+				if (!fileInfo.Directory.Exists)
+					fileInfo.Directory.Create();
 
 				Svg2VectorDrawable.Svg2Vector.Convert(backgroundFile, backgroundDestination);
 
 				var foregroundDestination = Path.Combine(fullIntermediateOutputPath.FullName, "drawable", name + "_foreground.xml");
+				fileInfo = new FileInfo(foregroundDestination);
+				if (!fileInfo.Directory.Exists)
+					fileInfo.Directory.Create();
 
 				// Convert to android vector drawable, or use a blank one if it doesn't exist
 				if (foregroundExists)
@@ -65,6 +71,10 @@ namespace Resizetizer
 
 				var adaptiveIconDestination = Path.Combine(fullIntermediateOutputPath.FullName, "mipmap-anydpi-v26", name + ".xml");
 				var adaptiveIconRoundDestination = Path.Combine(fullIntermediateOutputPath.FullName, "mipmap-anydpi-v26", name + "_round.xml");
+
+				fileInfo = new FileInfo(adaptiveIconDestination);
+				if (!fileInfo.Directory.Exists)
+					fileInfo.Directory.Create();
 
 				// Write out the adaptive icon xml drawables
 				File.WriteAllText(adaptiveIconDestination, adaptiveIconXmlStr);

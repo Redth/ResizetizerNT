@@ -11,6 +11,11 @@ namespace Resizetizer
 			=> isVector ? new SkiaSharpSvgTools(filename, baseSize, tintColor, logger) as SkiaSharpTools
 				: new SkiaSharpBitmapTools(filename, baseSize, tintColor, logger);
 
+		public SkiaSharpTools(SharedImageInfo info, ILogger logger)
+			: this(info.Filename, info.BaseSize, info.TintColor, logger)
+		{
+		}
+
 		public SkiaSharpTools(string filename, Size? baseSize, Color? tintColor, ILogger logger)
 		{
 			Logger = logger;
@@ -65,7 +70,7 @@ namespace Resizetizer
 			}
 
 			sw.Stop();
-			Logger?.Log($"Save Image took {sw.ElapsedMilliseconds}ms");
+			Logger?.Log($"Save Image took {sw.ElapsedMilliseconds}ms ({destination})");
 		}
 
 		public abstract SKSize GetOriginalSize();
