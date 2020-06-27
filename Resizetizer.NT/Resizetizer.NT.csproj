@@ -116,6 +116,10 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 
+		<None Include="$(PkgSvg2VectorDrawable_Net)\lib\netstandard2.0\Svg2VectorDrawable.Net.dll" Visible="False" Pack="True" PackagePath="build\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
 	</ItemGroup>
 
 	<ItemGroup>
@@ -142,6 +146,7 @@
 		<None Include="$(PkgHarfBuzzSharp)\lib\net462\HarfBuzzSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgHarfBuzzSharp)\runtimes\osx\native\libHarfBuzzSharp.dylib" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgHarfBuzzSharp)\runtimes\win-x86\native\libHarfBuzzSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+		<None Include="$(PkgSvg2VectorDrawable_Net)\lib\netstandard2.0\Svg2VectorDrawable.Net.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -161,7 +166,7 @@
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.1" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.Drawing.Common" Version="4.7.0" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.ObjectModel" Version="4.3.0" GeneratePathProperty="true" PrivateAssets="all" />
-		<PackageReference Include="Svg2VectorDrawable.Net" Version="0.1.0" />
+		<PackageReference Include="Svg2VectorDrawable.Net" Version="0.1.0" GeneratePathProperty="true" PrivateAssets="all" />
 	</ItemGroup>
 
 </Project>
