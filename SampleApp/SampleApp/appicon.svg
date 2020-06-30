@@ -1,29 +1,16 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
-    <title>app-icon-poolmath</title>
-    <desc>Created with Sketch.</desc>
-    <g id="app-icon-poolmath" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Group-3">
-            <mask id="mask-2" fill="white">
-                <use xlink:href="#path-1"></use>
-            </mask>
-            <g id="Clip-2"></g>
-            <polygon id="Fill-1" fill="url(#linearGradient-3)" mask="url(#mask-2)" points="0.06 1024 1024 1024 1024 0.04 0.06 0.04"></polygon>
-        </g>
-        <g id="Group-6" transform="translate(0.000000, 898.000000)">
-            <mask id="mask-5" fill="white">
-                <use xlink:href="#path-4"></use>
-            </mask>
-            <g id="Clip-5"></g>
-            <path d="M968.534,29.91 C938.666,63.333 896,84.223 853.334,84.223 C810.668,84.223 768,63.333 738.134,29.91 C716.8,9.023 708.266,0.667 682.666,0.667 C657.066,0.667 648.532,9.023 627.2,29.91 C576,92.577 482.134,100.933 418.134,50.8 C409.6,42.443 401.068,38.267 396.8,29.91 C375.466,9.023 366.934,0.667 341.334,0.667 C315.734,0.667 307.2,9.023 285.868,29.91 C256,63.333 213.334,84.223 170.666,84.223 C128,84.223 85.332,63.333 55.466,29.912 C34.134,9.023 25.6,0.667 0,0.667 L0,126 L1024,126 L1024,0.667 C998.4,0.667 989.866,9.023 968.534,29.91" id="Fill-4" fill="#7CABD0" mask="url(#mask-5)"></path>
-        </g>
-        <g id="Group-9" transform="translate(0.000000, 648.000000)">
-            <mask id="mask-7" fill="white">
-                <use xlink:href="#path-6"></use>
-            </mask>
-            <g id="Clip-8"></g>
-            <polygon id="Fill-7" fill="url(#linearGradient-8)" mask="url(#mask-7)" points="0.06 376 1024 376 1024 -647.96 0.06 -647.96"></polygon>
+    <title>Icon</title>
+    <g id="Icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group">
+            <rect id="Rectangle" fill="#00B3FF" x="0" y="0" width="1024" height="128"></rect>
+            <rect id="Rectangle" fill="#00AEF7" x="0" y="128" width="1024" height="128"></rect>
+            <rect id="Rectangle" fill="#00AAF2" x="0" y="256" width="1024" height="128"></rect>
+            <rect id="Rectangle" fill="#00A7EE" x="0" y="384" width="1024" height="128"></rect>
+            <rect id="Rectangle" fill="#02A4E8" x="0" y="512" width="1024" height="128"></rect>
+            <rect id="Rectangle" fill="#009FE1" x="0" y="640" width="1024" height="128"></rect>
+            <rect id="Rectangle" fill="#009BDB" x="0" y="768" width="1024" height="128"></rect>
+            <rect id="Rectangle" fill="#0096D4" x="0" y="896" width="1024" height="128"></rect>
         </g>
     </g>
 </svg>

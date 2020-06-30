@@ -29,6 +29,8 @@ namespace Resizetizer
 
 		public string IsMacEnabled { get;set; }
 
+		public ILogger Logger => this;
+
 		public override bool Execute()
 		{
 			System.Threading.Tasks.Task.Run(async () =>
@@ -202,13 +204,17 @@ namespace Resizetizer
 				if (float.TryParse(image.GetMetadata("ForegroundScale"), out var fsc))
 					info.ForegroundScale = fsc;
 
-				var fgFile = image.GetMetadata("Foreground");
+				var fgFile = image.GetMetadata("ForegroundFile");
 				if (!string.IsNullOrEmpty(fgFile))
 				{
-					Log.LogMessage(MessageImportance.Low, $"AppIcon Foreground: " + fgFile);
-					
-					fgFile = Path.GetFullPath(fgFile);
-					Log.LogMessage(MessageImportance.Low, $"AppIcon Foreground FullPath: " + fgFile);
+					var bgFileInfo = new FileInfo(info.Filename);
+
+					if (!Path.IsPathRooted(fgFile))
+						fgFile = Path.Combine(bgFileInfo.Directory.FullName, fgFile);
+					else
+						fgFile = Path.GetFullPath(fgFile);
+
+					Logger.Log($"AppIcon Foreground: " + fgFile);
 					
 					if (File.Exists(fgFile))
 						info.ForegroundFilename = fgFile;

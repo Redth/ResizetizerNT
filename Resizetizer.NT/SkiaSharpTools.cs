@@ -87,9 +87,9 @@ namespace Resizetizer
 
 		(SKSizeI, float) GetScaledSize(SKSize originalSize, decimal scale, SizeF absoluteSize)
 		{
-			var ratio = (decimal)absoluteSize.Width / (decimal)originalSize.Width;
+			var ratio = (decimal)absoluteSize.Width * scale / (decimal)originalSize.Width * scale;
 
-			return GetScaledSize(originalSize, ratio * scale);
+			return GetScaledSize(originalSize, ratio);
 		}
 
 		(SKSizeI, float) GetScaledSize(SKSize originalSize, decimal resizeRatio)
