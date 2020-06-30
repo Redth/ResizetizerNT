@@ -92,7 +92,7 @@ namespace Resizetizer
 			return GetScaledSize(originalSize, ratio);
 		}
 
-		(SKSizeI, float) GetScaledSize(SKSize originalSize, decimal resizeRatio)
+		public (SKSizeI, float) GetScaledSize(SKSize originalSize, decimal resizeRatio)
 		{
 			int sourceNominalWidth = BaseSize?.Width ?? (int)originalSize.Width;
 			int sourceNominalHeight = BaseSize?.Height ?? (int)originalSize.Height;
