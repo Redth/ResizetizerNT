@@ -60,7 +60,7 @@ namespace Resizetizer
 					{
 						var (fgScaledSize, fgScale) = foregroundTools.GetScaledSize(foregroundOriginalSize, dpi);
 
-						var userFgScale = (float)Info.ForegroundScale;
+						var userFgScale = 1.0f; // (float)Info.ForegroundScale;
 
 						Logger.Log("dpi.Size: " + dpi.Size);
 						Logger.Log("dpi.Scale: " + dpi.Scale);
@@ -79,7 +79,7 @@ namespace Resizetizer
 						Logger.Log("fgScaledSizeCenterX: " + fgScaledSizeCenterX);
 						Logger.Log("finalScale: " + finalScale);
 
-						canvas.Scale(finalScale);
+						canvas.Scale(finalScale); //, finalScale, fgScaledSizeCenterX, fgScaledSizeCenterY);
 
 						foregroundTools.DrawUnscaled(canvas);
 					}
