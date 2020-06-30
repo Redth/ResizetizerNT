@@ -6,6 +6,16 @@ using System.Drawing;
 
 namespace Resizetizer
 {
+	public class Svg2AndroidDrawableConversionException : Exception
+	{
+		public Svg2AndroidDrawableConversionException(string message, string file) : base ("Failed to Convert SVG to Android Drawable: " + message + " in [" + file + "]")
+		{
+			Filename = file;
+		}
+
+		public string Filename { get; }
+	}
+	
 	internal class SkiaSharpSvgTools : SkiaSharpTools, IDisposable
 	{
 		SKSvg svg;
