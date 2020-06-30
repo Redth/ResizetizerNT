@@ -54,17 +54,32 @@ namespace Resizetizer
 					canvas.Scale(bgScale, bgScale);
 
 					backgroundTools.DrawUnscaled(canvas);
-
+					canvas.Restore();
 
 					if (hasForeground)
 					{
 						var (fgScaledSize, fgScale) = foregroundTools.GetScaledSize(foregroundOriginalSize, dpi);
 
-						// Multiply by user input scale
-						fgScale *= (float)Info.ForegroundScale;
+						var userFgScale = (float)Info.ForegroundScale;
 
-						// Foreground 
-						canvas.Scale(fgScale, fgScale, bgScaledSize.Width / 2, bgScaledSize.Height / 2);
+						Logger.Log("dpi.Size: " + dpi.Size);
+						Logger.Log("dpi.Scale: " + dpi.Scale);
+						Logger.Log("bgScaledSize: " + bgScaledSize);
+						Logger.Log("bgScale: " + bgScale);
+						Logger.Log("foregroundOriginalSize: " + foregroundOriginalSize);
+						Logger.Log("fgScaledSize: " + fgScaledSize);
+						Logger.Log("fgScale: " + fgScale);
+						Logger.Log("userFgScale: " + userFgScale);
+
+						var fgScaledSizeCenterX = fgScaledSize.Width / 2;
+						var fgScaledSizeCenterY = fgScaledSize.Height / 2;
+
+						var finalScale = userFgScale * fgScale;
+
+						Logger.Log("fgScaledSizeCenterX: " + fgScaledSizeCenterX);
+						Logger.Log("finalScale: " + finalScale);
+
+						canvas.Scale(finalScale);
 
 						foregroundTools.DrawUnscaled(canvas);
 					}
