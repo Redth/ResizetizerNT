@@ -54,7 +54,10 @@ namespace Resizetizer
 				if (!fileInfo.Directory.Exists)
 					fileInfo.Directory.Create();
 
-				Svg2VectorDrawable.Svg2Vector.Convert(backgroundFile, backgroundDestination);
+				Logger.Log("Converting Background SVG to Android Drawable Vector: " + backgroundFile);
+				var bgConvertErr = Svg2VectorDrawable.Svg2Vector.Convert(backgroundFile, backgroundDestination);
+				if (!string.IsNullOrEmpty(bgConvertErr))
+					throw new Svg2AndroidDrawableConversionException(bgConvertErr, backgroundFile);
 
 				var foregroundDestination = Path.Combine(fullIntermediateOutputPath.FullName, "drawable", name + "_foreground.xml");
 				fileInfo = new FileInfo(foregroundDestination);
@@ -63,7 +66,12 @@ namespace Resizetizer
 
 				// Convert to android vector drawable, or use a blank one if it doesn't exist
 				if (foregroundExists)
-					Svg2VectorDrawable.Svg2Vector.Convert(foregroundFile, foregroundDestination);
+				{
+					Logger.Log("Converting Foreground SVG to Android Drawable Vector: " + foregroundFile);
+					var fgConvertErr = Svg2VectorDrawable.Svg2Vector.Convert(foregroundFile, foregroundDestination);
+					if (!string.IsNullOrEmpty(fgConvertErr))
+						throw new Svg2AndroidDrawableConversionException(fgConvertErr, foregroundFile);
+				}
 				else
 					File.WriteAllText(foregroundDestination, EmptyVectorDrawable);
 
