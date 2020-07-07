@@ -175,7 +175,9 @@
 			</_ResizetizerCollectedBundleResourceImages>
 
 			<!-- iOS Expects images in this group -->
-			<BundleResource Include="@(_ResizetizerCollectedBundleResourceImages)" />
+			<BundleResource Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('resizetizer.xcassets'))' != 'True'" />
+
+			<ImageAsset Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('resizetizer.xcassets'))' == 'True'" />
 
 			<FileWrites Include="@(_ResizetizerCollectedBundleResourceImages)" />
 		</ItemGroup>

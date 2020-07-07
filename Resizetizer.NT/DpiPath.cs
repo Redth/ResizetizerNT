@@ -57,30 +57,33 @@ namespace Resizetizer
 				new DpiPath("", 3.0m, "@3x"),
 			};
 
+		internal const string IosAppIconPath = "Resizetizer.xcassets/{name}.appiconset";
+
 		public static DpiPath[] IosAppIcon
 			=> new[]
 			{
-				new DpiPath("", 1.0m, "20x20@1x", new SizeF(20, 20), new [] { "iphone", "ipad" }),
-				new DpiPath("", 2.0m, "20x20@2x", new SizeF(20, 20), new [] { "iphone", "ipad" }),
-				new DpiPath("", 3.0m, "20x20@3x", new SizeF(20, 20), new [] { "iphone" }),
+				// Notification
+				new DpiPath(IosAppIconPath, 2.0m, "20x20@2x", new SizeF(20, 20), new [] { "iphone", "ipad" }),
+				new DpiPath(IosAppIconPath, 3.0m, "20x20@3x", new SizeF(20, 20), new [] { "iphone" }),
 
-				new DpiPath("", 1.0m, "29x29@1x", new SizeF(29, 29), new [] { "iphone" }),
-				new DpiPath("", 2.0m, "29x29@2x", new SizeF(29, 29), new [] { "iphone", "ipad" }),
-				new DpiPath("", 3.0m, "29x29@3x", new SizeF(29, 29), new [] { "iphone", "ipad" }),
+				// Settings
+				new DpiPath(IosAppIconPath, 2.0m, "29x29@2x", new SizeF(29, 29), new [] { "iphone", "ipad" }),
+				new DpiPath(IosAppIconPath, 3.0m, "29x29@3x", new SizeF(29, 29), new [] { "iphone" }),
 
-				new DpiPath("", 1.0m, "40x40@1x", new SizeF(40, 40), new [] { "ipad" }),
-				new DpiPath("", 2.0m, "40x40@2x", new SizeF(40, 40), new [] { "iphone", "ipad" }),
-				new DpiPath("", 3.0m, "40x40@3x", new SizeF(40, 40), new [] { "iphone" }),
+				// Spotlight
+				new DpiPath(IosAppIconPath, 2.0m, "40x40@2x", new SizeF(40, 40), new [] { "iphone", "ipad" }),
+				new DpiPath(IosAppIconPath, 3.0m, "40x40@3x", new SizeF(40, 40), new [] { "iphone" }),
 
-				new DpiPath("", 2.0m, "60x60@2x", new SizeF(60, 60), new [] { "iphone" }),
-				new DpiPath("", 3.0m, "60x60@3x", new SizeF(60, 60), new [] { "iphone" }),
+				// App Icon - iPhone
+				new DpiPath(IosAppIconPath, 2.0m, "60x60@2x", new SizeF(60, 60), new [] { "iphone" }),
+				new DpiPath(IosAppIconPath, 3.0m, "60x60@3x", new SizeF(60, 60), new [] { "iphone" }),
 
-				new DpiPath("", 2.0m, "76x76@1x", new SizeF(76, 76), new [] { "ipad" }),
-				new DpiPath("", 2.0m, "76x76@2x", new SizeF(76, 76), new [] { "iphone", "ipad" }),
-
-				new DpiPath("", 2.0m, "83.5x83.5@1x", new SizeF(83.5f, 83.5f), new [] { "ipad" }),
+				// App Icon - ipad
+				new DpiPath(IosAppIconPath, 2.0m, "76x76@2x", new SizeF(76, 76), new [] { "ipad" }),
+				new DpiPath(IosAppIconPath, 2.0m, "83.5x83.5@2x", new SizeF(83.5f, 83.5f), new [] { "ipad" }),
 				
-				new DpiPath("", 2.0m, "ItunesArtwork@2x", new SizeF(512, 512), new [] { "ios-marketing" }),
+				// App Store
+				new DpiPath(IosAppIconPath, 1.0m, "ItunesArtwork", new SizeF(1024, 1024), new [] { "ios-marketing" }),
 				
 			};
 
@@ -153,21 +156,33 @@ namespace Resizetizer
 			return null;
 		}
 
-		public static DpiPath[] GetAppIconDpis(string platform)
+		public static DpiPath[] GetAppIconDpis(string platform, string appIconName)
 		{
+			DpiPath[] result = null;
+
 			switch (platform.ToLowerInvariant())
 			{
 				case "ios":
-					return DpiPath.IosAppIcon;
+					result = DpiPath.IosAppIcon;
+					break;
 				case "android":
-					return DpiPath.AndroidAppIcon;
+					result = DpiPath.AndroidAppIcon;
+					break;
 				case "uwp":
-					return DpiPath.UwpAppIcon;
+					result = DpiPath.UwpAppIcon;
+					break;
 				case "wpf":
-					return DpiPath.WpfAppIcon;
+					result = DpiPath.WpfAppIcon;
+					break;
 			}
 
-			return null;
+			foreach (var r in result)
+			{
+				if (!string.IsNullOrEmpty(r.Path))
+					r.Path = r.Path.Replace("{name}", appIconName);
+			}
+
+			return result;
 		}
 	}
 }

@@ -12,6 +12,9 @@ namespace Resizetizer
 			Info = info;
 			Logger = logger;
 
+			AppIconName = Path.GetFileNameWithoutExtension(info.Filename);
+			
+
 			hasForeground = File.Exists(info.ForegroundFilename);
 
 			if (hasForeground)
@@ -35,6 +38,8 @@ namespace Resizetizer
 
 		public SharedImageInfo Info { get; }
 		public ILogger Logger { get; }
+
+		public string AppIconName { get; }
 
 		public ResizedImageInfo Resize(DpiPath dpi, string destination)
 		{

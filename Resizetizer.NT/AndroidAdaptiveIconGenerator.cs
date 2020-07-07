@@ -6,16 +6,19 @@ namespace Resizetizer
 {
 	internal class AndroidAdaptiveIconGenerator
 	{
-		public AndroidAdaptiveIconGenerator(SharedImageInfo info, string intermediateOutputPath, ILogger logger)
+		public AndroidAdaptiveIconGenerator(SharedImageInfo info, string appIconName, string intermediateOutputPath, ILogger logger)
 		{
 			Info = info;
 			Logger = logger;
 			IntermediateOutputPath = intermediateOutputPath;
+			AppIconName = appIconName;
 		}
 
 		public SharedImageInfo Info { get; private set; }
 		public string IntermediateOutputPath { get; private set; }
 		public ILogger Logger { get; private set; }
+
+		public string AppIconName { get; }
 
 		const string AdaptiveIconDrawableXml =
 @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -36,7 +39,6 @@ namespace Resizetizer
 		{
 			var results = new List<ResizedImageInfo>();
 
-			var name = Path.GetFileNameWithoutExtension(Info.Filename);
 			var fullIntermediateOutputPath = new DirectoryInfo(IntermediateOutputPath);
 
 			var backgroundFile = Info.Filename;
@@ -51,7 +53,7 @@ namespace Resizetizer
 			// If we have vectors we can emit an adaptive icon
 			if (backgroundIsVector && (foregroundIsVector || !foregroundExists))
 			{
-				var backgroundDestination = Path.Combine(fullIntermediateOutputPath.FullName, "drawable-v24", name + "_background.xml");
+				var backgroundDestination = Path.Combine(fullIntermediateOutputPath.FullName, "drawable-v24", AppIconName + "_background.xml");
 				var fileInfo = new FileInfo(backgroundDestination);
 				if (!fileInfo.Directory.Exists)
 					fileInfo.Directory.Create();
@@ -61,7 +63,7 @@ namespace Resizetizer
 				if (!string.IsNullOrEmpty(bgConvertErr))
 					throw new Svg2AndroidDrawableConversionException(bgConvertErr, backgroundFile);
 
-				var foregroundDestination = Path.Combine(fullIntermediateOutputPath.FullName, "drawable", name + "_foreground.xml");
+				var foregroundDestination = Path.Combine(fullIntermediateOutputPath.FullName, "drawable", AppIconName + "_foreground.xml");
 				fileInfo = new FileInfo(foregroundDestination);
 				if (!fileInfo.Directory.Exists)
 					fileInfo.Directory.Create();
@@ -77,10 +79,10 @@ namespace Resizetizer
 				else
 					File.WriteAllText(foregroundDestination, EmptyVectorDrawable);
 
-				var adaptiveIconXmlStr = AdaptiveIconDrawableXml.Replace("{name}", name);
+				var adaptiveIconXmlStr = AdaptiveIconDrawableXml.Replace("{name}", AppIconName);
 
-				var adaptiveIconDestination = Path.Combine(fullIntermediateOutputPath.FullName, "mipmap-anydpi-v26", name + ".xml");
-				var adaptiveIconRoundDestination = Path.Combine(fullIntermediateOutputPath.FullName, "mipmap-anydpi-v26", name + "_round.xml");
+				var adaptiveIconDestination = Path.Combine(fullIntermediateOutputPath.FullName, "mipmap-anydpi-v26", AppIconName + ".xml");
+				var adaptiveIconRoundDestination = Path.Combine(fullIntermediateOutputPath.FullName, "mipmap-anydpi-v26", AppIconName + "_round.xml");
 
 				fileInfo = new FileInfo(adaptiveIconDestination);
 				if (!fileInfo.Directory.Exists)

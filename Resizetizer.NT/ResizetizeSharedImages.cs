@@ -73,14 +73,20 @@ namespace Resizetizer
 			foreach (var img in images) {
 				if (img.IsAppIcon)
 				{
+					var appIconName = Path.GetFileNameWithoutExtension(img.Filename);
+
+					// Generate the actual bitmap app icons themselves
+					var appIconDpis = DpiPath.GetAppIconDpis(PlatformType, appIconName);
+
 					Log.LogMessage(MessageImportance.Low, $"App Icon");
 
 					// Apple and Android have special additional files to generate for app icons
 					if (PlatformType == "android")
 					{
 						Log.LogMessage(MessageImportance.Low, $"Android Adaptive Icon Generator");
-					
-						var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, IntermediateOutputPath, this);
+
+						appIconName = appIconName.ToLowerInvariant();
+
 						var iconsGenerated = adaptiveIconGen.Generate();
 
 						resizedImages.AddRange(iconsGenerated);
@@ -89,7 +95,7 @@ namespace Resizetizer
 					{
 						Log.LogMessage(MessageImportance.Low, $"iOS Icon Assets Generator");
 					
-						var appleAssetGen = new AppleIconAssetsGenerator(img, IntermediateOutputPath, this);
+						var appleAssetGen = new AppleIconAssetsGenerator(img, appIconName, IntermediateOutputPath, appIconDpis, this);
 
 						var assetsGenerated = appleAssetGen.Generate();
 
@@ -98,16 +104,16 @@ namespace Resizetizer
 					
 					Log.LogMessage(MessageImportance.Low, $"Generating App Icon Bitmaps for DPIs");
 					
-					// Generate the actual bitmap app icons themselves
-					var appIconDpis = DpiPath.GetAppIconDpis(PlatformType);
+					
 
 					var appTool = new SkiaSharpAppIconTools(img, this);
 
 					foreach (var dpi in appIconDpis)
 					{
 						Log.LogMessage(MessageImportance.Low, $"App Icon: " + dpi);
-					
-						var destination = Resizer.GetFileDestination(img, dpi, IntermediateOutputPath);
+
+						var destination = Resizer.GetFileDestination(img, dpi, IntermediateOutputPath)
+							.Replace("{name}", appIconName);
 						appTool.Resize(dpi, Path.ChangeExtension(destination, ".png"));
 					}
 				}
