@@ -87,6 +87,7 @@ namespace Resizetizer
 
 						appIconName = appIconName.ToLowerInvariant();
 
+						var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, appIconName, IntermediateOutputPath, this);
 						var iconsGenerated = adaptiveIconGen.Generate();
 
 						resizedImages.AddRange(iconsGenerated);
