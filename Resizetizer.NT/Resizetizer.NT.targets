@@ -32,7 +32,7 @@
 
 		<ResizetizeCollectImagesBeforeTargets>
 			$(ResizetizeCollectImagesBeforeTargets);
-			_CollectBundleResources;
+			_CollectBundleResources;_CompileImageAssets;
 		</ResizetizeCollectImagesBeforeTargets>
 
 		<ResizetizeAfterTargets>
@@ -175,9 +175,9 @@
 			</_ResizetizerCollectedBundleResourceImages>
 
 			<!-- iOS Expects images in this group -->
-			<BundleResource Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('resizetizer.xcassets'))' != 'True'" />
+			<BundleResource Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Resizetizer.xcassets'))' != 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''" />
 
-			<ImageAsset Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('resizetizer.xcassets'))' == 'True'" />
+			<ImageAsset Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Resizetizer.xcassets'))' == 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''" />
 
 			<FileWrites Include="@(_ResizetizerCollectedBundleResourceImages)" />
 		</ItemGroup>
