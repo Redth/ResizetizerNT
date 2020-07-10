@@ -49,7 +49,7 @@ namespace Resizetizer
 						new JProperty("idiom", idiom),
 						new JProperty("size", $"{dpi.Size.Value.Width}x{dpi.Size.Value.Height}"),
 						new JProperty("scale", dpi.Scale.ToString("0") + "x"),
-						new JProperty("filename", AppIconName + dpi.FileSuffix)));
+						new JProperty("filename", AppIconName + dpi.FileSuffix + ".png")));
 				}
 			}
 
