@@ -32,7 +32,7 @@
 
 		<ResizetizeCollectImagesBeforeTargets>
 			$(ResizetizeCollectImagesBeforeTargets);
-			_CollectBundleResources;_CompileImageAssets;
+			_CollectBundleResources;_BeforeCoreCompileImageAssets;
 		</ResizetizeCollectImagesBeforeTargets>
 
 		<ResizetizeAfterTargets>
