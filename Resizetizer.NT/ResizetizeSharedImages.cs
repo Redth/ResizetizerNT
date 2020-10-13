@@ -68,9 +68,8 @@ namespace Resizetizer
 
 			var resizedImages = new ConcurrentBag<ResizedImageInfo>();
 
-			// System.Threading.Tasks.Parallel.ForEach(images, img =>
-			// {
-			foreach (var img in images) {
+			System.Threading.Tasks.Parallel.ForEach(images, img =>
+			{
 				if (img.IsAppIcon)
 				{
 					var appIconName = Path.GetFileNameWithoutExtension(img.Filename);
@@ -90,7 +89,8 @@ namespace Resizetizer
 						var adaptiveIconGen = new AndroidAdaptiveIconGenerator(img, appIconName, IntermediateOutputPath, this);
 						var iconsGenerated = adaptiveIconGen.Generate();
 
-						resizedImages.AddRange(iconsGenerated);
+						foreach (var iconGenerated in iconsGenerated)
+							resizedImages.Add(iconGenerated);
 					}
 					else if (PlatformType == "ios")
 					{
@@ -100,12 +100,11 @@ namespace Resizetizer
 
 						var assetsGenerated = appleAssetGen.Generate();
 
-						resizedImages.AddRange(assetsGenerated);
+						foreach (var assetGenerated in assetsGenerated)
+							resizedImages.Add(assetGenerated);
 					}
-					
+
 					Log.LogMessage(MessageImportance.Low, $"Generating App Icon Bitmaps for DPIs");
-					
-					
 
 					var appTool = new SkiaSharpAppIconTools(img, this);
 
@@ -155,7 +154,7 @@ namespace Resizetizer
 
 					Log.LogMessage(MessageImportance.Low, $"{op} took {opStopwatch.ElapsedMilliseconds}ms");
 				}
-			} //);
+			});
 			
 			var copiedResources = new List<TaskItem>();
 
