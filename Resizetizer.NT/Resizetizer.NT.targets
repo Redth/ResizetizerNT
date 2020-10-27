@@ -148,7 +148,7 @@
 
 		<!-- Where in obj/ to store these -->
 		<PropertyGroup>
-			<ResizetizerIntermediateOutputPath>$(IntermediateOutputPath)resizetizer\</ResizetizerIntermediateOutputPath>
+			<ResizetizerIntermediateOutputPath>$(IntermediateOutputPath)resizetize\r\</ResizetizerIntermediateOutputPath>
 		</PropertyGroup>
 
 		<!-- Resize the images -->
@@ -226,7 +226,7 @@
 
 	<Target Name="_CleanResizetizer">
 		<PropertyGroup>
-			<ResizetizerIntermediateOutputPath>$(IntermediateOutputPath)resizetizer\</ResizetizerIntermediateOutputPath>
+			<ResizetizerIntermediateOutputPath>$(IntermediateOutputPath)resizetize\r\</ResizetizerIntermediateOutputPath>
 		</PropertyGroup>
 
 		<RemoveDir Directories="$(ResizetizerIntermediateOutputPath)" Condition="Exists ('$(ResizetizerIntermediateOutputPath)' )" />

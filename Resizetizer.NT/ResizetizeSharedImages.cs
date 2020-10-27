@@ -3,6 +3,7 @@ using Microsoft.Build.Utilities;
 //using SixLabors.ImageSharp;
 //using SixLabors.ImageSharp.Processing;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -63,7 +64,7 @@ namespace Resizetizer
 
 			var originalScaleDpi = DpiPath.GetOriginal(PlatformType);
 
-			var resizedImages = new List<ResizedImageInfo>();
+			var resizedImages = new ConcurrentBag<ResizedImageInfo>();
 
 			System.Threading.Tasks.Parallel.ForEach(images, img =>
 			{
