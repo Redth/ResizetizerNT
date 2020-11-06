@@ -31,7 +31,7 @@ namespace Resizetizer
 
 			var fullIntermediateOutputPath = new DirectoryInfo(intermediateOutputPath);
 
-			var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, name + dpi.FileSuffix + ext);
+			var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, info.IconNamePrefix + name + info.IconNamePostfix + dpi.FileSuffix + ext);
 
 			var fileInfo = new FileInfo(destination);
 			if (!fileInfo.Directory.Exists)
