@@ -78,6 +78,15 @@ If you'd like to render your images with a tint, you can set the `TintColor` att
 
 Example: `<Image Source="hamburger.png" TintColor="#66b3ff" />`
 
+## ImageNamePrefix and ImageNamePostfix
+If you'd like to prepend or append some text to the image name, then use `ImageNamePrefix` and `ImageNamePostfix` attributes accordingly. This is useful when you want to resize same image into multiple colors.
+
+Example:
+```bash
+<Image Source="hamburger.png" TintColor="#FF0010FF" ImageNamePrefix="blue_" />
+<Image Source="hamburger.png" TintColor="#FFFF0000" ImageNamePostfix="_red" />
+```
+
 # Planning
 
 ## Bitmaps
