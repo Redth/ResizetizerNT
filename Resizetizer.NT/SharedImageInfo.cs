@@ -15,9 +15,9 @@ namespace Resizetizer
 
 		public Color? TintColor { get; set; }
 		
-		public string IconNamePrefix { get; set; }
+		public string ImageNamePrefix { get; set; }
 		
-		public string IconNamePostfix { get; set; }
+		public string ImageNamePostfix { get; set; }
 
 		public bool IsVector
 			=> Path.GetExtension(Filename)?.TrimStart('.')?.ToLowerInvariant()?.Equals("svg") ?? false;

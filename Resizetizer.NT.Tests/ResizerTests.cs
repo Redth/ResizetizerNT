@@ -15,7 +15,7 @@ namespace Resizetizer.NT.Tests
 			var info = new SharedImageInfo
 			{
 				Filename = "image.svg",
-				IconNamePrefix = prefix
+				ImageNamePrefix = prefix
 			};
 			
 			var fixture = CreateClass(info);
@@ -33,7 +33,7 @@ namespace Resizetizer.NT.Tests
 			var info = new SharedImageInfo
 			{
 				Filename = "image.svg",
-				IconNamePostfix = postfix
+				ImageNamePostfix = postfix
 			};
 			
 			var fixture = CreateClass(info);

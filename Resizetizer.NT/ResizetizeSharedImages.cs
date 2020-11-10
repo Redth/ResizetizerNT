@@ -145,9 +145,9 @@ namespace Resizetizer
 
 				info.TintColor = Utils.ParseColorString(image.GetMetadata("TintColor"));
 
-				info.IconNamePrefix = image.GetMetadata("ImageNamePrefix");
+				info.ImageNamePrefix = image.GetMetadata("ImageNamePrefix");
 				
-				info.IconNamePostfix = image.GetMetadata("ImageNamePostfix");
+				info.ImageNamePostfix = image.GetMetadata("ImageNamePostfix");
 
 				// TODO:
 				// - Parse out custom DPI's
