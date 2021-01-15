@@ -27,7 +27,7 @@ jobs:
           mkdir ./output
           mkdir ./artifacts
           dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
-          dotnet pack --output ./artifacts -p:PackageVersion=$NUPKG_VER -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
+          dotnet pack --output ./artifacts -p:PackageVersion=$VERSION -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
       - name: Build and Pack - CI
         if: github.event_name != 'release'
         run: |
@@ -35,7 +35,7 @@ jobs:
           mkdir ./output
           mkdir ./artifacts
           dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
-          dotnet pack --output ./artifacts -p:PackageVersion=$NUPKG_VER -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
+          dotnet pack --output ./artifacts -p:PackageVersion=$VERSION -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
       - name: Run Tests
         run: dotnet test --configuration Release ./Resizetizer.NT.Tests/Resizetizer.NT.Tests.csproj
       - name: Upload Artifacts
