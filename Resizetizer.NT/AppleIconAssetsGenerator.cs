@@ -63,11 +63,11 @@ namespace Resizetizer
 					new JProperty("version", 1),
 					new JProperty("author", "xcode"))));
 
-			File.WriteAllText(assetContentsFile, infoJsonProp.ToString());
+			//File.WriteAllText(assetContentsFile, infoJsonProp.ToString());
 			File.WriteAllText(appIconSetContentsFile, appIconContentsJson.ToString());
 
 			return new List<ResizedImageInfo> {
-				new ResizedImageInfo { Dpi = new DpiPath("", 1), Filename = assetContentsFile },
+				//new ResizedImageInfo { Dpi = new DpiPath("", 1), Filename = assetContentsFile },
 				new ResizedImageInfo { Dpi = new DpiPath("", 1), Filename = appIconSetContentsFile }
 			};
 		}
