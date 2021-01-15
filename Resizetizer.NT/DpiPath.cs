@@ -57,7 +57,7 @@ namespace Resizetizer
 				new DpiPath("", 3.0m, "@3x"),
 			};
 
-		internal const string IosAppIconPath = "Resizetizer.xcassets/{name}.appiconset";
+		internal const string IosAppIconPath = "Assets.xcassets/AppIcon.appiconset";
 
 		public static DpiPath[] IosAppIcon
 			=> new[]
