@@ -175,9 +175,15 @@
 			</_ResizetizerCollectedBundleResourceImages>
 
 			<!-- iOS Expects images in this group -->
-			<BundleResource Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Resizetizer.xcassets'))' != 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''" />
+			<BundleResource Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' != 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''" />
 
-			<ImageAsset Include="@(_ResizetizerCollectedBundleResourceImages)" Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Resizetizer.xcassets'))' == 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''" />
+			<ImageAsset
+				Include="@(_ResizetizerCollectedBundleResourceImages)"
+				Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' == 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''">
+				<LogicalName>Assets.xcassets\AppIcon.appiconset\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</LogicalName>
+				<TargetPath>Assets.xcassets\AppIcon.appiconset\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</TargetPath>
+				<Link>Assets.xcassets\AppIcon.appiconset\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</Link>
+			</ImageAsset>
 
 			<FileWrites Include="@(_ResizetizerCollectedBundleResourceImages)" />
 		</ItemGroup>
