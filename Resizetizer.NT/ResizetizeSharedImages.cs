@@ -108,12 +108,15 @@ namespace Resizetizer
 
 					var appTool = new SkiaSharpAppIconTools(img, this);
 
+					Log.LogMessage(MessageImportance.Low, $"App Icon: Intermediate Path " + IntermediateOutputPath);
+
 					foreach (var dpi in appIconDpis)
 					{
 						Log.LogMessage(MessageImportance.Low, $"App Icon: " + dpi);
 
 						var destination = Resizer.GetFileDestination(img, dpi, IntermediateOutputPath)
 							.Replace("{name}", appIconName);
+						Log.LogMessage(MessageImportance.Low, $"App Icon Destination: " + destination);
 						appTool.Resize(dpi, Path.ChangeExtension(destination, ".png"));
 					}
 				}
