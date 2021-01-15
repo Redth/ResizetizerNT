@@ -4,7 +4,7 @@
     <RestorePackagesPath>..\packages</RestorePackagesPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Resizetizer.NT" Version="0.2.0" />
+    <PackageReference Include="Resizetizer.NT" Version="0.99.0" />
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1269" />
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
   </ItemGroup>

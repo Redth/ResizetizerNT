@@ -7,7 +7,7 @@
 
 		<PackageId>Resizetizer.NT</PackageId>
 		<Title>Resizetizer NT for Xamarin Image Assets</Title>
-		<Version>0.2</Version>
+		<Version>0.99.0</Version>
 		<Authors>Redth</Authors>
 		<Owners>Redth</Owners>
 		<summary>Easily and automatically resize your source image assets as part of your build process.</summary>
@@ -116,6 +116,14 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 
+		<None Include="$(PkgSvg2VectorDrawable_Net)\lib\netstandard2.0\Svg2VectorDrawable.Net.dll" Visible="False" Pack="True" PackagePath="build\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Include="$(PkgNewtonsoft_Json)\lib\netstandard2.0\Newtonsoft.Json.dll" Visible="False" Pack="True" PackagePath="build\">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
 	</ItemGroup>
 
 	<ItemGroup>
@@ -142,25 +150,29 @@
 		<None Include="$(PkgHarfBuzzSharp)\lib\net462\HarfBuzzSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgHarfBuzzSharp)\runtimes\osx\native\libHarfBuzzSharp.dylib" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 		<None Include="$(PkgHarfBuzzSharp)\runtimes\win-x86\native\libHarfBuzzSharp.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+		<None Include="$(PkgSvg2VectorDrawable_Net)\lib\netstandard2.0\Svg2VectorDrawable.Net.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
+		<None Include="$(PkgNewtonsoft_Json)\lib\netstandard2.0\Newtonsoft.Json.dll" Visible="False" Pack="True" PackagePath="buildTransitive\" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Fizzler" Version="1.2.0" GeneratePathProperty="true" PrivateAssets="all" />
-		<PackageReference Include="HarfBuzzSharp" Version="2.6.1.6" GeneratePathProperty="true" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.Build.Framework" Version="16.6.0" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.6.0" PrivateAssets="all" />
-		<PackageReference Include="SkiaSharp" Version="2.80.1" GeneratePathProperty="true" PrivateAssets="all" />
-		<PackageReference Include="SkiaSharp.HarfBuzz" Version="2.80.1" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="HarfBuzzSharp" Version="2.6.1.7" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="16.7.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.7.0" PrivateAssets="all" />
+		<PackageReference Include="SkiaSharp" Version="2.80.2" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="SkiaSharp.HarfBuzz" Version="2.80.2" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="Svg.Skia" Version="0.4.1" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="Svg.Custom" Version="0.4.1" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="Svg.Picture" Version="0.4.1" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.Memory" Version="4.5.4" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.Buffers" Version="4.5.1" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.IO.UnmanagedMemoryStream" Version="4.3.0" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.1" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.Drawing.Common" Version="4.7.0" GeneratePathProperty="true" PrivateAssets="all" />
 		<PackageReference Include="System.ObjectModel" Version="4.3.0" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="Svg2VectorDrawable.Net" Version="0.1.0" GeneratePathProperty="true" PrivateAssets="all" />
 	</ItemGroup>
 
 </Project>
