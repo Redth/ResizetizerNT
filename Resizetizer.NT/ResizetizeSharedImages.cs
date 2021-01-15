@@ -72,7 +72,7 @@ namespace Resizetizer
 			{
 				if (img.IsAppIcon)
 				{
-					var appIconName = Path.GetFileNameWithoutExtension(img.Filename);
+					var appIconName = "appicon"; // Path.GetFileNameWithoutExtension(img.Filename);
 
 					// Generate the actual bitmap app icons themselves
 					var appIconDpis = DpiPath.GetAppIconDpis(PlatformType, appIconName);
