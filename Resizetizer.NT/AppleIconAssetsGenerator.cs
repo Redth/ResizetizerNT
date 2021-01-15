@@ -37,7 +37,10 @@ namespace Resizetizer
 			var assetContentsFile = Path.Combine(outputAssetsDir, "Contents.json");
 			var appIconSetContentsFile = Path.Combine(outputAppIconSetDir, "Contents.json");
 
-			var assetContentsJson = new JObject(new JProperty("info", new JObject(new JProperty("version", 1), new JProperty("author", "resizetizer"))));
+			var infoJsonProp = new JObject(
+				new JProperty("info", new JObject(
+					new JProperty("version", 1),
+					new JProperty("author", "xcode"))));
 
 			var appIconImagesJson = new List<JObject>();
 
@@ -53,9 +56,14 @@ namespace Resizetizer
 				}
 			}
 
-			var appIconContentsJson = new JObject(new JProperty("images", appIconImagesJson.ToArray()));
+			var appIconContentsJson = new JObject(
+				new JProperty("images", appIconImagesJson.ToArray()),
+				new JProperty("properties", new JObject()),
+				new JProperty("info", new JObject(
+					new JProperty("version", 1),
+					new JProperty("author", "xcode"))));
 
-			File.WriteAllText(assetContentsFile, assetContentsJson.ToString());
+			File.WriteAllText(assetContentsFile, infoJsonProp.ToString());
 			File.WriteAllText(appIconSetContentsFile, appIconContentsJson.ToString());
 
 			return new List<ResizedImageInfo> {
