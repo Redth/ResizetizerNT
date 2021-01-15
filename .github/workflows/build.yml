@@ -9,7 +9,7 @@ jobs:
     build:
       name: Build
       env:
-        NUPKG_MAJOR: 0.1
+        NUPKG_MAJOR: 0.3
       runs-on: macos-latest
       steps:
       - name: Checkout
@@ -18,17 +18,24 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.100
-      - name: Setup Environment
-        run: mkdir ./output
-      - name: Define CI Version
-        run: echo ::set-env name=NUPKG_VER::$NUPKG_MAJOR-pre$GITHUB_RUN_ID
-      - name: Define Release Version
+      - name: Build and Pack - Release
         if: github.event_name == 'release'
-        run: echo ::set-env name=NUPKG_VER::${GITHUB_REF/refs\/tags\//}
-      - name: Build Project
-        run: dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
-      - name: NuGet Pack
-        run: dotnet pack --output ./artifacts -p:PackageVersion=$NUPKG_VER -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
+        run: |
+          arrTag=(${GITHUB_REF//\// })
+          VERSION="${arrTag[2]}"
+          VERSION="${VERSION//v}"
+          mkdir ./output
+          mkdir ./artifacts
+          dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
+          dotnet pack --output ./artifacts -p:PackageVersion=$NUPKG_VER -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
+      - name: Build and Pack - CI
+        if: github.event_name != 'release'
+        run: |
+          VERSION=$NUPKG_MAJOR-ci$GITHUB_RUN_ID
+          mkdir ./output
+          mkdir ./artifacts
+          dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
+          dotnet pack --output ./artifacts -p:PackageVersion=$NUPKG_VER -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
       - name: Run Tests
         run: dotnet test --configuration Release ./Resizetizer.NT.Tests/Resizetizer.NT.Tests.csproj
       - name: Upload Artifacts
@@ -60,5 +67,5 @@ jobs:
           run: |
             nuget sources add -Name "GPR" -Source "https://nuget.pkg.github.com/Redth/index.json" -UserName Redth -Password ${{ secrets.GITHUB_TOKEN }}
             nuget setApiKey ${{ secrets.NUGET_API_KEY }} -Source "GPR"
-            nuget push NuGet\*.nupkg -Source "GPR"
-            nuget push NuGet\*.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey ${{ secrets.NUGET_ORG_API_KEY }}
+            nuget push NuGet\*.nupkg --source "GPR" --skip-duplicate
+            nuget push NuGet\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_ORG_API_KEY }} --skip-duplicate
