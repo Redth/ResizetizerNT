@@ -2,13 +2,15 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 
 namespace Resizetizer
 {
 	internal abstract class SkiaSharpTools
 	{
 		public static SkiaSharpTools Create(bool isVector, string filename, Size? baseSize, Color? tintColor, ILogger logger)
-			=> isVector ? new SkiaSharpSvgTools(filename, baseSize, tintColor, logger) as SkiaSharpTools
+			=> isVector
+				? new SkiaSharpSvgTools(filename, baseSize, tintColor, logger) as SkiaSharpTools
 				: new SkiaSharpBitmapTools(filename, baseSize, tintColor, logger);
 
 		public SkiaSharpTools(SharedImageInfo info, ILogger logger)
@@ -58,15 +60,12 @@ namespace Resizetizer
 					canvas.Clear(SKColors.Transparent);
 					canvas.Save();
 					canvas.Scale(scale, scale);
-					DrawUnscaled(canvas);
+					DrawUnscaled(canvas, scale);
 				}
 
 				// Save (encode)
-				using (var pixmap = tempBitmap.PeekPixels())
-				using (var wrapper = new SKFileWStream(destination))
-				{
-					pixmap.Encode(wrapper, SKPngEncoderOptions.Default);
-				}
+				using var stream = File.Create(destination);
+				tempBitmap.Encode(stream, SKEncodedImageFormat.Png, 100);
 			}
 
 			sw.Stop();
@@ -75,7 +74,7 @@ namespace Resizetizer
 
 		public abstract SKSize GetOriginalSize();
 
-		public abstract void DrawUnscaled(SKCanvas canvas);
+		public abstract void DrawUnscaled(SKCanvas canvas, float scale);
 
 		public (SKSizeI, float) GetScaledSize(SKSize originalSize, DpiPath dpi)
 		{

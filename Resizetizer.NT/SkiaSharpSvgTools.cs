@@ -41,8 +41,36 @@ namespace Resizetizer
 		public override SKSize GetOriginalSize() =>
 			svg.Picture.CullRect.Size;
 
-		public override void DrawUnscaled(SKCanvas canvas) =>
-			canvas.DrawPicture(svg.Picture, Paint);
+		public override void DrawUnscaled(SKCanvas canvas, float scale)
+		{
+			if (scale > 1)
+			{
+				// draw using default scaling
+				canvas.DrawPicture(svg.Picture, Paint);
+			}
+			else
+			{
+				// draw using raster downscaling
+				var size = GetOriginalSize();
+
+				// vector scaling has rounding issues, so first draw as intended
+				var info = new SKImageInfo((int)size.Width, (int)size.Height);
+				using var bmp = new SKBitmap(info);
+				using var cvn = new SKCanvas(bmp);
+
+				// draw to a larger canvas first
+				cvn.Clear();
+				cvn.DrawPicture(svg.Picture, Paint);
+
+				// set the paint to be the highest quality it can find
+				var paint = Paint?.Clone() ?? new SKPaint();
+				paint.IsAntialias = true;
+				paint.FilterQuality = SKFilterQuality.High;
+
+				// draw to the main canvas using the correct quality settings
+				canvas.DrawBitmap(bmp, 0, 0, paint);
+			}
+		}
 
 		public void Dispose()
 		{
