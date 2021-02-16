@@ -58,7 +58,7 @@ namespace Resizetizer
 					canvas.Save();
 					canvas.Scale(bgScale, bgScale);
 
-					backgroundTools.DrawUnscaled(canvas);
+					backgroundTools.DrawUnscaled(canvas, bgScale);
 					canvas.Restore();
 
 					if (hasForeground)
@@ -89,20 +89,17 @@ namespace Resizetizer
 
 						// scale so the forground is the same size as the background
 						canvas.Scale(fgScale, fgScale);
-						
+
 						// scale to the user scale, centering
 						canvas.Scale(userFgScale, userFgScale, fgScaledSizeCenterX, fgScaledSizeCenterY);
 
-						foregroundTools.DrawUnscaled(canvas);
+						foregroundTools.DrawUnscaled(canvas, fgScale * userFgScale);
 					}
 				}
 
 				// Save (encode)
-				using (var pixmap = tempBitmap.PeekPixels())
-				using (var wrapper = new SKFileWStream(destination))
-				{
-					pixmap.Encode(wrapper, SKPngEncoderOptions.Default);
-				}
+				using var wrapper = File.Create(destination);
+				tempBitmap.Encode(wrapper, SKEncodedImageFormat.Png, 100);
 			}
 
 			sw.Stop();

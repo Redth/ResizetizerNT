@@ -35,12 +35,14 @@ namespace Resizetizer.NT.Tests
 			[InlineData(2, 0.5, "appicon.svg", "appiconfg.svg")]
 			[InlineData(2, 1, "appicon.svg", "appiconfg.svg")]
 			[InlineData(2, 2, "appicon.svg", "appiconfg.svg")]
+			[InlineData(3, 3, "appicon.svg", "appiconfg.svg")]
 			// scary increments
 			[InlineData(0.3, 0.3, "appicon.svg", "appiconfg.svg")]
 			[InlineData(0.3, 0.7, "appicon.svg", "appiconfg.svg")]
 			[InlineData(0.7, 0.7, "appicon.svg", "appiconfg.svg")]
 			[InlineData(1, 0.7, "appicon.svg", "appiconfg.svg")]
 			[InlineData(2, 0.7, "appicon.svg", "appiconfg.svg")]
+			[InlineData(2.3, 2.3, "appicon.svg", "appiconfg.svg")]
 			[InlineData(0.3, 1, "appicon.svg", "appiconfg.svg")]
 			[InlineData(0.3, 2, "appicon.svg", "appiconfg.svg")]
 			// scary increments
