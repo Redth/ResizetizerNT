@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Resizetizer
 {
@@ -26,5 +27,11 @@ namespace Resizetizer
 
 		private static bool IsVectorFilename(string filename)
 			=> Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
+
+		static readonly Regex rxFilename
+			= new Regex(@"^[a-z]+[a-z0-9]{0,}$", RegexOptions.Singleline);
+
+		public bool IsValidFilename
+			=> rxFilename.IsMatch(Path.GetFileNameWithoutExtension(Filename));
 	}
 }
