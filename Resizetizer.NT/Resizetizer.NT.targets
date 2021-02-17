@@ -15,55 +15,69 @@
 			$(CleanDependsOn);
 			_CleanResizetizer;
 		</CleanDependsOn>
-
-		<_ResizetizerIsAndroid Condition="'$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroid>
-		<_ResizetizerIsiOS Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.iOS' And ('$(OutputType)' != 'Library' OR '$(IsAppExtension)'=='True')">True</_ResizetizerIsiOS>
-		<_ResizetizerIsUWP Condition="'$(TargetPlatformIdentifier)'=='UAP' And '$(OutputType)' == 'AppContainerExe'">True</_ResizetizerIsUWP>
-		<_ResizetizerIsWPF Condition="'$(IsApplication)' == 'True' And '$(NuGetRuntimeIdentifier)' == 'win' And '$(TargetPlatformIdentifier)'=='Windows'">True</_ResizetizerIsWPF>
-
+		
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)resizetizer.inputs</_ResizetizerInputsFile>
-
-		<!-- <ResizetizerIncludeAllImages Condition="'$(ResizetizerIncludeAllImages)' == ''">False</ResizetizerIncludeAllImages> -->
+		
 		<ResizetizerIncludeSelfProject Condition="'$(ResizetizerIncludeSelfProject)' == ''">False</ResizetizerIncludeSelfProject>
 	</PropertyGroup>
-
+	
+	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'">
+		<_ResizetizerIsNetCore>False</_ResizetizerIsNetCore>
+		<_ResizetizerIsAndroidApp Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroidApp>
+		<_ResizetizerIsiOSApp Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_ResizetizerIsiOSApp>
+		<_ResizetizerIsUWPApp Condition="'$(TargetPlatformIdentifier)' == 'UAP' And '$(OutputType)' == 'AppContainerExe'">True</_ResizetizerIsUWPApp>
+		<_ResizetizerIsWPFApp Condition="'$(IsApplication)' == 'True' And '$(NuGetRuntimeIdentifier)' == 'win' And '$(TargetPlatformIdentifier)' == 'Windows'">True</_ResizetizerIsWPFApp>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
+		<_ResizetizerIsNetCore>True</_ResizetizerIsNetCore>
+		<_ResizetizerIsAndroidApp Condition="'$(TargetPlatformIdentifier)' == 'Android' And '$(OutputType)' == 'Exe'">True</_ResizetizerIsAndroidApp>
+		<_ResizetizerIsiOSApp Condition="'$(TargetPlatformIdentifier)' == 'iOS' And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_ResizetizerIsiOSApp>
+		<_ResizetizerIsUWPApp Condition="'$(TargetPlatformIdentifier)'=='UAP' And '$(OutputType)' == 'AppContainerExe'">True</_ResizetizerIsUWPApp>
+		<_ResizetizerIsWPFApp Condition="'$(IsApplication)' == 'True' And '$(NuGetRuntimeIdentifier)' == 'win' And '$(TargetPlatformIdentifier)'=='Windows'">True</_ResizetizerIsWPFApp>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWPFApp)' == 'True'">
+		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
+	</PropertyGroup>
+	
 	<!-- iOS -->
-	<PropertyGroup Condition="'$(_ResizetizerIsiOS)' == 'True' Or '$(ResizetizeriOS)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
 		<ResizetizerPlatformType>ios</ResizetizerPlatformType>
 
-		<ResizetizeCollectImagesBeforeTargets>
-			$(ResizetizeCollectImagesBeforeTargets);
+		<ResizetizeCollectItemsBeforeTargets>
+			$(ResizetizeCollectItemsBeforeTargets);
 			_CollectBundleResources;_BeforeCoreCompileImageAssets;
-		</ResizetizeCollectImagesBeforeTargets>
+		</ResizetizeCollectItemsBeforeTargets>
 
 		<ResizetizeAfterTargets>
 			$(ResizetizeAfterTargets);
-			ResizetizeCollectImages;
+			ResizetizeCollectItems;
 		</ResizetizeAfterTargets>
 	</PropertyGroup>
 
 	<!-- Android -->
-	<PropertyGroup Condition="'$(_ResizetizerIsAndroid)' == 'True' Or '$(ResizetizerAndroid)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
 		<ResizetizerPlatformType>android</ResizetizerPlatformType>
 
-		<ResizetizeCollectImagesAfterTargets>
-			$(ResizetizeCollectImagesBeforeTargets);
+		<ResizetizeCollectItemsAfterTargets>
+			$(ResizetizeCollectItemsBeforeTargets);
 			ResolveProjectReferences;
-		</ResizetizeCollectImagesAfterTargets>
+		</ResizetizeCollectItemsAfterTargets>
 
 		<ResizetizeAfterTargets>
 			$(ResizetizeAfterTargets);
-			ResizetizeCollectImages;
+			ResizetizeCollectItems;
 		</ResizetizeAfterTargets>
 	</PropertyGroup>
 
 	<!-- UWP -->
-	<PropertyGroup Condition="'$(_ResizetizerIsUWP)' == 'True' Or '$(ResizetizerUWP)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True'">
 		<ResizetizerPlatformType>uwp</ResizetizerPlatformType>
 
 		<ResizetizeDependsOnTargets>
 			$(ResizetizeDependsOnTargets);
-			ResizetizeCollectImages;
+			ResizetizeCollectItems;
 		</ResizetizeDependsOnTargets>
 
 		<ResizetizeBeforeTargets>
@@ -73,12 +87,12 @@
 	</PropertyGroup>
 
 	<!-- WPF -->
-	<PropertyGroup Condition="'$(_ResizetizerIsWPF)' == 'True' Or '$(ResizetizerWPF)' == 'True'">
+	<PropertyGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
 		<ResizetizerPlatformType>wpf</ResizetizerPlatformType>
 
 		<ResizetizeDependsOnTargets>
 			$(ResizetizeDependsOnTargets);
-			ResizetizeCollectImages;
+			ResizetizeCollectItems;
 		</ResizetizeDependsOnTargets>
 
 		<ResizetizeBeforeTargets>
@@ -107,10 +121,10 @@
 
 
 	<!-- Collect images from referenced projects -->
-	<Target Name="ResizetizeCollectImages"
-		Condition="'$(_ResizetizerIsAndroid)' == 'True' Or '$(_ResizetizerIsiOS)' == 'True' Or '$(_ResizetizerIsUWP)' == 'True' Or '$(_ResizetizerIsWPF)' == 'True'"
-		BeforeTargets="$(ResizetizeCollectImagesBeforeTargets)"
-		AfterTargets="$(ResizetizeCollectImagesAfterTargets)">
+	<Target Name="ResizetizeCollectItems"
+		Condition="'$(_ResizetizerIsCompatibleApp)' == 'True'"
+		BeforeTargets="$(ResizetizeCollectItemsBeforeTargets)"
+		AfterTargets="$(ResizetizeCollectItemsAfterTargets)">
 
 		<CallTarget Targets="GetSharedItems" Condition="'$(ResizetizerIncludeSelfProject)' == 'True'">
 			<Output
@@ -176,8 +190,8 @@
 		</ItemGroup>
 
 		<!-- iOS -->
-		<ItemGroup Condition="'$(_ResizetizerIsiOS)' == 'True'">
-			<!-- Batch the collected items into BundleResource which iOS expects -->
+		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True'">
+			<!-- Batch the collectd items into BundleResource which iOS expects -->
 			<_ResizetizerCollectedBundleResourceImages Include="@(_ResizetizerCollectedImages->'%(FullPath)')">
 				<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
 				<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
@@ -200,12 +214,12 @@
 		<!-- iOS Only -->
 		<!-- If on Windows, using build host, copy the files over to build server host too -->
 		<CopyFilesToBuildServer
-			Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOS)' == 'True' And '$(IsMacEnabled)'=='true'"
+			Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
 			SessionId="$(BuildSessionId)"
 			Files="@(_ResizetizerCollectedBundleResourceImages)" />
 
 		<!-- Android -->
-		<ItemGroup Condition="'$(_ResizetizerIsAndroid)' == 'True'">
+		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
 			<!-- If we had any images, add that obj/ folder as a resource directory -->
 			<LibraryResourceDirectories Condition="Exists ('$(ResizetizerIntermediateOutputPath)')" Include="$(ResizetizerIntermediateOutputPath)">
 				<StampFile>$(IntermediateOutputPath)resizetizer.stamp</StampFile>
@@ -215,7 +229,7 @@
 		</ItemGroup>
 
 		<!-- UWP -->
-		<ItemGroup Condition="'$(_ResizetizerIsUWP)' == 'True'">
+		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True'">
 			<ContentWithTargetPath Include="@(_ResizetizerCollectedImages)">
 				<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
 			</ContentWithTargetPath>
@@ -224,7 +238,7 @@
 		</ItemGroup>
 
 		<!-- WPF -->
-		<ItemGroup Condition="'$(_ResizetizerIsWPF)' == 'True'">
+		<ItemGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
 			<Resource Include="@(_ResizetizerCollectedImages)">
 				<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
 				<Link>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</Link>
