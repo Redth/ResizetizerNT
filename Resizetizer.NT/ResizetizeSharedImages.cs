@@ -135,7 +135,7 @@ namespace Resizetizer
 
 		void ProcessAppIcon(SharedImageInfo img, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
-			var appIconName = "appicon"; // Path.GetFileNameWithoutExtension(img.Filename);
+			var appIconName = Path.GetFileNameWithoutExtension(img.Filename);
 
 			// Generate the actual bitmap app icons themselves
 			var appIconDpis = DpiPath.GetAppIconDpis(PlatformType, appIconName);
