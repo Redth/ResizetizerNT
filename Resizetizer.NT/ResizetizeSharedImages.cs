@@ -268,7 +268,7 @@ namespace Resizetizer
 				r.Add(info);
 			}
 
-			var invalidFilenames = r.Where(s => s.IsValidFilename);
+			var invalidFilenames = r.Where(s => !s.IsValidFilename);
 
 			if (invalidFilenames.Any())
             {
