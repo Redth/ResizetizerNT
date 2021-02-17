@@ -1,6 +1,4 @@
-﻿//using SixLabors.ImageSharp;
-//using SixLabors.ImageSharp.Processing;
-using System;
+﻿using System;
 using System.IO;
 
 namespace Resizetizer

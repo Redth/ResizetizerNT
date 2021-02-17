@@ -3,6 +3,7 @@
 
 	<ItemGroup>
 		<AvailableItemName Include="SharedImage" />
+		<AvailableItemName Include="SharedFont" />
 	</ItemGroup>
 
 	<UsingTask
@@ -88,20 +89,22 @@
 
 	<!-- Finds absolute paths to any SharedImage in this project -->
 	<!-- App head projects will invoke this target on their project references to collect images -->
-	<Target Name="GetSharedImages" Outputs="@(ExportedSharedImage)">
+	<Target Name="GetSharedItems" Outputs="@(ExportedSharedItem)">
 
-		<!-- Include None="" items which are .svg or .png if the property is set -->
-		<!-- <ItemGroup Condition="'$(ResizetizerIncludeAllImages)' == 'True'">
-			<SharedImage
-				Include="@(None)"
-				Condition="'%(Extension)' == '.svg' Or '%(Extension)' == '.png'" />
-		</ItemGroup> -->
+		<ItemGroup>
+			<SharedItem Include="@(SharedImage)" ItemGroupName="SharedImage" />
+		</ItemGroup>
 
-		<ConvertToAbsolutePath Paths="@(SharedImage)">
-			<Output TaskParameter="AbsolutePaths" ItemName="ExportedSharedImage"/>
+		<ItemGroup>
+			<SharedItem Include="@(SharedFont)" ItemGroupName="SharedFont" />
+		</ItemGroup>
+
+		<ConvertToAbsolutePath Paths="@(SharedItem)">
+			<Output TaskParameter="AbsolutePaths" ItemName="ExportedSharedItem" />
 		</ConvertToAbsolutePath>
-		
+
 	</Target>
+
 
 	<!-- Collect images from referenced projects -->
 	<Target Name="ResizetizeCollectImages"
@@ -109,24 +112,30 @@
 		BeforeTargets="$(ResizetizeCollectImagesBeforeTargets)"
 		AfterTargets="$(ResizetizeCollectImagesAfterTargets)">
 
-		<CallTarget Targets="GetSharedImages" Condition="'$(ResizetizerIncludeSelfProject)' == 'True'">
+		<CallTarget Targets="GetSharedItems" Condition="'$(ResizetizerIncludeSelfProject)' == 'True'">
 			<Output
 				TaskParameter="TargetOutputs"
-				ItemName="SharedImage" />
+				ItemName="ImportedSharedItem" />
 		</CallTarget>
 
-		<!-- Invoke the GetSharedImages target on all project references -->
+		<!-- Invoke the GetSharedItems target on all project references -->
 		<!-- This will accumulate images into our SharedImage group -->
-		<!--<MSBuild Targets="GetSharedImages" Projects="@(_MSBuildProjectReferenceExistent)">-->
+		<!--<MSBuild Targets="GetSharedItems" Projects="@(_MSBuildProjectReferenceExistent)">-->
 		<MSBuild
-			Targets="GetSharedImages"
+			Targets="GetSharedItems"
 			Projects="@(ProjectReference)"
 			SkipNonexistentProjects="true"
 			SkipNonexistentTargets="true">
 			<Output
 				TaskParameter="TargetOutputs"
-				ItemName="SharedImage" />
+				ItemName="ImportedSharedItem" />
 		</MSBuild>
+
+		<ItemGroup>
+			<SharedImage
+				Include="@(ImportedSharedItem)"
+				Condition="'%(ImportedSharedItem.ItemGroupName)' == 'SharedImage'" />
+		</ItemGroup>
 
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
 		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
@@ -168,7 +177,7 @@
 
 		<!-- iOS -->
 		<ItemGroup Condition="'$(_ResizetizerIsiOS)' == 'True'">
-			<!-- Batch the collectd items into BundleResource which iOS expects -->
+			<!-- Batch the collected items into BundleResource which iOS expects -->
 			<_ResizetizerCollectedBundleResourceImages Include="@(_ResizetizerCollectedImages->'%(FullPath)')">
 				<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
 				<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>
@@ -180,9 +189,9 @@
 			<ImageAsset
 				Include="@(_ResizetizerCollectedBundleResourceImages)"
 				Condition="'@(_ResizetizerCollectedBundleResourceImages->Contains('Assets.xcassets'))' == 'True' and '%(_ResizetizerCollectedBundleResourceImages.Identity)' != ''">
-				<LogicalName>Assets.xcassets\AppIcon.appiconset\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</LogicalName>
-				<TargetPath>Assets.xcassets\AppIcon.appiconset\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</TargetPath>
-				<Link>Assets.xcassets\AppIcon.appiconset\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</Link>
+				<LogicalName>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</LogicalName>
+				<TargetPath>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</TargetPath>
+				<Link>Assets.xcassets\$([System.IO.Path]::GetFileName($([System.IO.Path]::GetDirectoryName(%(_ResizetizerCollectedBundleResourceImages.Identity)))))\%(_ResizetizerCollectedBundleResourceImages.Filename)%(_ResizetizerCollectedBundleResourceImages.Extension)</Link>
 			</ImageAsset>
 
 			<FileWrites Include="@(_ResizetizerCollectedBundleResourceImages)" />
