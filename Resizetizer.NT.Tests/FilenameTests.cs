@@ -69,7 +69,7 @@ namespace Resizetizer.NT.Tests
             => Assert.False(IsValidFilename(filename));
 
         [WindowsTheory]
-        [InlineData("C:\\some\\path\\on_e.png")]
+        [InlineData("C:\\some\\path\\on-e.png")]
         [InlineData("C:\\some\\path\\2o1.png")]
         [InlineData("C:\\some\\path\\tWo2.png")]
         [InlineData("C:\\some\\path\\t3+hree.png")]
