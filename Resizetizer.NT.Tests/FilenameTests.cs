@@ -61,7 +61,7 @@ namespace Resizetizer.NT.Tests
         [InlineData("1one.png")]
         [InlineData("O1.png")]
         [InlineData("t-wo2.png")]
-        [InlineData("t3_hree.png")]
+        [InlineData("_t3_hree.png")]
         [InlineData("f4our 5.png")]
         [InlineData("_1one.png")]
         [InlineData("o1_.png")]
