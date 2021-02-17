@@ -58,6 +58,16 @@ namespace Resizetizer.NT.Tests
 				Assert.True(File.Exists(file), $"File did not exist: {file}");
 			}
 
+			protected void AssertFileContains(string file, params string[] snippet)
+			{
+				file = Path.Combine(DestinationDirectory, file);
+
+				var content = File.ReadAllText(file);
+
+				foreach (var snip in snippet)
+					Assert.Contains(snip, content);
+			}
+
 			void IDisposable.Dispose()
 			{
 				if (Directory.Exists(DestinationDirectory))
@@ -247,12 +257,14 @@ namespace Resizetizer.NT.Tests
 				AssertFileSize("drawable-xhdpi/camera.png", 88, 88);
 			}
 
-			[Fact]
-			public void SingleRasterAppIconWithOnlyPathSucceedsWithoutVectors()
+			[Theory]
+			[InlineData("camera")]
+			[InlineData("camera_color")]
+			public void SingleRasterAppIconWithOnlyPathSucceedsWithoutVectors(string name)
 			{
 				var items = new[]
 				{
-					new TaskItem("images/camera.png", new Dictionary<string, string>
+					new TaskItem($"images/{name}.png", new Dictionary<string, string>
 					{
 						["IsAppIcon"] = bool.TrueString
 					}),
@@ -262,19 +274,21 @@ namespace Resizetizer.NT.Tests
 				var success = task.Execute();
 				Assert.True(success);
 
-				AssertFileSize("mipmap-mdpi/camera.png", 48, 48);
-				AssertFileSize("mipmap-xhdpi/camera.png", 96, 96);
+				AssertFileSize($"mipmap-mdpi/{name}.png", 48, 48);
+				AssertFileSize($"mipmap-xhdpi/{name}.png", 96, 96);
 
 				var vectors = Directory.GetFiles(DestinationDirectory, "*.xml", SearchOption.AllDirectories);
 				Assert.Empty(vectors);
 			}
 
-			[Fact]
-			public void SingleVectorAppIconWithOnlyPathSucceedsWithVectors()
+			[Theory]
+			[InlineData("appicon")]
+			[InlineData("camera")]
+			public void SingleVectorAppIconWithOnlyPathSucceedsWithVectors(string name)
 			{
 				var items = new[]
 				{
-					new TaskItem("images/camera.svg", new Dictionary<string, string>
+					new TaskItem($"images/{name}.svg", new Dictionary<string, string>
 					{
 						["IsAppIcon"] = bool.TrueString
 					}),
@@ -284,13 +298,22 @@ namespace Resizetizer.NT.Tests
 				var success = task.Execute();
 				Assert.True(success);
 
-				AssertFileSize("mipmap-mdpi/camera.png", 48, 48);
-				AssertFileSize("mipmap-xhdpi/camera.png", 96, 96);
+				AssertFileSize($"mipmap-mdpi/{name}.png", 48, 48);
+				AssertFileSize($"mipmap-xhdpi/{name}.png", 96, 96);
 
-				AssertFileExists("drawable/appicon_foreground.xml");
-				AssertFileExists("drawable-v24/appicon_background.xml");
-				AssertFileExists("mipmap-anydpi-v26/appicon_round.xml");
-				AssertFileExists("mipmap-anydpi-v26/appicon.xml");
+				AssertFileExists($"drawable/{name}_foreground.xml");
+				AssertFileExists($"drawable-v24/{name}_background.xml");
+
+				AssertFileExists($"mipmap-anydpi-v26/{name}.xml");
+				AssertFileExists($"mipmap-anydpi-v26/{name}_round.xml");
+
+				AssertFileContains($"mipmap-anydpi-v26/{name}.xml",
+					$"<foreground android:drawable=\"@drawable/{name}_foreground\"/>",
+					$"<background android:drawable=\"@drawable/{name}_background\"/>");
+
+				AssertFileContains($"mipmap-anydpi-v26/{name}_round.xml",
+					$"<foreground android:drawable=\"@drawable/{name}_foreground\"/>",
+					$"<background android:drawable=\"@drawable/{name}_background\"/>");
 			}
 		}
 
@@ -456,12 +479,14 @@ namespace Resizetizer.NT.Tests
 				AssertFileSize("camera@2x.png", 88, 88);
 			}
 
-			[Fact]
-			public void SingleRasterAppIconWithOnlyPathSucceedsWithoutVectors()
+			[Theory]
+			[InlineData("camera")]
+			[InlineData("camera_color")]
+			public void SingleRasterAppIconWithOnlyPathSucceedsWithoutVectors(string name)
 			{
 				var items = new[]
 				{
-					new TaskItem("images/camera.png", new Dictionary<string, string>
+					new TaskItem($"images/{name}.png", new Dictionary<string, string>
 					{
 						["IsAppIcon"] = bool.TrueString
 					}),
@@ -471,20 +496,28 @@ namespace Resizetizer.NT.Tests
 				var success = task.Execute();
 				Assert.True(success);
 
-				AssertFileSize("Assets.xcassets/AppIcon.appiconset/camera20x20@2x.png", 40, 40);
-				AssertFileSize("Assets.xcassets/AppIcon.appiconset/camera20x20@3x.png", 60, 60);
-				AssertFileSize("Assets.xcassets/AppIcon.appiconset/camera60x60@2x.png", 120, 120);
-				AssertFileSize("Assets.xcassets/AppIcon.appiconset/camera60x60@3x.png", 180, 180);
-				AssertFileSize("Assets.xcassets/AppIcon.appiconset/cameraItunesArtwork.png", 1024, 1024);
-				AssertFileExists("Assets.xcassets/AppIcon.appiconset/Contents.json");
+				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}20x20@2x.png", 40, 40);
+				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}20x20@3x.png", 60, 60);
+				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}60x60@2x.png", 120, 120);
+				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}60x60@3x.png", 180, 180);
+				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}ItunesArtwork.png", 1024, 1024);
+
+				AssertFileExists($"Assets.xcassets/{name}.appiconset/Contents.json");
+
+				AssertFileContains($"Assets.xcassets/{name}.appiconset/Contents.json",
+					$"\"filename\": \"{name}20x20@2x.png\"",
+					$"\"size\": \"20x20\",");
 			}
 
-			[Fact]
-			public void SingleVectorAppIconWithOnlyPathSucceedsWithVectors()
+			[Theory]
+			[InlineData("appicon")]
+			[InlineData("camera")]
+			[InlineData("camera_color")]
+			public void SingleVectorAppIconWithOnlyPathSucceedsWithVectors(string name)
 			{
 				var items = new[]
 				{
-					new TaskItem("images/camera.svg", new Dictionary<string, string>
+					new TaskItem($"images/{name}.svg", new Dictionary<string, string>
 					{
 						["IsAppIcon"] = bool.TrueString
 					}),
@@ -494,12 +527,17 @@ namespace Resizetizer.NT.Tests
 				var success = task.Execute();
 				Assert.True(success);
 
-				AssertFileSize("Assets.xcassets/AppIcon.appiconset/camera20x20@2x.png", 40, 40);
-				AssertFileSize("Assets.xcassets/AppIcon.appiconset/camera20x20@3x.png", 60, 60);
-				AssertFileSize("Assets.xcassets/AppIcon.appiconset/camera60x60@2x.png", 120, 120);
-				AssertFileSize("Assets.xcassets/AppIcon.appiconset/camera60x60@3x.png", 180, 180);
-				AssertFileSize("Assets.xcassets/AppIcon.appiconset/cameraItunesArtwork.png", 1024, 1024);
-				AssertFileExists("Assets.xcassets/AppIcon.appiconset/Contents.json");
+				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}20x20@2x.png", 40, 40);
+				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}20x20@3x.png", 60, 60);
+				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}60x60@2x.png", 120, 120);
+				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}60x60@3x.png", 180, 180);
+				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}ItunesArtwork.png", 1024, 1024);
+
+				AssertFileExists($"Assets.xcassets/{name}.appiconset/Contents.json");
+
+				AssertFileContains($"Assets.xcassets/{name}.appiconset/Contents.json",
+					$"\"filename\": \"{name}20x20@2x.png\"",
+					$"\"size\": \"20x20\",");
 			}
 		}
 	}

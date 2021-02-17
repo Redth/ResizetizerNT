@@ -33,6 +33,6 @@
 	<key>CFBundleName</key>
 	<string>SampleApp</string>
 	<key>XSAppIconAssets</key>
-	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<string>Assets.xcassets/appicon.appiconset</string>
 </dict>
 </plist>
