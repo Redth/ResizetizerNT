@@ -5,6 +5,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Resizetizer
 {
@@ -227,7 +229,9 @@ namespace Resizetizer
 			{
 				var info = new SharedImageInfo();
 
-				info.Filename = image.GetMetadata("FullPath");
+				var fileInfo = new FileInfo(image.GetMetadata("FullPath"));
+
+				info.Filename = fileInfo.FullName;
 
 				info.BaseSize = Utils.ParseSizeString(image.GetMetadata("BaseSize"));
 
@@ -263,6 +267,16 @@ namespace Resizetizer
 
 				r.Add(info);
 			}
+
+			var invalidFilenames = r.Where(s => !s.IsValidFilename);
+
+			if (invalidFilenames.Any())
+            {
+				this.LogError(
+					"One or more invalid file names were detected.  File names must be lowercase, start with a letter character, and contain only alphanumeric characters:" 
+					+ Environment.NewLine
+					+ string.Join(Environment.NewLine, invalidFilenames.Select(s => "\t" + Path.GetFileNameWithoutExtension(s.Filename))));
+            }
 
 			return r;
 		}
