@@ -2,17 +2,29 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 
 namespace Resizetizer
 {
 	internal abstract class SkiaSharpTools
 	{
-		public SkiaSharpTools(SharedImageInfo info, ILogger logger)
-		{
-			Info = info;
-			Logger = logger;
+		public static SkiaSharpTools Create(bool isVector, string filename, Size? baseSize, Color? tintColor, ILogger logger)
+			=> isVector
+				? new SkiaSharpSvgTools(filename, baseSize, tintColor, logger) as SkiaSharpTools
+				: new SkiaSharpBitmapTools(filename, baseSize, tintColor, logger);
 
-			if (Info.TintColor is Color tint)
+		public SkiaSharpTools(SharedImageInfo info, ILogger logger)
+			: this(info.Filename, info.BaseSize, info.TintColor, logger)
+		{
+		}
+
+		public SkiaSharpTools(string filename, Size? baseSize, Color? tintColor, ILogger logger)
+		{
+			Logger = logger;
+			Filename = filename;
+			BaseSize = baseSize;
+
+			if (tintColor is Color tint)
 			{
 				var color = new SKColor(unchecked((uint)tint.ToArgb()));
 				Logger?.Log($"Detected a tint color of {color}");
@@ -24,8 +36,9 @@ namespace Resizetizer
 			}
 		}
 
-		public SharedImageInfo Info { get; }
+		public string Filename { get; }
 
+		public Size? BaseSize { get; }
 		public ILogger Logger { get; }
 
 		public SKPaint Paint { get; }
@@ -47,29 +60,41 @@ namespace Resizetizer
 					canvas.Clear(SKColors.Transparent);
 					canvas.Save();
 					canvas.Scale(scale, scale);
-					DrawUnscaled(canvas);
+					DrawUnscaled(canvas, scale);
 				}
 
 				// Save (encode)
-				using (var pixmap = tempBitmap.PeekPixels())
-				using (var wrapper = new SKFileWStream(destination))
-				{
-					pixmap.Encode(wrapper, SKPngEncoderOptions.Default);
-				}
+				using var stream = File.Create(destination);
+				tempBitmap.Encode(stream, SKEncodedImageFormat.Png, 100);
 			}
 
 			sw.Stop();
-			Logger?.Log($"Save Image took {sw.ElapsedMilliseconds}ms");
+			Logger?.Log($"Save Image took {sw.ElapsedMilliseconds}ms ({destination})");
 		}
 
-		protected abstract SKSize GetOriginalSize();
+		public abstract SKSize GetOriginalSize();
 
-		protected abstract void DrawUnscaled(SKCanvas canvas);
+		public abstract void DrawUnscaled(SKCanvas canvas, float scale);
 
-		protected (SKSizeI, float) GetScaledSize(SKSize originalSize, decimal resizeRatio)
+		public (SKSizeI, float) GetScaledSize(SKSize originalSize, DpiPath dpi)
 		{
-			int sourceNominalWidth = Info.BaseSize?.Width ?? (int)originalSize.Width;
-			int sourceNominalHeight = Info.BaseSize?.Height ?? (int)originalSize.Height;
+			if (dpi.Size.HasValue)
+				return GetScaledSize(originalSize, dpi.Scale, dpi.Size.Value);
+			else
+				return GetScaledSize(originalSize, dpi.Scale);
+		}
+
+		(SKSizeI, float) GetScaledSize(SKSize originalSize, decimal scale, SizeF absoluteSize)
+		{
+			var ratio = (decimal)absoluteSize.Width / (decimal)originalSize.Width;
+
+			return GetScaledSize(originalSize, ratio * scale);
+		}
+
+		public (SKSizeI, float) GetScaledSize(SKSize originalSize, decimal resizeRatio)
+		{
+			int sourceNominalWidth = BaseSize?.Width ?? (int)originalSize.Width;
+			int sourceNominalHeight = BaseSize?.Height ?? (int)originalSize.Height;
 
 			// Find the actual size of the image
 			var sourceActualWidth = originalSize.Width;
