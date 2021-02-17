@@ -43,7 +43,7 @@ namespace Resizetizer
 
 		public override void DrawUnscaled(SKCanvas canvas, float scale)
 		{
-			if (scale > 1)
+			if (scale >= 1)
 			{
 				// draw using default scaling
 				canvas.DrawPicture(svg.Picture, Paint);
@@ -59,13 +59,15 @@ namespace Resizetizer
 				using var cvn = new SKCanvas(bmp);
 
 				// draw to a larger canvas first
-				cvn.Clear();
+				cvn.Clear(SKColors.Transparent);
 				cvn.DrawPicture(svg.Picture, Paint);
 
 				// set the paint to be the highest quality it can find
-				var paint = Paint?.Clone() ?? new SKPaint();
-				paint.IsAntialias = true;
-				paint.FilterQuality = SKFilterQuality.High;
+				var paint = new SKPaint
+				{
+					IsAntialias = true,
+					FilterQuality = SKFilterQuality.High
+				};
 
 				// draw to the main canvas using the correct quality settings
 				canvas.DrawBitmap(bmp, 0, 0, paint);
