@@ -85,48 +85,57 @@
 			FileClassification;
 		</ResizetizeBeforeTargets>
 	</PropertyGroup>
-
-	<!-- Finds absolute paths to any SharedImage in this project -->
-	<!-- App head projects will invoke this target on their project references to collect images -->
-	<Target Name="GetSharedImages" Outputs="@(ExportedSharedImage)">
-
-		<!-- Include None="" items which are .svg or .png if the property is set -->
-		<!-- <ItemGroup Condition="'$(ResizetizerIncludeAllImages)' == 'True'">
-			<SharedImage
-				Include="@(None)"
-				Condition="'%(Extension)' == '.svg' Or '%(Extension)' == '.png'" />
-		</ItemGroup> -->
-
-		<ConvertToAbsolutePath Paths="@(SharedImage)">
-			<Output TaskParameter="AbsolutePaths" ItemName="ExportedSharedImage"/>
-		</ConvertToAbsolutePath>
-		
-	</Target>
+    
+    
+    <!-- Finds absolute paths to any SharedImage in this project -->
+    <!-- App head projects will invoke this target on their project references to collect images -->
+    <Target Name="GetSharedItems" Outputs="@(ExportedSharedItem)">
+        
+        <ItemGroup>
+            <SharedItem Include="@(SharedImage)" ItemGroupName="SharedImage" />
+        </ItemGroup>
+        
+        <ItemGroup>
+            <SharedItem Include="@(SharedFont)" ItemGroupName="SharedFont" />
+        </ItemGroup>
+        
+        <ConvertToAbsolutePath Paths="@(SharedItem)">
+            <Output TaskParameter="AbsolutePaths" ItemName="ExportedSharedItem" />
+        </ConvertToAbsolutePath>
+        
+    </Target>
+    
 
 	<!-- Collect images from referenced projects -->
 	<Target Name="ResizetizeCollectImages"
 		Condition="'$(_ResizetizerIsAndroid)' == 'True' Or '$(_ResizetizerIsiOS)' == 'True' Or '$(_ResizetizerIsUWP)' == 'True' Or '$(_ResizetizerIsWPF)' == 'True'"
 		BeforeTargets="$(ResizetizeCollectImagesBeforeTargets)"
 		AfterTargets="$(ResizetizeCollectImagesAfterTargets)">
-
-		<CallTarget Targets="GetSharedImages" Condition="'$(ResizetizerIncludeSelfProject)' == 'True'">
+        
+		<CallTarget Targets="GetSharedItems" Condition="'$(ResizetizerIncludeSelfProject)' == 'True'">
 			<Output
 				TaskParameter="TargetOutputs"
-				ItemName="SharedImage" />
+				ItemName="ImportedSharedItem" />
 		</CallTarget>
-
-		<!-- Invoke the GetSharedImages target on all project references -->
+        
+		<!-- Invoke the GetSharedItems target on all project references -->
 		<!-- This will accumulate images into our SharedImage group -->
-		<!--<MSBuild Targets="GetSharedImages" Projects="@(_MSBuildProjectReferenceExistent)">-->
+		<!--<MSBuild Targets="GetSharedItems" Projects="@(_MSBuildProjectReferenceExistent)">-->
 		<MSBuild
-			Targets="GetSharedImages"
+			Targets="GetSharedItems"
 			Projects="@(ProjectReference)"
 			SkipNonexistentProjects="true"
 			SkipNonexistentTargets="true">
 			<Output
 				TaskParameter="TargetOutputs"
-				ItemName="SharedImage" />
+				ItemName="ImportedSharedItem" />
 		</MSBuild>
+        
+        <ItemGroup>
+            <SharedImage
+                Include="@(ImportedSharedItem)"
+                Condition="'%(ImportedSharedItem.ItemGroupName)' == 'SharedImage'" />
+        </ItemGroup>
 
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
 		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
