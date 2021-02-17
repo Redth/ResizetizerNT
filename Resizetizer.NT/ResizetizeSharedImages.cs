@@ -1,14 +1,10 @@
 ﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-//using SixLabors.ImageSharp;
-//using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 
 namespace Resizetizer
 {
@@ -27,7 +23,7 @@ namespace Resizetizer
 		[Output]
 		public ITaskItem[] CopiedResources { get; set; }
 
-		public string IsMacEnabled { get;set; }
+		public string IsMacEnabled { get; set; }
 
 		public ILogger Logger => this;
 
@@ -72,6 +68,7 @@ namespace Resizetizer
 			{
 				if (img.IsAppIcon)
 				{
+					// App icons are special
 					var appIconName = "appicon"; // Path.GetFileNameWithoutExtension(img.Filename);
 
 					// Generate the actual bitmap app icons themselves
@@ -95,7 +92,7 @@ namespace Resizetizer
 					else if (PlatformType == "ios")
 					{
 						Log.LogMessage(MessageImportance.Low, $"iOS Icon Assets Generator");
-					
+
 						var appleAssetGen = new AppleIconAssetsGenerator(img, appIconName, IntermediateOutputPath, appIconDpis, this);
 
 						var assetsGenerated = appleAssetGen.Generate();
@@ -116,7 +113,9 @@ namespace Resizetizer
 
 						var destination = Resizer.GetFileDestination(img, dpi, IntermediateOutputPath)
 							.Replace("{name}", appIconName);
+
 						Log.LogMessage(MessageImportance.Low, $"App Icon Destination: " + destination);
+
 						appTool.Resize(dpi, Path.ChangeExtension(destination, ".png"));
 					}
 				}
@@ -125,8 +124,7 @@ namespace Resizetizer
 					var opStopwatch = new Stopwatch();
 					opStopwatch.Start();
 
-					var op = "Resize";
-
+					string op;
 					// By default we resize, but let's make sure
 					if (img.Resize)
 					{
@@ -135,22 +133,26 @@ namespace Resizetizer
 						foreach (var dpi in dpis)
 						{
 							Log.LogMessage(MessageImportance.Low, $"Resizing {img.Filename}");
-					
+
 							var r = resizer.Resize(dpi, InputsFile);
 							resizedImages.Add(r);
 
 							Log.LogMessage(MessageImportance.Low, $"Resized {img.Filename}");
 						}
+
+						op = "Resize";
 					}
 					else
 					{
-						op = "Copy";
-
 						Log.LogMessage(MessageImportance.Low, $"Copying {img.Filename}");
 						// Otherwise just copy the thing over to the 1.0 scale
+
 						var r = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, InputsFile, this, PlatformType.ToLower().Equals("android"));
 						resizedImages.Add(r);
+
 						Log.LogMessage(MessageImportance.Low, $"Copied {img.Filename}");
+
+						op = "Copy";
 					}
 
 					opStopwatch.Stop();
@@ -158,7 +160,7 @@ namespace Resizetizer
 					Log.LogMessage(MessageImportance.Low, $"{op} took {opStopwatch.ElapsedMilliseconds}ms");
 				}
 			});
-			
+
 			var copiedResources = new List<TaskItem>();
 
 			foreach (var img in resizedImages)
@@ -203,7 +205,7 @@ namespace Resizetizer
 				info.BaseSize = Utils.ParseSizeString(image.GetMetadata("BaseSize"));
 
 				if (bool.TryParse(image.GetMetadata("Resize"), out var rz))
-					info.Resize= rz;
+					info.Resize = rz;
 
 				info.TintColor = Utils.ParseColorString(image.GetMetadata("TintColor"));
 
@@ -224,7 +226,7 @@ namespace Resizetizer
 						fgFile = Path.GetFullPath(fgFile);
 
 					Logger.Log($"AppIcon Foreground: " + fgFile);
-					
+
 					if (File.Exists(fgFile))
 						info.ForegroundFilename = fgFile;
 				}
@@ -237,10 +239,5 @@ namespace Resizetizer
 
 			return r;
 		}
-	}
-
-	public interface ILogger
-	{
-		void Log(string message);
 	}
 }
