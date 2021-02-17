@@ -21,7 +21,7 @@
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'">
-		<_ResizetizerIsNetCore>True</_ResizetizerIsNetCore>
+		<_ResizetizerIsNetCore>False</_ResizetizerIsNetCore>
 		<_ResizetizerIsAndroidApp Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(AndroidApplication)' == 'True'">True</_ResizetizerIsAndroidApp>
 		<_ResizetizerIsiOSApp Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_ResizetizerIsiOSApp>
 		<_ResizetizerIsUWPApp Condition="'$(TargetPlatformIdentifier)' == 'UAP' And '$(OutputType)' == 'AppContainerExe'">True</_ResizetizerIsUWPApp>
@@ -34,6 +34,10 @@
 		<_ResizetizerIsiOSApp Condition="'$(TargetPlatformIdentifier)' == 'iOS' And ('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'True')">True</_ResizetizerIsiOSApp>
 		<_ResizetizerIsUWPApp Condition="'$(TargetPlatformIdentifier)'=='UAP' And '$(OutputType)' == 'AppContainerExe'">True</_ResizetizerIsUWPApp>
 		<_ResizetizerIsWPFApp Condition="'$(IsApplication)' == 'True' And '$(NuGetRuntimeIdentifier)' == 'win' And '$(TargetPlatformIdentifier)'=='Windows'">True</_ResizetizerIsWPFApp>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWPFApp)' == 'True'">
+		<_ResizetizerIsCompatibleApp>True</_ResizetizerIsCompatibleApp>
 	</PropertyGroup>
 	
 	<!-- iOS -->
@@ -115,7 +119,7 @@
 
 	<!-- Collect images from referenced projects -->
 	<Target Name="ResizetizeCollectItems"
-		Condition="'$(_ResizetizerIsAndroidApp)' == 'True' Or '$(_ResizetizerIsiOSApp)' == 'True' Or '$(_ResizetizerIsUWPApp)' == 'True' Or '$(_ResizetizerIsWPFApp)' == 'True'"
+		Condition="'$(_ResizetizerIsCompatibleApp)' == 'True'"
 		BeforeTargets="$(ResizetizeCollectItemsBeforeTargets)"
 		AfterTargets="$(ResizetizeCollectItemsAfterTargets)">
 
