@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
     - master
-    - mattleibow-patch-1
     
 jobs:
     build:
