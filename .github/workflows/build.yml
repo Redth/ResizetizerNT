@@ -42,7 +42,6 @@ jobs:
       - name: Run Tests
         run: dotnet test --configuration Release ./Resizetizer.NT.Tests/Resizetizer.NT.Tests.csproj
       - name: Upload Artifacts
-        if: github.event_name == 'push' || github.event_name == 'release'
         uses: actions/upload-artifact@v1
         with:
           name: NuGet
