@@ -177,7 +177,7 @@
 
 		<!-- iOS -->
 		<ItemGroup Condition="'$(_ResizetizerIsiOS)' == 'True'">
-			<!-- Batch the collectd items into BundleResource which iOS expects -->
+			<!-- Batch the collected items into BundleResource which iOS expects -->
 			<_ResizetizerCollectedBundleResourceImages Include="@(_ResizetizerCollectedImages->'%(FullPath)')">
 				<LogicalName>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</LogicalName>
 				<TargetPath>%(_ResizetizerCollectedImages.Filename)%(_ResizetizerCollectedImages.Extension)</TargetPath>

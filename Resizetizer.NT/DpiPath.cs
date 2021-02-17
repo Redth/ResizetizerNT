@@ -1,7 +1,4 @@
-﻿//using SixLabors.ImageSharp;
-//using SixLabors.ImageSharp.Processing;
-
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Resizetizer
 {
@@ -17,7 +14,9 @@ namespace Resizetizer
 		}
 
 		public string Path { get; set; }
+
 		public decimal Scale { get; set; }
+
 		public string FileSuffix { get; set; }
 
 		public SizeF? Size { get; set; }
@@ -48,6 +47,7 @@ namespace Resizetizer
 			};
 
 		static DpiPath AndroidOriginal => new DpiPath("drawable", 1.0m);
+
 
 		public static DpiPath[] Ios
 			=> new []
@@ -84,7 +84,6 @@ namespace Resizetizer
 				
 				// App Store
 				new DpiPath(IosAppIconPath, 1.0m, "ItunesArtwork", new SizeF(1024, 1024), new [] { "ios-marketing" }),
-				
 			};
 
 		static DpiPath IosOriginal => new DpiPath("Resources", 1.0m);

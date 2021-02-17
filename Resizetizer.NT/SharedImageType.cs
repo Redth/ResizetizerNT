@@ -1,7 +1,4 @@
-﻿//using SixLabors.ImageSharp;
-//using SixLabors.ImageSharp.Processing;
-
-namespace Resizetizer
+﻿namespace Resizetizer
 {
 	public enum SharedImageType
 	{
