@@ -31,6 +31,11 @@ namespace Resizetizer.NT.Tests
         [InlineData("two2.png")]
         [InlineData("t3hree.png")]
         [InlineData("f4our5.png")]
+        [InlineData("o_ne.png")]
+        [InlineData("o_1.png")]
+        [InlineData("t_w_o2.png")]
+        [InlineData("t_3_hree.png")]
+        [InlineData("f4_our5.png")]
         public void ValidFilenames(string filename)
             => Assert.True(IsValidFilename(filename));
 
@@ -58,6 +63,8 @@ namespace Resizetizer.NT.Tests
         [InlineData("t-wo2.png")]
         [InlineData("t3_hree.png")]
         [InlineData("f4our 5.png")]
+        [InlineData("_1one.png")]
+        [InlineData("o1_.png")]
         public void InvalidFilenames(string filename)
             => Assert.False(IsValidFilename(filename));
 

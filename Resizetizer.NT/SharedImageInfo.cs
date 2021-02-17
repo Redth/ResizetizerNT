@@ -29,7 +29,7 @@ namespace Resizetizer
 			=> Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
 
 		static readonly Regex rxFilename
-			= new Regex(@"^[a-z]+[a-z0-9]{0,}$", RegexOptions.Singleline);
+			= new Regex(@"^[a-z]+[a-z0-9_]{0,}[^_]$", RegexOptions.Singleline);
 
 		public bool IsValidFilename
 			=> rxFilename.IsMatch(Path.GetFileNameWithoutExtension(Filename));
