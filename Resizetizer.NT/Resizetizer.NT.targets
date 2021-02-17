@@ -3,6 +3,7 @@
 
 	<ItemGroup>
 		<AvailableItemName Include="SharedImage" />
+        <AvailableItemName Include="SharedFont" />
 	</ItemGroup>
 
 	<UsingTask
