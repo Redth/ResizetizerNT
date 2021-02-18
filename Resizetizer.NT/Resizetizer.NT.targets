@@ -6,9 +6,17 @@
 		<AvailableItemName Include="SharedFont" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<_ResizetizerTaskAssemblyName>Resizetizer.NT.dll</_ResizetizerTaskAssemblyName>
+	</PropertyGroup>
+	
 	<UsingTask
-		AssemblyFile="Resizetizer.NT.dll"
+		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
 		TaskName="Resizetizer.ResizetizeSharedImages" />
+
+	<UsingTask
+		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+		TaskName="Resizetizer.DetectInvalidResourceOutputFilenamesTask" />
 
 	<PropertyGroup>
 		<CleanDependsOn>
@@ -17,6 +25,8 @@
 		</CleanDependsOn>
 		
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)resizetizer.inputs</_ResizetizerInputsFile>
+		<_SharedFontInputsFile>$(IntermediateOutputPath)sharedfont.inputs</_SharedFontInputsFile>
+		<_SharedFontStampFile>$(IntermediateOutputPath)sharedfont.stamp</_SharedFontStampFile>
 		
 		<ResizetizerIncludeSelfProject Condition="'$(ResizetizerIncludeSelfProject)' == ''">False</ResizetizerIncludeSelfProject>
 	</PropertyGroup>
@@ -161,6 +171,38 @@
 
 	</Target>
 
+	<Target Name="ProcessSharedFonts"
+		Inputs="@(SharedFont);$(_SharedFontInputsFile)"
+		Outputs="$(_SharedFontStampFile)"
+		AfterTargets="$(ProcessSharedFontsAfterTargets)"
+		BeforeTargets="$(ProcessSharedFontsBeforeTargets)"
+		DependsOnTargets="$(ProcessSharedFontsDependsOnTargets)">
+
+		<DetectInvalidResourceOutputFilenamesTask
+			Items="@(SharedFont)"
+			ThrowsError="True"
+			ErrorMessage="One or more invalid file names were detected.  File names must be lowercase, start and end with a letter character, and contain only alphanumeric characters or underscores: &#13;&#10;">
+		</DetectInvalidResourceOutputFilenamesTask>
+
+		<!-- Where in obj/ to store these -->
+		<PropertyGroup>
+			<_SharedFontIntermediateOutputPath>$(IntermediateOutputPath)sharedfonts\r\</_SharedFontIntermediateOutputPath>
+		</PropertyGroup>
+
+
+		<!-- Copy font files -->
+		<Copy SourceFiles="@(SharedFont)" DestinationFolder="_SharedFontIntermediateOutputPath" SkipUnchangedFiles="true" />
+		
+		
+		
+		<!-- Touch/create our stamp file for outputs -->
+		<Touch Files="$(_SharedFontStampFile)" AlwaysCreate="True" />
+
+		<!-- Include our images and stamp file as filewrites so they don't get rm'd -->
+		<ItemGroup>
+			<FileWrites Include="$(_SharedFontStampFile)" />
+		</ItemGroup>
+	</Target>
 
 	<Target Name="ResizetizeImages"
 		Inputs="@(SharedImage);$(_ResizetizerInputsFile)"
