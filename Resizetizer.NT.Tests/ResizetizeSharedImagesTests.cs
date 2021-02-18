@@ -12,19 +12,11 @@ namespace Resizetizer.NT.Tests
 {
 	public class ResizetizeSharedImagesTests
 	{
-		public abstract class ExecuteForApp : IDisposable, IBuildEngine
+		public abstract class ExecuteForApp : MSBuildTaskTestFixture<Resizetizer.ResizetizeSharedImages>
 		{
-			protected readonly string DestinationDirectory;
-			protected readonly TestLogger Logger;
-
-			protected List<BuildErrorEventArgs> LogErrorEvents = new List<BuildErrorEventArgs>();
-			protected List<BuildMessageEventArgs> LogMessageEvents = new List<BuildMessageEventArgs>();
-			protected List<CustomBuildEventArgs> LogCustomEvents = new List<CustomBuildEventArgs>();
-			protected List<BuildWarningEventArgs> LogWarningEvents = new List<BuildWarningEventArgs>();
-
 			public ExecuteForApp(string type)
+				: base(Path.Combine(Path.GetTempPath(), "ResizetizeSharedImagesTests", type, Path.GetRandomFileName()))
 			{
-				DestinationDirectory = Path.Combine(Path.GetTempPath(), "ResizetizeSharedImagesTests", type, Path.GetRandomFileName());
 			}
 
 			protected ResizetizeSharedImages GetNewTask(string type, params ITaskItem[] items) =>
@@ -67,32 +59,6 @@ namespace Resizetizer.NT.Tests
 				foreach (var snip in snippet)
 					Assert.Contains(snip, content);
 			}
-
-			void IDisposable.Dispose()
-			{
-				if (Directory.Exists(DestinationDirectory))
-					Directory.Delete(DestinationDirectory, true);
-			}
-
-			// IBuildEngine
-
-			bool IBuildEngine.ContinueOnError => false;
-
-			int IBuildEngine.LineNumberOfTaskNode => 0;
-
-			int IBuildEngine.ColumnNumberOfTaskNode => 0;
-
-			string IBuildEngine.ProjectFileOfTaskNode => "FakeProject.proj";
-
-			bool IBuildEngine.BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties, IDictionary targetOutputs) => throw new NotImplementedException();
-
-			void IBuildEngine.LogCustomEvent(CustomBuildEventArgs e) => LogCustomEvents.Add(e);
-
-			void IBuildEngine.LogErrorEvent(BuildErrorEventArgs e) => LogErrorEvents.Add(e);
-
-			void IBuildEngine.LogMessageEvent(BuildMessageEventArgs e) => LogMessageEvents.Add(e);
-
-			void IBuildEngine.LogWarningEvent(BuildWarningEventArgs e) => LogWarningEvents.Add(e);
 		}
 
 		public class ExecuteForAndroid : ExecuteForApp
