@@ -7,7 +7,19 @@ namespace Resizetizer
 {
 	internal class SharedImageInfo
 	{
+		public string Alias { get; set; }
+
 		public string Filename { get; set; }
+
+		public string OutputName =>
+			string.IsNullOrWhiteSpace(Alias)
+				? Path.GetFileNameWithoutExtension(Filename)
+				: Path.GetFileNameWithoutExtension(Alias);
+
+		public string OutputExtension =>
+			string.IsNullOrWhiteSpace(Alias) || !Path.HasExtension(Alias)
+				? Path.GetExtension(Filename)
+				: Path.GetExtension(Alias);
 
 		public Size? BaseSize { get; set; }
 
@@ -31,7 +43,7 @@ namespace Resizetizer
 		static readonly Regex rxFilename
 			= new Regex(@"^[a-z]+[a-z0-9_]{0,}[^_]$", RegexOptions.Singleline);
 
-		public bool IsValidFilename
-			=> rxFilename.IsMatch(Path.GetFileNameWithoutExtension(Filename));
+		public bool IsValidOutputName
+			=> rxFilename.IsMatch(OutputName);
 	}
 }

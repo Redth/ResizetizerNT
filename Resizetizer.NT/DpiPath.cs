@@ -49,19 +49,6 @@ namespace Resizetizer
 		static DpiPath AndroidOriginal => new DpiPath("drawable", 1.0m);
 
 
-		public static DpiPath[] Tizen
-			=> new[]
-			{
-				new DpiPath("MDPI", 1.0m),
-				new DpiPath("HDPI", 1.5m),
-				new DpiPath("XHDPI", 2.0m),
-				new DpiPath("XXHDPI", 3.0m),
-				new DpiPath("XXXHDPI", 4.0m),
-			};
-
-		static DpiPath TizenOriginal => new DpiPath("MDPI", 1.0m);
-
-
 		public static DpiPath[] Ios
 			=> new []
 			{
@@ -100,6 +87,29 @@ namespace Resizetizer
 			};
 
 		static DpiPath IosOriginal => new DpiPath("Resources", 1.0m);
+
+
+		public static DpiPath[] Tizen
+			=> new[]
+			{
+				new DpiPath("MDPI", 1.0m),
+				new DpiPath("HDPI", 1.5m),
+				new DpiPath("XHDPI", 2.0m),
+				new DpiPath("XXHDPI", 3.0m),
+				new DpiPath("XXXHDPI", 4.0m),
+			};
+
+		public static DpiPath[] TizenAppIcon
+			=> new[]
+			{
+				new DpiPath("MDPI", 1.0m),
+				new DpiPath("HDPI", 1.5m),
+				new DpiPath("XHDPI", 2.0m),
+				new DpiPath("XXHDPI", 3.0m),
+				new DpiPath("XXXHDPI", 4.0m),
+			};
+
+		static DpiPath TizenOriginal => new DpiPath("MDPI", 1.0m);
 
 
 		public static DpiPath[] Uwp
@@ -189,6 +199,9 @@ namespace Resizetizer
 					break;
 				case "wpf":
 					result = DpiPath.WpfAppIcon;
+					break;
+				case "tizen":
+					result = DpiPath.TizenAppIcon;
 					break;
 			}
 

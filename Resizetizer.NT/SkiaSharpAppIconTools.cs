@@ -12,8 +12,7 @@ namespace Resizetizer
 			Info = info;
 			Logger = logger;
 
-			AppIconName = Path.GetFileNameWithoutExtension(info.Filename);
-			
+			AppIconName = info.OutputName;
 
 			hasForeground = File.Exists(info.ForegroundFilename);
 
@@ -71,21 +70,21 @@ namespace Resizetizer
 						// calculate the scale for the foreground to fit the background exactly
 						var (fgScaledSize, fgScale) = foregroundTools.GetScaledSize(foregroundOriginalSize, (decimal)fitRatio);
 
-						Logger.Log("dpi.Size: " + dpi.Size);
-						Logger.Log("dpi.Scale: " + dpi.Scale);
-						Logger.Log("bgScaledSize: " + bgScaledSize);
-						Logger.Log("bgScale: " + bgScale);
-						Logger.Log("foregroundOriginalSize: " + foregroundOriginalSize);
-						Logger.Log("fgScaledSize: " + fgScaledSize);
-						Logger.Log("fgScale: " + fgScale);
-						Logger.Log("userFgScale: " + userFgScale);
+						//Logger.Log("\tdpi.Size: " + dpi.Size);
+						//Logger.Log("\tdpi.Scale: " + dpi.Scale);
+						//Logger.Log("\tbgScaledSize: " + bgScaledSize);
+						//Logger.Log("\tbgScale: " + bgScale);
+						//Logger.Log("\tforegroundOriginalSize: " + foregroundOriginalSize);
+						//Logger.Log("\tfgScaledSize: " + fgScaledSize);
+						//Logger.Log("\tfgScale: " + fgScale);
+						//Logger.Log("\tuserFgScale: " + userFgScale);
 
 						// now work out the center as if the canvas was exactly the same size as the foreground
 						var fgScaledSizeCenterX = foregroundOriginalSize.Width / 2;
 						var fgScaledSizeCenterY = foregroundOriginalSize.Height / 2;
 
-						Logger.Log("fgScaledSizeCenterX: " + fgScaledSizeCenterX);
-						Logger.Log("fgScaledSizeCenterY: " + fgScaledSizeCenterY);
+						//Logger.Log("\tfgScaledSizeCenterX: " + fgScaledSizeCenterX);
+						//Logger.Log("\tfgScaledSizeCenterY: " + fgScaledSizeCenterY);
 
 						// scale so the forground is the same size as the background
 						canvas.Scale(fgScale, fgScale);
@@ -103,7 +102,7 @@ namespace Resizetizer
 			}
 
 			sw.Stop();
-			Logger?.Log($"Save Image took {sw.ElapsedMilliseconds}ms");
+			Logger?.Log($"Save app icon took {sw.ElapsedMilliseconds}ms ({destination})");
 
 			return new ResizedImageInfo { Dpi = dpi, Filename = destination };
 		}

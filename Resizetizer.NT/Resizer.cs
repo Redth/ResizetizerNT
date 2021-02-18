@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace Resizetizer
 {
@@ -13,6 +12,7 @@ namespace Resizetizer
 		}
 
 		public ILogger Logger { get; private set; }
+
 		public string IntermediateOutputPath { get; private set; }
 
 		public SharedImageInfo Info { get; private set; }
@@ -24,12 +24,9 @@ namespace Resizetizer
 
 		public static string GetFileDestination(SharedImageInfo info, DpiPath dpi, string intermediateOutputPath)
 		{
-			var name = Path.GetFileNameWithoutExtension(info.Filename);
-			var ext = Path.GetExtension(info.Filename);
-
 			var fullIntermediateOutputPath = new DirectoryInfo(intermediateOutputPath);
 
-			var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, name + dpi.FileSuffix + ext);
+			var destination = Path.Combine(fullIntermediateOutputPath.FullName, dpi.Path, info.OutputName + dpi.FileSuffix + info.OutputExtension);
 
 			var fileInfo = new FileInfo(destination);
 			if (!fileInfo.Directory.Exists)
@@ -38,33 +35,34 @@ namespace Resizetizer
 			return destination;
 		}
 
-		public static ResizedImageInfo CopyFile(SharedImageInfo info, DpiPath dpi, string intermediateOutputPath, string inputsFile, ILogger logger, bool isAndroid = false)
+		public ResizedImageInfo CopyFile(DpiPath dpi, string inputsFile, bool isAndroid = false)
 		{
-			var destination = Resizer.GetFileDestination(info, dpi, intermediateOutputPath);
+			var destination = GetFileDestination(dpi);
 			var androidVector = false;
 
-			if (isAndroid && info.IsVector && !info.Resize)
+			if (isAndroid && Info.IsVector && !Info.Resize)
 			{
 				// Update destination to be .xml file
-				destination = Path.ChangeExtension(info.Filename, ".xml");
+				destination = Path.ChangeExtension(destination, ".xml");
 				androidVector = true;
 			}
 
-			if (IsUpToDate(info.Filename, destination, inputsFile, logger))
+			if (IsUpToDate(Info.Filename, destination, inputsFile, Logger))
 				return new ResizedImageInfo { Filename = destination, Dpi = dpi };
-			
+
 			if (androidVector)
 			{
-				logger.Log("Converting SVG to Android Drawable Vector: " + info.Filename);
+				Logger.Log("Converting SVG to Android Drawable Vector: " + Info.Filename);
+
 				// Transform into an android vector drawable
-				var convertErr = Svg2VectorDrawable.Svg2Vector.Convert(info.Filename, destination);
+				var convertErr = Svg2VectorDrawable.Svg2Vector.Convert(Info.Filename, destination);
 				if (!string.IsNullOrEmpty(convertErr))
-					throw new Svg2AndroidDrawableConversionException(convertErr, info.Filename);
+					throw new Svg2AndroidDrawableConversionException(convertErr, Info.Filename);
 			}
 			else
 			{
 				// Otherwise just copy it straight
-				File.Copy(info.Filename, destination, true);
+				File.Copy(Info.Filename, destination, true);
 			}
 
 			return new ResizedImageInfo { Filename = destination, Dpi = dpi };
@@ -106,11 +104,5 @@ namespace Resizetizer
 
 			return new ResizedImageInfo { Filename = destination, Dpi = dpi };
 		}
-	}
-
-	internal class ResizedImageInfo
-	{
-		public string Filename { get; set; }
-		public DpiPath Dpi { get; set; }
 	}
 }

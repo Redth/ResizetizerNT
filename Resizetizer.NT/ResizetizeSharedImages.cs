@@ -6,14 +6,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Resizetizer
 {
 	public class ResizetizeSharedImages : AsyncTask, ILogger
 	{
+		string platformType;
+
 		[Required]
-		public string PlatformType { get; set; } = "android";
+		public string PlatformType
+		{
+			get => platformType;
+			set => platformType = value?.Trim().ToLowerInvariant();
+		}
 
 		[Required]
 		public string IntermediateOutputPath { get; set; }
@@ -107,8 +112,6 @@ namespace Resizetizer
 				catch (Exception ex)
 				{
 					Log.LogErrorFromException(ex);
-
-					throw;
 				}
 			});
 
@@ -123,6 +126,10 @@ namespace Resizetizer
 				if (bool.TryParse(IsMacEnabled, out bool isMac) && isMac)
 					itemSpec = img.Filename;
 
+				// Add DPI info to the itemspec so we can use it in the targets
+				attr.Add("_ResizetizerDpiPath", img.Dpi.Path);
+				attr.Add("_ResizetizerDpiScale", img.Dpi.Scale.ToString());
+
 				copiedResources.Add(new TaskItem(itemSpec, attr));
 			}
 
@@ -133,7 +140,7 @@ namespace Resizetizer
 
 		void ProcessAppIcon(SharedImageInfo img, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
-			var appIconName = Path.GetFileNameWithoutExtension(img.Filename);
+			var appIconName = img.OutputName;
 
 			// Generate the actual bitmap app icons themselves
 			var appIconDpis = DpiPath.GetAppIconDpis(PlatformType, appIconName);
@@ -201,9 +208,11 @@ namespace Resizetizer
 
 		void ProcessImageCopy(SharedImageInfo img, DpiPath originalScaleDpi, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
+			var resizer = new Resizer(img, IntermediateOutputPath, this);
+
 			Log.LogMessage(MessageImportance.Low, $"Copying {img.Filename}");
 
-			var r = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, InputsFile, this, PlatformType.ToLower().Equals("android"));
+			var r = resizer.CopyFile(originalScaleDpi, InputsFile, PlatformType == "android");
 			resizedImages.Add(r);
 
 			Log.LogMessage(MessageImportance.Low, $"Copied {img.Filename}");
@@ -228,6 +237,8 @@ namespace Resizetizer
 				var fileInfo = new FileInfo(image.GetMetadata("FullPath"));
 
 				info.Filename = fileInfo.FullName;
+
+				info.Alias = image.GetMetadata("Link");
 
 				info.BaseSize = Utils.ParseSizeString(image.GetMetadata("BaseSize"));
 
@@ -264,15 +275,14 @@ namespace Resizetizer
 				r.Add(info);
 			}
 
-			var invalidFilenames = r.Where(s => !s.IsValidFilename);
-
+			var invalidFilenames = r.Where(s => !s.IsValidOutputName);
 			if (invalidFilenames.Any())
-            {
+			{
 				this.LogError(
-					"One or more invalid file names were detected.  File names must be lowercase, start with a letter character, and contain only alphanumeric characters:" 
+					"One or more invalid file names were detected.  File names must be lowercase, start with a letter character, and contain only alphanumeric characters:"
 					+ Environment.NewLine
-					+ string.Join(Environment.NewLine, invalidFilenames.Select(s => "\t" + Path.GetFileNameWithoutExtension(s.Filename))));
-            }
+					+ string.Join(Environment.NewLine, invalidFilenames.Select(s => $"\t{s.OutputName} => {s.Filename}")));
+			}
 
 			return r;
 		}
