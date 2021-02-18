@@ -19,6 +19,8 @@
     <SharedImage Include="appicon.svg" IsAppIcon="true" ForegroundFile="appiconfg.svg" ForegroundScale="0.65" />
     <SharedImage Include="camera.svg" IsAppIcon="true" ForegroundFile="appiconfg.svg" ForegroundScale="0.65" />
     <SharedImage Include="camera.svg" IsAppIcon="true" ForegroundFile="appiconfg.svg" ForegroundScale="0.65" Link="new_name" />
+
+		<SharedFont Include="feather.ttf" Alias="Feather" />
   </ItemGroup>
 
 </Project>
