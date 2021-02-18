@@ -224,7 +224,7 @@
 		<!-- Copy font files over -->
 		<Copy
 			SourceFiles="@(SharedFont)"
-			DestinationFolder="$(_SharedFontIntermediateOutputPath)"
+			DestinationFolder="$(IntermediateOutputPath)sp\fonts\"
 			SkipUnchangedFiles="true" />
 
 
