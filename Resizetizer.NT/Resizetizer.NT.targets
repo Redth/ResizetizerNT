@@ -244,6 +244,7 @@
 
 		</ItemGroup>
 		
+		<!-- Create a partial info.plist for iOS -->
 		<CreatePartialInfoPlistTask
 			Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '@(_SharedFontCopied)' != ''"
 			IntermediateOutputPath="$(IntermediateOutputPath)sp\"
@@ -255,15 +256,32 @@
 				
 		</CreatePartialInfoPlistTask>
 
+		<!-- iOS - Partial Info.plist for font registration  -->
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' ">
 			<_PartialAppManifest Include="@(_SharedFontPListFiles)" Condition="'@(_SharedFontPListFiles)' != ''" />
 			<FileWrites Include="@(_SharedFontPListFiles)" Condition="'@(_SharedFontPListFiles)' != ''" />
 		</ItemGroup>
 
-
+		<!-- Android -->
 		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
 
 			<AndroidAsset Include="@(_SharedFontCopied)" Condition="'@(_SharedFontCopied)' != ''" />
+
+		</ItemGroup>
+
+		<!-- WPF -->
+		<ItemGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
+
+			<Resource Include="@(_SharedFontCopied)" Condition="'@(_SharedFontCopied)' != ''" />
+
+		</ItemGroup>
+
+		<!-- UWP -->
+		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True'">
+
+			<ContentWithTargetPath Include="@(_SharedFontCopied)" Condition="'@(_SharedFontCopied)' != ''">
+				<TargetPath>Assets\$([System.IO.Path]::GetFileName(%(_SharedFontCopied.Identity)))</TargetPath>
+			</ContentWithTargetPath>
 
 		</ItemGroup>
 
