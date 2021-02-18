@@ -265,7 +265,9 @@
 		<!-- Android -->
 		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
 
-			<AndroidAsset Include="@(_SharedFontCopied)" Condition="'@(_SharedFontCopied)' != ''" />
+			<AndroidAsset Include="@(_SharedFontCopied)" Condition="'@(_SharedFontCopied)' != ''">
+				<Link>$([System.IO.Path]::GetFileName(%(_SharedFontCopied.Identity)))</Link>
+			</AndroidAsset>
 
 		</ItemGroup>
 
