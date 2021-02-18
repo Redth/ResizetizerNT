@@ -274,7 +274,9 @@
 		<!-- WPF -->
 		<ItemGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
 
-			<Resource Include="@(_SharedFontCopied)" Condition="'@(_SharedFontCopied)' != ''" />
+			<Resource Include="@(_SharedFontCopied)" Condition="'@(_SharedFontCopied)' != ''">
+				<Link>$([System.IO.Path]::GetFileName(%(_SharedFontCopied.Identity)))</Link>
+			</Resource>
 
 		</ItemGroup>
 
