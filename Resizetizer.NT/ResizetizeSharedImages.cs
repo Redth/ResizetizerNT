@@ -137,7 +137,7 @@ namespace Resizetizer
 
 		void ProcessAppIcon(SharedImageInfo img, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
-			var appIconName = Path.GetFileNameWithoutExtension(img.Filename);
+			var appIconName = img.OutputName;
 
 			// Generate the actual bitmap app icons themselves
 			var appIconDpis = DpiPath.GetAppIconDpis(PlatformType, appIconName);
@@ -205,9 +205,11 @@ namespace Resizetizer
 
 		void ProcessImageCopy(SharedImageInfo img, DpiPath originalScaleDpi, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
+			var resizer = new Resizer(img, IntermediateOutputPath, this);
+			
 			Log.LogMessage(MessageImportance.Low, $"Copying {img.Filename}");
 
-			var r = Resizer.CopyFile(img, originalScaleDpi, IntermediateOutputPath, InputsFile, this, PlatformType.ToLower().Equals("android"));
+			var r = resizer.CopyFile(originalScaleDpi, InputsFile, PlatformType.ToLower().Equals("android"));
 			resizedImages.Add(r);
 
 			Log.LogMessage(MessageImportance.Low, $"Copied {img.Filename}");
@@ -232,6 +234,8 @@ namespace Resizetizer
 				var fileInfo = new FileInfo(image.GetMetadata("FullPath"));
 
 				info.Filename = fileInfo.FullName;
+
+				info.Alias = image.GetMetadata("Link");
 
 				info.BaseSize = Utils.ParseSizeString(image.GetMetadata("BaseSize"));
 
@@ -268,15 +272,14 @@ namespace Resizetizer
 				r.Add(info);
 			}
 
-			var invalidFilenames = r.Where(s => !s.IsValidFilename);
-
+			var invalidFilenames = r.Where(s => !s.IsValidOutputName);
 			if (invalidFilenames.Any())
-            {
+			{
 				this.LogError(
-					"One or more invalid file names were detected.  File names must be lowercase, start with a letter character, and contain only alphanumeric characters:" 
+					"One or more invalid file names were detected.  File names must be lowercase, start with a letter character, and contain only alphanumeric characters:"
 					+ Environment.NewLine
-					+ string.Join(Environment.NewLine, invalidFilenames.Select(s => "\t" + Path.GetFileNameWithoutExtension(s.Filename))));
-            }
+					+ string.Join(Environment.NewLine, invalidFilenames.Select(s => $"\t{s.OutputName} => {s.Filename}")));
+			}
 
 			return r;
 		}

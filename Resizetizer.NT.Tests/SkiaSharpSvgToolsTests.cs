@@ -46,6 +46,26 @@ namespace Resizetizer.NT.Tests
 			}
 
 			[Fact]
+			public void BasicNoScaleNoResizeReturnsOriginalSize()
+			{
+				var info = new SharedImageInfo();
+				info.Filename = "images/camera.svg";
+				info.Resize = false;
+				var tools = new SkiaSharpSvgTools(info, Logger);
+				var dpiPath = new DpiPath("", 1);
+
+				tools.Resize(dpiPath, DestinationFilename);
+
+				using var resultImage = SKBitmap.Decode(DestinationFilename);
+				Assert.Equal(1792, resultImage.Width);
+				Assert.Equal(1792, resultImage.Height);
+
+				using var pixmap = resultImage.PeekPixels();
+				Assert.Equal(SKColors.Empty, pixmap.GetPixelColor(10, 10));
+				Assert.Equal(SKColors.White, pixmap.GetPixelColor(350, 350));
+			}
+
+			[Fact]
 			public void BasicWithDownScaleReturnsDownScaledSize()
 			{
 				var info = new SharedImageInfo();

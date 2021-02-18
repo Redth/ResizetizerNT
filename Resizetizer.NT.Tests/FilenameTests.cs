@@ -92,7 +92,7 @@ namespace Resizetizer.NT.Tests
                 Filename = filename
             };
 
-            return s.IsValidFilename;
+            return s.IsValidOutputName;
         }
     }
 }

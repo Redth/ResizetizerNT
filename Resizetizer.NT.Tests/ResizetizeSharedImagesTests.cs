@@ -146,11 +146,42 @@ namespace Resizetizer.NT.Tests
 			}
 
 			[Fact]
+			public void ValidVectorFileSucceeds()
+			{
+				var items = new[]
+				{
+					new TaskItem("images/camera.svg"),
+				};
+
+				var task = GetNewTask(items);
+
+				var success = task.Execute();
+
+				Assert.True(success);
+			}
+
+			[Fact]
 			public void SingleImageWithOnlyPathSucceeds()
 			{
 				var items = new[]
 				{
 					new TaskItem("images/camera.png"),
+				};
+
+				var task = GetNewTask(items);
+				var success = task.Execute();
+				Assert.True(success);
+
+				AssertFileSize("drawable-mdpi/camera.png", 1792, 1792);  // 1x
+				AssertFileSize("drawable-xhdpi/camera.png", 3584, 3584); // 2x
+			}
+
+			[Fact]
+			public void SingleVectorImageWithOnlyPathSucceeds()
+			{
+				var items = new[]
+				{
+					new TaskItem("images/camera.svg"),
 				};
 
 				var task = GetNewTask(items);
@@ -239,13 +270,13 @@ namespace Resizetizer.NT.Tests
 			}
 
 			[Fact]
-			public void SingleImageWithBaseSizeSucceeds()
+			public void SingleImageNoResizeSucceeds()
 			{
 				var items = new[]
 				{
 					new TaskItem("images/camera.png", new Dictionary<string, string>
 					{
-						["BaseSize"] = "44"
+						["Resize"] = bool.FalseString,
 					}),
 				};
 
@@ -253,20 +284,80 @@ namespace Resizetizer.NT.Tests
 				var success = task.Execute();
 				Assert.True(success);
 
-				AssertFileSize("drawable-mdpi/camera.png", 44, 44);
-				AssertFileSize("drawable-xhdpi/camera.png", 88, 88);
+				AssertFileSize("drawable/camera.png", 1792, 1792);
+			}
+
+			[Fact]
+			public void SingleVectorImageNoResizeSucceeds()
+			{
+				var items = new[]
+				{
+					new TaskItem("images/camera.svg", new Dictionary<string, string>
+					{
+						["Resize"] = bool.FalseString,
+					}),
+				};
+
+				var task = GetNewTask(items);
+				var success = task.Execute();
+				Assert.True(success);
+
+				AssertFileExists("drawable/camera.xml");
 			}
 
 			[Theory]
-			[InlineData("camera")]
-			[InlineData("camera_color")]
-			public void SingleRasterAppIconWithOnlyPathSucceedsWithoutVectors(string name)
+			[InlineData(null, "camera")]
+			[InlineData("", "camera")]
+			[InlineData("camera", "camera")]
+			[InlineData("camera.png", "camera")]
+			[InlineData("folder\\camera.png", "camera")]
+			[InlineData("the_alias", "the_alias")]
+			[InlineData("the_alias.png", "the_alias")]
+			[InlineData("folder\\the_alias.png", "the_alias")]
+			public void SingleImageWithBaseSizeSucceeds(string alias, string outputName)
+			{
+				var items = new[]
+				{
+					new TaskItem("images/camera.png", new Dictionary<string, string>
+					{
+						["BaseSize"] = "44",
+						["Link"] = alias,
+					}),
+				};
+
+				var task = GetNewTask(items);
+				var success = task.Execute();
+				Assert.True(success);
+
+				AssertFileSize($"drawable-mdpi/{outputName}.png", 44, 44);
+				AssertFileSize($"drawable-xhdpi/{outputName}.png", 88, 88);
+			}
+
+			[Theory]
+			[InlineData("camera", null, "camera")]
+			[InlineData("camera", "", "camera")]
+			[InlineData("camera", "camera", "camera")]
+			[InlineData("camera", "camera.png", "camera")]
+			[InlineData("camera", "folder\\camera.png", "camera")]
+			[InlineData("camera", "the_alias", "the_alias")]
+			[InlineData("camera", "the_alias.png", "the_alias")]
+			[InlineData("camera", "folder\\the_alias.png", "the_alias")]
+			[InlineData("camera_color", null, "camera_color")]
+			[InlineData("camera_color", "", "camera_color")]
+			[InlineData("camera_color", "camera_color", "camera_color")]
+			[InlineData("camera_color", "camera_color.png", "camera_color")]
+			[InlineData("camera_color", "folder\\camera_color.png", "camera_color")]
+			[InlineData("camera_color", "the_alias", "the_alias")]
+			[InlineData("camera_color", "the_alias.png", "the_alias")]
+			[InlineData("camera_color", "folder\\the_alias.png", "the_alias")]
+			public void SingleRasterAppIconWithOnlyPathSucceedsWithoutVectors(string name, string alias, string outputName)
 			{
 				var items = new[]
 				{
 					new TaskItem($"images/{name}.png", new Dictionary<string, string>
 					{
-						["IsAppIcon"] = bool.TrueString
+						["IsAppIcon"] = bool.TrueString,
+						["Link"] = alias,
 					}),
 				};
 
@@ -274,23 +365,38 @@ namespace Resizetizer.NT.Tests
 				var success = task.Execute();
 				Assert.True(success);
 
-				AssertFileSize($"mipmap-mdpi/{name}.png", 48, 48);
-				AssertFileSize($"mipmap-xhdpi/{name}.png", 96, 96);
+				AssertFileSize($"mipmap-mdpi/{outputName}.png", 48, 48);
+				AssertFileSize($"mipmap-xhdpi/{outputName}.png", 96, 96);
 
 				var vectors = Directory.GetFiles(DestinationDirectory, "*.xml", SearchOption.AllDirectories);
 				Assert.Empty(vectors);
 			}
 
 			[Theory]
-			[InlineData("appicon")]
-			[InlineData("camera")]
-			public void SingleVectorAppIconWithOnlyPathSucceedsWithVectors(string name)
+			[InlineData("appicon", null, "appicon")]
+			[InlineData("appicon", "", "appicon")]
+			[InlineData("appicon", "appicon", "appicon")]
+			[InlineData("appicon", "appicon.png", "appicon")]
+			[InlineData("appicon", "folder\\appicon.png", "appicon")]
+			[InlineData("appicon", "the_alias", "the_alias")]
+			[InlineData("appicon", "the_alias.png", "the_alias")]
+			[InlineData("appicon", "folder\\the_alias.png", "the_alias")]
+			[InlineData("camera", null, "camera")]
+			[InlineData("camera", "", "camera")]
+			[InlineData("camera", "camera", "camera")]
+			[InlineData("camera", "camera.png", "camera")]
+			[InlineData("camera", "folder\\camera.png", "camera")]
+			[InlineData("camera", "the_alias", "the_alias")]
+			[InlineData("camera", "the_alias.png", "the_alias")]
+			[InlineData("camera", "folder\\the_alias.png", "the_alias")]
+			public void SingleVectorAppIconWithOnlyPathSucceedsWithVectors(string name, string alias, string outputName)
 			{
 				var items = new[]
 				{
 					new TaskItem($"images/{name}.svg", new Dictionary<string, string>
 					{
-						["IsAppIcon"] = bool.TrueString
+						["IsAppIcon"] = bool.TrueString,
+						["Link"] = alias,
 					}),
 				};
 
@@ -298,22 +404,22 @@ namespace Resizetizer.NT.Tests
 				var success = task.Execute();
 				Assert.True(success);
 
-				AssertFileSize($"mipmap-mdpi/{name}.png", 48, 48);
-				AssertFileSize($"mipmap-xhdpi/{name}.png", 96, 96);
+				AssertFileSize($"mipmap-mdpi/{outputName}.png", 48, 48);
+				AssertFileSize($"mipmap-xhdpi/{outputName}.png", 96, 96);
 
-				AssertFileExists($"drawable/{name}_foreground.xml");
-				AssertFileExists($"drawable-v24/{name}_background.xml");
+				AssertFileExists($"drawable/{outputName}_foreground.xml");
+				AssertFileExists($"drawable-v24/{outputName}_background.xml");
 
-				AssertFileExists($"mipmap-anydpi-v26/{name}.xml");
-				AssertFileExists($"mipmap-anydpi-v26/{name}_round.xml");
+				AssertFileExists($"mipmap-anydpi-v26/{outputName}.xml");
+				AssertFileExists($"mipmap-anydpi-v26/{outputName}_round.xml");
 
-				AssertFileContains($"mipmap-anydpi-v26/{name}.xml",
-					$"<foreground android:drawable=\"@drawable/{name}_foreground\"/>",
-					$"<background android:drawable=\"@drawable/{name}_background\"/>");
+				AssertFileContains($"mipmap-anydpi-v26/{outputName}.xml",
+					$"<foreground android:drawable=\"@drawable/{outputName}_foreground\"/>",
+					$"<background android:drawable=\"@drawable/{outputName}_background\"/>");
 
-				AssertFileContains($"mipmap-anydpi-v26/{name}_round.xml",
-					$"<foreground android:drawable=\"@drawable/{name}_foreground\"/>",
-					$"<background android:drawable=\"@drawable/{name}_background\"/>");
+				AssertFileContains($"mipmap-anydpi-v26/{outputName}_round.xml",
+					$"<foreground android:drawable=\"@drawable/{outputName}_foreground\"/>",
+					$"<background android:drawable=\"@drawable/{outputName}_background\"/>");
 			}
 		}
 
@@ -460,14 +566,23 @@ namespace Resizetizer.NT.Tests
 				Assert.Equal("2.0", xhdpi.GetMetadata("_ResizetizerDpiScale"));
 			}
 
-			[Fact]
-			public void SingleImageWithBaseSizeSucceeds()
+			[Theory]
+			[InlineData(null, "camera")]
+			[InlineData("", "camera")]
+			[InlineData("camera", "camera")]
+			[InlineData("camera.png", "camera")]
+			[InlineData("folder\\camera.png", "camera")]
+			[InlineData("the_alias", "the_alias")]
+			[InlineData("the_alias.png", "the_alias")]
+			[InlineData("folder\\the_alias.png", "the_alias")]
+			public void SingleImageWithBaseSizeSucceeds(string alias, string outputName)
 			{
 				var items = new[]
 				{
 					new TaskItem("images/camera.png", new Dictionary<string, string>
 					{
-						["BaseSize"] = "44"
+						["BaseSize"] = "44",
+						["Link"] = alias,
 					}),
 				};
 
@@ -475,20 +590,35 @@ namespace Resizetizer.NT.Tests
 				var success = task.Execute();
 				Assert.True(success);
 
-				AssertFileSize("camera.png", 44, 44);
-				AssertFileSize("camera@2x.png", 88, 88);
+				AssertFileSize($"{outputName}.png", 44, 44);
+				AssertFileSize($"{outputName}@2x.png", 88, 88);
 			}
 
 			[Theory]
-			[InlineData("camera")]
-			[InlineData("camera_color")]
-			public void SingleRasterAppIconWithOnlyPathSucceedsWithoutVectors(string name)
+			[InlineData("camera", null, "camera")]
+			[InlineData("camera", "", "camera")]
+			[InlineData("camera", "camera", "camera")]
+			[InlineData("camera", "camera.png", "camera")]
+			[InlineData("camera", "folder\\camera.png", "camera")]
+			[InlineData("camera", "the_alias", "the_alias")]
+			[InlineData("camera", "the_alias.png", "the_alias")]
+			[InlineData("camera", "folder\\the_alias.png", "the_alias")]
+			[InlineData("camera_color", null, "camera_color")]
+			[InlineData("camera_color", "", "camera_color")]
+			[InlineData("camera_color", "camera_color", "camera_color")]
+			[InlineData("camera_color", "camera_color.png", "camera_color")]
+			[InlineData("camera_color", "folder\\camera_color.png", "camera_color")]
+			[InlineData("camera_color", "the_alias", "the_alias")]
+			[InlineData("camera_color", "the_alias.png", "the_alias")]
+			[InlineData("camera_color", "folder\\the_alias.png", "the_alias")]
+			public void SingleRasterAppIconWithOnlyPathSucceedsWithoutVectors(string name, string alias, string outputName)
 			{
 				var items = new[]
 				{
 					new TaskItem($"images/{name}.png", new Dictionary<string, string>
 					{
-						["IsAppIcon"] = bool.TrueString
+						["IsAppIcon"] = bool.TrueString,
+						["Link"] = alias,
 					}),
 				};
 
@@ -496,30 +626,52 @@ namespace Resizetizer.NT.Tests
 				var success = task.Execute();
 				Assert.True(success);
 
-				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}20x20@2x.png", 40, 40);
-				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}20x20@3x.png", 60, 60);
-				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}60x60@2x.png", 120, 120);
-				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}60x60@3x.png", 180, 180);
-				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}ItunesArtwork.png", 1024, 1024);
+				AssertFileSize($"Assets.xcassets/{outputName}.appiconset/{outputName}20x20@2x.png", 40, 40);
+				AssertFileSize($"Assets.xcassets/{outputName}.appiconset/{outputName}20x20@3x.png", 60, 60);
+				AssertFileSize($"Assets.xcassets/{outputName}.appiconset/{outputName}60x60@2x.png", 120, 120);
+				AssertFileSize($"Assets.xcassets/{outputName}.appiconset/{outputName}60x60@3x.png", 180, 180);
+				AssertFileSize($"Assets.xcassets/{outputName}.appiconset/{outputName}ItunesArtwork.png", 1024, 1024);
 
-				AssertFileExists($"Assets.xcassets/{name}.appiconset/Contents.json");
+				AssertFileExists($"Assets.xcassets/{outputName}.appiconset/Contents.json");
 
-				AssertFileContains($"Assets.xcassets/{name}.appiconset/Contents.json",
-					$"\"filename\": \"{name}20x20@2x.png\"",
+				AssertFileContains($"Assets.xcassets/{outputName}.appiconset/Contents.json",
+					$"\"filename\": \"{outputName}20x20@2x.png\"",
 					$"\"size\": \"20x20\",");
 			}
 
 			[Theory]
-			[InlineData("appicon")]
-			[InlineData("camera")]
-			[InlineData("camera_color")]
-			public void SingleVectorAppIconWithOnlyPathSucceedsWithVectors(string name)
+			[InlineData("appicon", null, "appicon")]
+			[InlineData("appicon", "", "appicon")]
+			[InlineData("appicon", "appicon", "appicon")]
+			[InlineData("appicon", "appicon.png", "appicon")]
+			[InlineData("appicon", "folder\\appicon.png", "appicon")]
+			[InlineData("appicon", "the_alias", "the_alias")]
+			[InlineData("appicon", "the_alias.png", "the_alias")]
+			[InlineData("appicon", "folder\\the_alias.png", "the_alias")]
+			[InlineData("camera", null, "camera")]
+			[InlineData("camera", "", "camera")]
+			[InlineData("camera", "camera", "camera")]
+			[InlineData("camera", "camera.png", "camera")]
+			[InlineData("camera", "folder\\camera.png", "camera")]
+			[InlineData("camera", "the_alias", "the_alias")]
+			[InlineData("camera", "the_alias.png", "the_alias")]
+			[InlineData("camera", "folder\\the_alias.png", "the_alias")]
+			[InlineData("camera_color", null, "camera_color")]
+			[InlineData("camera_color", "", "camera_color")]
+			[InlineData("camera_color", "camera_color", "camera_color")]
+			[InlineData("camera_color", "camera_color.png", "camera_color")]
+			[InlineData("camera_color", "folder\\camera_color.png", "camera_color")]
+			[InlineData("camera_color", "the_alias", "the_alias")]
+			[InlineData("camera_color", "the_alias.png", "the_alias")]
+			[InlineData("camera_color", "folder\\the_alias.png", "the_alias")]
+			public void SingleVectorAppIconWithOnlyPathSucceedsWithVectors(string name, string alias, string outputName)
 			{
 				var items = new[]
 				{
 					new TaskItem($"images/{name}.svg", new Dictionary<string, string>
 					{
-						["IsAppIcon"] = bool.TrueString
+						["IsAppIcon"] = bool.TrueString,
+						["Link"] = alias,
 					}),
 				};
 
@@ -527,16 +679,16 @@ namespace Resizetizer.NT.Tests
 				var success = task.Execute();
 				Assert.True(success);
 
-				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}20x20@2x.png", 40, 40);
-				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}20x20@3x.png", 60, 60);
-				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}60x60@2x.png", 120, 120);
-				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}60x60@3x.png", 180, 180);
-				AssertFileSize($"Assets.xcassets/{name}.appiconset/{name}ItunesArtwork.png", 1024, 1024);
+				AssertFileSize($"Assets.xcassets/{outputName}.appiconset/{outputName}20x20@2x.png", 40, 40);
+				AssertFileSize($"Assets.xcassets/{outputName}.appiconset/{outputName}20x20@3x.png", 60, 60);
+				AssertFileSize($"Assets.xcassets/{outputName}.appiconset/{outputName}60x60@2x.png", 120, 120);
+				AssertFileSize($"Assets.xcassets/{outputName}.appiconset/{outputName}60x60@3x.png", 180, 180);
+				AssertFileSize($"Assets.xcassets/{outputName}.appiconset/{outputName}ItunesArtwork.png", 1024, 1024);
 
-				AssertFileExists($"Assets.xcassets/{name}.appiconset/Contents.json");
+				AssertFileExists($"Assets.xcassets/{outputName}.appiconset/Contents.json");
 
-				AssertFileContains($"Assets.xcassets/{name}.appiconset/Contents.json",
-					$"\"filename\": \"{name}20x20@2x.png\"",
+				AssertFileContains($"Assets.xcassets/{outputName}.appiconset/Contents.json",
+					$"\"filename\": \"{outputName}20x20@2x.png\"",
 					$"\"size\": \"20x20\",");
 			}
 		}
