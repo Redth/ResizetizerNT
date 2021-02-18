@@ -272,15 +272,6 @@ namespace Resizetizer
 				r.Add(info);
 			}
 
-			var invalidFilenames = r.Where(s => !s.IsValidOutputName);
-			if (invalidFilenames.Any())
-			{
-				this.LogError(
-					"One or more invalid file names were detected.  File names must be lowercase, start with a letter character, and contain only alphanumeric characters:"
-					+ Environment.NewLine
-					+ string.Join(Environment.NewLine, invalidFilenames.Select(s => $"\t{s.OutputName} => {s.Filename}")));
-			}
-
 			return r;
 		}
 	}
