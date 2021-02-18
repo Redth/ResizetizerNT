@@ -37,6 +37,26 @@ Next, add the images to your shared code (netstandard2.0) project as `SharedImag
 </ItemGroup>
 ```
 
+Or you can specify it for each project like this :
+
+```xml
+<ItemGroup Condition="$(_ResizetizerIsiOS) == 'True'">
+  <SharedImage Include="image.svg" BaseSize="44,44" />
+</ItemGroup>
+
+<ItemGroup Condition="$(_ResizetizerIsAndroid) == 'True'">
+  <SharedImage Include="image.svg" BaseSize="50,50" />
+</ItemGroup>
+
+<ItemGroup Condition="$(_ResizetizerIsUWP) == 'True'">
+  <SharedImage Include="image.svg" BaseSize="55,55" />
+</ItemGroup>
+
+<ItemGroup Condition="$(_ResizetizerIsWPF) == 'True'">
+  <SharedImage Include="image.svg" BaseSize="60,60" />
+</ItemGroup>
+```
+
 These images can be `.svg` or `.png` types.
 
 ## BaseSize
@@ -52,6 +72,11 @@ In Xamarin Forms you would use something like:
 ```xml
 <Image Source="hamburger.png" WidthRequest="40" HeightRequest="20" />
 ```
+
+## TintColor
+If you'd like to render your images with a tint, you can set the `TintColor` attribute property on the `SharedImage` element.  This renders your image with a color filter of "Source In" in SkiaSharp.  This is particularly useful in cases where you have icons or simple images you'd like to render in different color than the source.
+
+Example: `<Image Source="hamburger.png" TintColor="#66b3ff" />`
 
 # Planning
 

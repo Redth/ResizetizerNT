@@ -1,6 +1,7 @@
 #!/bin/bash
 
 mkdir -p ./logs
+mkdir -p ./output
 
 msbuild /t:Restore ./Resizetizer.NT/Resizetizer.NT.csproj
 msbuild /t:Rebuild ./Resizetizer.NT/Resizetizer.NT.csproj /bl:logs/resizetizer.binlog

@@ -1,6 +1,4 @@
-﻿//using SixLabors.ImageSharp;
-//using SixLabors.ImageSharp.Processing;
-using System;
+﻿using System;
 using System.IO;
 
 namespace Resizetizer
@@ -19,8 +17,7 @@ namespace Resizetizer
 
 		public SharedImageInfo Info { get; private set; }
 
-		SkiaSharpBitmapTools bmpTools;
-		SkiaSharpSvgTools svgTools;
+		SkiaSharpTools tools;
 
 		public string GetFileDestination(DpiPath dpi)
 			=> GetFileDestination(Info, dpi, IntermediateOutputPath);
@@ -48,7 +45,6 @@ namespace Resizetizer
 
 			if (isAndroid && info.IsVector && !info.Resize)
 			{
-				// TODO: Turn SVG into Vector Drawable format
 				// Update destination to be .xml file
 				destination = Path.ChangeExtension(info.Filename, ".xml");
 				androidVector = true;
@@ -59,8 +55,11 @@ namespace Resizetizer
 			
 			if (androidVector)
 			{
-				// TODO: Don't just copy, let's transform to android vector
-				File.Copy(info.Filename, destination, true);
+				logger.Log("Converting SVG to Android Drawable Vector: " + info.Filename);
+				// Transform into an android vector drawable
+				var convertErr = Svg2VectorDrawable.Svg2Vector.Convert(info.Filename, destination);
+				if (!string.IsNullOrEmpty(convertErr))
+					throw new Svg2AndroidDrawableConversionException(convertErr, info.Filename);
 			}
 			else
 			{
@@ -98,20 +97,12 @@ namespace Resizetizer
 			if (IsUpToDate(Info.Filename, destination, inputsFile, Logger))
 				return new ResizedImageInfo { Filename = destination, Dpi = dpi };
 
-			if (Info.IsVector)
+			if (tools == null)
 			{
-				if (svgTools == null)
-					svgTools = new SkiaSharpSvgTools(Info, Logger);
-
-				svgTools.Resize(dpi, destination);
+				tools = SkiaSharpTools.Create(Info.IsVector, Info.Filename, Info.BaseSize, Info.TintColor, Logger);
 			}
-			else
-			{
-				if (bmpTools == null)
-					bmpTools = new SkiaSharpBitmapTools(Info, Logger);
 
-				bmpTools.Resize(dpi, destination);
-			}
+			tools.Resize(dpi, destination);
 
 			return new ResizedImageInfo { Filename = destination, Dpi = dpi };
 		}

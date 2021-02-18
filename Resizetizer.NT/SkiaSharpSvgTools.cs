@@ -1,116 +1,83 @@
 ﻿using SkiaSharp;
-using Svg;
 using Svg.Skia;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Resizetizer
 {
-	internal class SkiaSharpSvgTools
+	public class Svg2AndroidDrawableConversionException : Exception
 	{
-		public SkiaSharpSvgTools(SharedImageInfo info, ILogger logger)
+		public Svg2AndroidDrawableConversionException(string message, string file) : base ("Failed to Convert SVG to Android Drawable: " + message + " in [" + file + "]")
 		{
-			Info = info;
-			Logger = logger;
-
-			var sw = new Stopwatch();
-			sw.Start();
-
-			var svgDoc = SKSvg.Open(Info.Filename);
-
-			void ChangeFill(SvgElement element)
-			{
-				if (element is SvgPath ePath && ePath.Fill is SvgColourServer eFill)
-				{
-					Logger?.Log($"Found Fill: {eFill.Colour.ToString()}");
-
-					if (!eFill.Colour.IsEmpty)
-					{
-						ePath.Fill = new SvgColourServer(Info.TintColor.Value);
-
-						Logger?.Log($"Changing Fill: {Info.TintColor.ToString()}");
-					}
-				}
-
-				if (element.Children.Count > 0)
-				{
-					foreach (var item in element.Children)
-						ChangeFill(item);
-				}
-			}
-
-			if (Info.TintColor.HasValue)
-			{
-				Logger?.Log($"Changing Tint: {Info.TintColor.Value.ToString()}");
-
-				foreach (var elem in svgDoc.Children)
-					ChangeFill(elem);
-			}
-
-			Svg.SvgDocument.SkipGdiPlusCapabilityCheck = true;
-
-
-			//svgDoc.Write(Info.Filename + ".mod.svg");
-			sw.Stop();
-			Logger?.Log($"Open SVG took {sw.ElapsedMilliseconds}ms");
-			sw.Reset();
-			sw.Start();
-
-
-			svg = new SKSvg();
-			sw.Stop();
-			Logger?.Log($"new SKSvg() took {sw.ElapsedMilliseconds}ms");
-			sw.Reset();
-			sw.Start();
-
-			svg.FromSvgDocument(svgDoc);
-			sw.Stop();
-			Logger?.Log($"svg.FromSvgDocument took {sw.ElapsedMilliseconds}ms");
-
+			Filename = file;
 		}
 
-		public SharedImageInfo Info { get; private set; }
-
-		public ILogger Logger { get; private set; }
-
+		public string Filename { get; }
+	}
+	
+	internal class SkiaSharpSvgTools : SkiaSharpTools, IDisposable
+	{
 		SKSvg svg;
 
-		public void Resize(DpiPath dpi, string destination)
+		public SkiaSharpSvgTools(SharedImageInfo info, ILogger logger)
+			: this(info.Filename, info.BaseSize, info.TintColor, logger)
 		{
-			int sourceNominalWidth = Info.BaseSize?.Width ?? (int)svg.Picture.CullRect.Width;
-			int sourceNominalHeight = Info.BaseSize?.Height ?? (int)svg.Picture.CullRect.Height;
-			var resizeRatio = dpi.Scale;
+		}
 
-			// Find the actual size of the SVG 
-			var sourceActualWidth = svg.Picture.CullRect.Width;
-			var sourceActualHeight = svg.Picture.CullRect.Height;
-
-			// Figure out what the ratio to convert the actual image size to the nominal size is
-			var nominalRatio = Math.Max((double)sourceNominalWidth / (double)sourceActualWidth, (double)sourceNominalHeight / (double)sourceActualHeight);
-
-			// Multiply nominal ratio by the resize ratio to get our final ratio we actually adjust by
-			var adjustRatio = nominalRatio * (double)resizeRatio;
-
-			// Figure out our scaled width and height to make a new canvas for
-			//var scaledWidth = sourceActualWidth * adjustRatio;
-			//var scaledHeight = sourceActualHeight * adjustRatio;
-
+		public SkiaSharpSvgTools(string filename, Size? baseSize, Color? tintColor, ILogger logger)
+			: base(filename, baseSize, tintColor, logger)
+		{
 			var sw = new Stopwatch();
 			sw.Start();
 
-			using (var stream = File.OpenWrite(destination))
-			{
-				svg.Picture.ToImage(stream, SKColors.Empty, SKEncodedImageFormat.Png, 100, (float)adjustRatio, (float)adjustRatio, SKColorType.Argb4444, SKAlphaType.Premul);
-			}
+			svg = new SKSvg();
+			svg.Load(filename);
 
 			sw.Stop();
-			Logger?.Log($"Save Image took {sw.ElapsedMilliseconds}ms");
+			Logger?.Log($"Open SVG took {sw.ElapsedMilliseconds}ms ({filename})");
+		}
 
+		public override SKSize GetOriginalSize() =>
+			svg.Picture.CullRect.Size;
+
+		public override void DrawUnscaled(SKCanvas canvas, float scale)
+		{
+			if (scale >= 1)
+			{
+				// draw using default scaling
+				canvas.DrawPicture(svg.Picture, Paint);
+			}
+			else
+			{
+				// draw using raster downscaling
+				var size = GetOriginalSize();
+
+				// vector scaling has rounding issues, so first draw as intended
+				var info = new SKImageInfo((int)size.Width, (int)size.Height);
+				using var bmp = new SKBitmap(info);
+				using var cvn = new SKCanvas(bmp);
+
+				// draw to a larger canvas first
+				cvn.Clear(SKColors.Transparent);
+				cvn.DrawPicture(svg.Picture, Paint);
+
+				// set the paint to be the highest quality it can find
+				var paint = new SKPaint
+				{
+					IsAntialias = true,
+					FilterQuality = SKFilterQuality.High
+				};
+
+				// draw to the main canvas using the correct quality settings
+				canvas.DrawBitmap(bmp, 0, 0, paint);
+			}
+		}
+
+		public void Dispose()
+		{
+			svg?.Dispose();
+			svg = null;
 		}
 	}
 }
