@@ -294,7 +294,7 @@
 		<CopyFilesToBuildServer
 			Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
 			SessionId="$(BuildSessionId)"
-			Files="@(_SharedFontBundleResource)" />
+			Files="@(_SharedFontBundleResource);@(_SharedFontPListFiles)" />
 		
 		<!-- Touch/create our stamp file for outputs -->
 		<Touch Files="$(_SharedFontStampFile)" AlwaysCreate="True" />
