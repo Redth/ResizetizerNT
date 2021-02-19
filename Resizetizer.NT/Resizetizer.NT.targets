@@ -234,7 +234,7 @@
 
 		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '@(_SharedFontCopied)' != ''">
 
-			<!-- iOS Expects images in this group -->
+			<!-- iOS Expects fonts to be in this group -->
 			<_SharedFontBundleResource Include="@(_SharedFontCopied)">
 				<LogicalName>$([System.IO.Path]::GetFileName(%(_SharedFontCopied.Identity)))</LogicalName>
 				<TargetPath>$([System.IO.Path]::GetFileName(%(_SharedFontCopied.Identity)))</TargetPath>
