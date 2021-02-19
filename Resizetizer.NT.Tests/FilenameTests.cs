@@ -86,13 +86,6 @@ namespace Resizetizer.NT.Tests
             => Assert.False(IsValidFilename(filename));
 
         bool IsValidFilename(string filename)
-        {
-            var s = new SharedImageInfo
-            {
-                Filename = filename
-            };
-
-            return s.IsValidOutputName;
-        }
+            => Utils.IsValidResourceFilename(filename);
     }
 }

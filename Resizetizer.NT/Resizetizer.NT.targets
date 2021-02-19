@@ -6,9 +6,21 @@
 		<AvailableItemName Include="SharedFont" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<_ResizetizerTaskAssemblyName>Resizetizer.NT.dll</_ResizetizerTaskAssemblyName>
+	</PropertyGroup>
+	
 	<UsingTask
-		AssemblyFile="Resizetizer.NT.dll"
+		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
 		TaskName="Resizetizer.ResizetizeSharedImages" />
+
+	<UsingTask
+		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+		TaskName="Resizetizer.DetectInvalidResourceOutputFilenamesTask" />
+
+	<UsingTask
+		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+		TaskName="Resizetizer.CreatePartialInfoPlistTask" />
 
 	<PropertyGroup>
 		<CleanDependsOn>
@@ -17,8 +29,14 @@
 		</CleanDependsOn>
 		
 		<_ResizetizerInputsFile>$(IntermediateOutputPath)resizetizer.inputs</_ResizetizerInputsFile>
+		<_SharedFontInputsFile>$(IntermediateOutputPath)sharedfont.inputs</_SharedFontInputsFile>
+		<_SharedFontStampFile>$(IntermediateOutputPath)sharedfont.stamp</_SharedFontStampFile>
 		
 		<ResizetizerIncludeSelfProject Condition="'$(ResizetizerIncludeSelfProject)' == ''">False</ResizetizerIncludeSelfProject>
+
+		<_ResizetizerDefaultInvalidFilenamesErrorMessage>
+			One or more invalid file names were detected.  File names must be lowercase, start and end with a letter character, and contain only alphanumeric characters or underscores: &#13;&#10;
+		</_ResizetizerDefaultInvalidFilenamesErrorMessage>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'">
@@ -54,6 +72,12 @@
 			$(ResizetizeAfterTargets);
 			ResizetizeCollectItems;
 		</ResizetizeAfterTargets>
+
+		<ProcessSharedFontsAfterTargets>
+			$(ProcessSharedFontsAfterTargets);
+			_CompileCoreMLModels;
+		</ProcessSharedFontsAfterTargets>
+
 	</PropertyGroup>
 
 	<!-- Android -->
@@ -69,6 +93,11 @@
 			$(ResizetizeAfterTargets);
 			ResizetizeCollectItems;
 		</ResizetizeAfterTargets>
+
+		<ProcessSharedFontsAfterTargets>
+			$(ProcessSharedFontsAfterTargets);
+			ResizetizeCollectItems;
+		</ProcessSharedFontsAfterTargets>
 	</PropertyGroup>
 
 	<!-- UWP -->
@@ -84,6 +113,11 @@
 			$(ResizetizeBeforeTargets);
 			AssignTargetPaths;
 		</ResizetizeBeforeTargets>
+
+		<ProcessSharedFontsBeforeTargets>
+			$(ProcessSharedFontsBeforeTargets);
+			AssignTargetPaths;
+		</ProcessSharedFontsBeforeTargets>
 	</PropertyGroup>
 
 	<!-- WPF -->
@@ -99,6 +133,11 @@
 			$(ResizetizeBeforeTargets);
 			FileClassification;
 		</ResizetizeBeforeTargets>
+
+		<ProcessSharedFontsBeforeTargets>
+			$(ProcessSharedFontsBeforeTargets);
+			FileClassification;
+		</ProcessSharedFontsBeforeTargets>
 	</PropertyGroup>
 
 	<!-- Finds absolute paths to any SharedImage in this project -->
@@ -151,6 +190,13 @@
 				Condition="'%(ImportedSharedItem.ItemGroupName)' == 'SharedImage'" />
 		</ItemGroup>
 
+		<ItemGroup>
+			<SharedFont
+				Include="@(ImportedSharedItem)"
+				Condition="'%(ImportedSharedItem.ItemGroupName)' == 'SharedFont'" />
+		</ItemGroup>
+
+
 		<!-- Write out item spec and metadata to a file we can use as an inputs for the resize target -->
 		<!-- This allows us to invalidate the build based on not just input image files changing but project item metadata as well -->
 		<WriteLinesToFile
@@ -159,8 +205,110 @@
 			Overwrite="true"
 			WriteOnlyWhenDifferent="true" />
 
+		<WriteLinesToFile
+			File="$(_SharedFontInputsFile)"
+			Lines="@(SharedFont->'File=%(Identity);Link=%(Link);Alias=%(Alias)')"
+			Overwrite="true"
+			WriteOnlyWhenDifferent="true" />
+
 	</Target>
 
+	<Target Name="ProcessSharedFonts"
+		Inputs="@(SharedFont);$(_SharedFontInputsFile)"
+		Outputs="$(_SharedFontStampFile)"
+		AfterTargets="$(ProcessSharedFontsAfterTargets)"
+		BeforeTargets="$(ProcessSharedFontsBeforeTargets)"
+		DependsOnTargets="$(ProcessSharedFontsDependsOnTargets)">
+
+		<DetectInvalidResourceOutputFilenamesTask
+			Items="@(SharedFont)"
+			ErrorMessage="$(_ResizetizerDefaultInvalidFilenamesErrorMessage)">
+		</DetectInvalidResourceOutputFilenamesTask>
+
+		<!-- Copy font files over -->
+		<Copy
+			SourceFiles="@(SharedFont)"
+			DestinationFolder="$(IntermediateOutputPath)sp\fonts\"
+			SkipUnchangedFiles="true" />
+
+
+		<ItemGroup>
+			<_SharedFontCopied Include="$(IntermediateOutputPath)sp\fonts\*" />
+		</ItemGroup>
+
+		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '@(_SharedFontCopied)' != ''">
+
+			<!-- iOS Expects fonts to be in this group -->
+			<_SharedFontBundleResource Include="@(_SharedFontCopied)">
+				<LogicalName>$([System.IO.Path]::GetFileName(%(_SharedFontCopied.Identity)))</LogicalName>
+				<TargetPath>$([System.IO.Path]::GetFileName(%(_SharedFontCopied.Identity)))</TargetPath>
+			</_SharedFontBundleResource>
+
+			<BundleResource Include="@(_SharedFontBundleResource)" />
+
+		</ItemGroup>
+		
+		<!-- Create a partial info.plist for iOS -->
+		<CreatePartialInfoPlistTask
+			Condition="'$(_ResizetizerIsiOSApp)' == 'True' And '@(_SharedFontCopied)' != ''"
+			IntermediateOutputPath="$(IntermediateOutputPath)sp\"
+			PlistName="FontInfo.plist"
+			CustomFonts="@(_SharedFontCopied)">
+			<Output
+				TaskParameter="PListFiles"
+				ItemName="_SharedFontPListFiles" />
+				
+		</CreatePartialInfoPlistTask>
+
+		<!-- iOS - Partial Info.plist for font registration  -->
+		<ItemGroup Condition="'$(_ResizetizerIsiOSApp)' == 'True' ">
+			<_PartialAppManifest Include="@(_SharedFontPListFiles)" Condition="'@(_SharedFontPListFiles)' != ''" />
+			<FileWrites Include="@(_SharedFontPListFiles)" Condition="'@(_SharedFontPListFiles)' != ''" />
+		</ItemGroup>
+
+		<!-- Android -->
+		<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
+
+			<AndroidAsset Include="@(_SharedFontCopied)" Condition="'@(_SharedFontCopied)' != ''">
+				<Link>$([System.IO.Path]::GetFileName(%(_SharedFontCopied.Identity)))</Link>
+			</AndroidAsset>
+
+		</ItemGroup>
+
+		<!-- WPF -->
+		<ItemGroup Condition="'$(_ResizetizerIsWPFApp)' == 'True'">
+
+			<Resource Include="@(_SharedFontCopied)" Condition="'@(_SharedFontCopied)' != ''">
+				<Link>$([System.IO.Path]::GetFileName(%(_SharedFontCopied.Identity)))</Link>
+			</Resource>
+
+		</ItemGroup>
+
+		<!-- UWP -->
+		<ItemGroup Condition="'$(_ResizetizerIsUWPApp)' == 'True'">
+
+			<ContentWithTargetPath Include="@(_SharedFontCopied)" Condition="'@(_SharedFontCopied)' != ''">
+				<TargetPath>Assets\$([System.IO.Path]::GetFileName(%(_SharedFontCopied.Identity)))</TargetPath>
+			</ContentWithTargetPath>
+
+		</ItemGroup>
+
+		<!-- iOS Only -->
+		<!-- If on Windows, using build host, copy the files over to build server host too -->
+		<CopyFilesToBuildServer
+			Condition="'$(BuildSessionId)' != '' And '$(_ResizetizerIsiOSApp)' == 'True' And '$(IsMacEnabled)'=='true'"
+			SessionId="$(BuildSessionId)"
+			Files="@(_SharedFontBundleResource);@(_SharedFontPListFiles)" />
+		
+		<!-- Touch/create our stamp file for outputs -->
+		<Touch Files="$(_SharedFontStampFile)" AlwaysCreate="True" />
+
+		<!-- Include our fonts and stamp file as filewrites so they don't get rm'd -->
+		<ItemGroup>
+			<FileWrites Include="$(_SharedFontStampFile)" />
+			<FileWrites Include="@(_SharedFontCopied)" />
+		</ItemGroup>
+	</Target>
 
 	<Target Name="ResizetizeImages"
 		Inputs="@(SharedImage);$(_ResizetizerInputsFile)"
@@ -168,6 +316,11 @@
 		AfterTargets="$(ResizetizeAfterTargets)"
 		BeforeTargets="$(ResizetizeBeforeTargets)"
 		DependsOnTargets="$(ResizetizeDependsOnTargets)">
+
+		<DetectInvalidResourceOutputFilenamesTask
+			Items="@(SharedImage)"
+			ErrorMessage="$(_ResizetizerDefaultInvalidFilenamesErrorMessage)">
+		</DetectInvalidResourceOutputFilenamesTask>
 
 		<!-- Where in obj/ to store these -->
 		<PropertyGroup>
@@ -261,5 +414,7 @@
 		</PropertyGroup>
 
 		<RemoveDir Directories="$(ResizetizerIntermediateOutputPath)" Condition="Exists ('$(ResizetizerIntermediateOutputPath)' )" />
+
+		<RemoveDir Directories="$(IntermediateOutputPath)sp" Condition="Exists ( '$(IntermediateOutputPath)sp' )" />
 	</Target>
 </Project>

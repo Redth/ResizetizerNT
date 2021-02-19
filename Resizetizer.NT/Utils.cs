@@ -1,10 +1,20 @@
 ﻿using System.Drawing;
 using System.Globalization;
+using System.IO;
+using System.Text.RegularExpressions;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Resizetizer.NT.Tests")]
 
 namespace Resizetizer
 {
 	internal class Utils
 	{
+		static readonly Regex rxResourceFilenameValidation
+			= new Regex(@"^[a-z]+[a-z0-9_]{0,}[^_]$", RegexOptions.Singleline);
+
+		public static bool IsValidResourceFilename(string filename)
+			=> rxResourceFilenameValidation.IsMatch(Path.GetFileNameWithoutExtension(filename));
+
 		public static Color? ParseColorString(string tint)
 		{
 			if (string.IsNullOrEmpty(tint))
