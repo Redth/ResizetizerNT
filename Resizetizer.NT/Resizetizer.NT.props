@@ -6,6 +6,17 @@
 		<AvailableItemName Include="SharedFont" />
 	</ItemGroup>
 
+	<!--
+	<ItemGroup Condition="'$(EnableDefaultItems)'=='True'">
+		<SharedImage Include="**\*.svg"/>
+		<SharedFont Include="**\*.otf"/>
+		<SharedFont Include="**\*.ttf"/>
+		<SharedFont Include="**\*.woff"/>
+		<SharedFont Include="**\*.woff2"/>
+	</ItemGroup>
+	-->
+
+
 	<PropertyGroup>
 		<_ResizetizerTaskAssemblyName>Resizetizer.NT.dll</_ResizetizerTaskAssemblyName>
 	</PropertyGroup>

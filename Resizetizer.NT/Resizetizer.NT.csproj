@@ -52,6 +52,9 @@
 		<None Include="@(_ItemToPack)" Visible="False" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="Resizetizer.NT.targets" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="Resizetizer.NT.props" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
+		<None Update="Rules\ProjectItemsSchema.xaml" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
+		<None Update="Rules\SharedFont.xaml" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
+		<None Update="Rules\SharedImage.xaml" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 	<ItemGroup>

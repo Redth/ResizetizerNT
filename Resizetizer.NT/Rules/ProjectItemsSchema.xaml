@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+    <ContentType
+        Name="SharedImage"
+        DisplayName="Resizetizer.NT Shared Image"
+        ItemType="SharedImage">
+    </ContentType>
+
+    <ContentType
+        Name="SharedFont"
+        DisplayName="Resizetizer.NT Font"
+        ItemType="SharedFont">
+    </ContentType>
+
+
+    <ItemType Name="SharedImage" DisplayName="Resizetizer.NT Image" />
+    <ItemType Name="SharedFont" DisplayName="Resizetizer.NT Font" />
+
+    <FileExtension Name=".svg" ContentType="SharedImage" />
+    <FileExtension Name=".otf" ContentType="SharedFont"/>
+    <FileExtension Name=".ttf" ContentType="SharedFont"/>
+    <FileExtension Name=".woff" ContentType="SharedFont"/>
+    <FileExtension Name=".woff2" ContentType="SharedFont"/>
+
+</ProjectSchemaDefinitions>

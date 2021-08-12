@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+    Name="SharedImage"
+    DisplayName="General"
+    PageTemplate="generic"
+    Description="Resizetizer Shared Scalable Vector Graphics"
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+    <Rule.Categories>
+        <Category Name="Advanced" DisplayName="Advanced" />
+        <Category Name="Misc" DisplayName="Misc" />
+        <Category Name="ResizetizerNT" DisplayName="Resizetizer.NT" />
+    </Rule.Categories>
+
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" ItemType="SharedImage" />
+    </Rule.DataSource>
+
+    <DynamicEnumProperty Name="{}{ItemType}" DisplayName="Build Action"  Category="Advanced"
+                   Description="How the file relates to the build and deployment processes."
+                   EnumProvider="ItemTypes" />
+
+
+    <StringProperty Name="Identity" DisplayName="File Name" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" ItemType="SharedImage" PersistedName="Identity" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="FullPath" DisplayName="Full Path" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" ItemType="SharedImage" PersistedName="FullPath" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <BoolProperty Name="IsAppIcon" Default="false" DisplayName="Application Icon" Category="ResizetizerNT">
+        <BoolProperty.DataSource>
+            <DataSource HasConfigurationCondition="False"
+                  ItemType="SharedImage"
+                  PersistedName="IsAppIcon"
+                  Persistence="ProjectFile"
+                  SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <StringProperty Name="Alias" DisplayName="Image Alias" Category="ResizetizerNT">
+        <StringProperty.DataSource>
+            <DataSource ItemType="SharedImage"
+                  HasConfigurationCondition="False"
+                  PersistedName="Link"
+                  Persistence="ProjectFile"
+                  SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty  Name="BaseSize" DisplayName="Image BaseSize" Category="ResizetizerNT" />
+
+    <StringProperty  Name="TintColor" DisplayName="Image TintColor" Category="ResizetizerNT" />
+
+    <StringProperty  Name="ForegroundScale" DisplayName="Image Foreground Scale" Category="ResizetizerNT" />
+
+    <StringProperty  Name="ForegroundFile" DisplayName="Image Foreground File" Category="ResizetizerNT" />
+
+    <BoolProperty Name="Visible" Visible="false" />
+    <StringProperty Name="DependentUpon" Visible="false" />
+    <StringProperty Name="Link" Visible="false" />
+</Rule>
