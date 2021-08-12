@@ -51,6 +51,7 @@
 		<None Include="$(TargetPath)" Visible="False" Pack="True" PackagePath="buildTransitive;build" />
 		<None Include="@(_ItemToPack)" Visible="False" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="Resizetizer.NT.targets" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="Resizetizer.NT.props" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 	<ItemGroup>
