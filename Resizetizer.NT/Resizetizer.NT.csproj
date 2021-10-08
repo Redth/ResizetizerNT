@@ -38,18 +38,20 @@
 		<_ItemToPack Include="$(PkgSystem_IO_UnmanagedMemoryStream)\lib\netstandard1.3\System.IO.UnmanagedMemoryStream.dll" />
 		<_ItemToPack Include="$(PkgSkiaSharp)\lib\net462\SkiaSharp.dll" />
 		<_ItemToPack Include="$(PkgSkiaSharp)\runtimes\osx\native\libSkiaSharp.dylib" />
-		<_ItemToPack Include="$(PkgSkiaSharp)\runtimes\win-x86\native\libSkiaSharp.dll" />
+		<_ItemToPack Include="$(PkgSkiaSharp)\runtimes\win-x86\native\libSkiaSharp.dll" SubDir="x86" />
+		<_ItemToPack Include="$(PkgSkiaSharp)\runtimes\win-x64\native\libSkiaSharp.dll" SubDir="x64" />
 		<_ItemToPack Include="$(PkgSkiaSharp_HarfBuzz)\lib\net462\SkiaSharp.HarfBuzz.dll" />
 		<_ItemToPack Include="$(PkgHarfBuzzSharp)\lib\net462\HarfBuzzSharp.dll" />
 		<_ItemToPack Include="$(PkgHarfBuzzSharp)\runtimes\osx\native\libHarfBuzzSharp.dylib" />
-		<_ItemToPack Include="$(PkgHarfBuzzSharp)\runtimes\win-x86\native\libHarfBuzzSharp.dll" />
+		<_ItemToPack Include="$(PkgHarfBuzzSharp)\runtimes\win-x86\native\libHarfBuzzSharp.dll" SubDir="x86" />
+		<_ItemToPack Include="$(PkgHarfBuzzSharp)\runtimes\win-x64\native\libHarfBuzzSharp.dll" SubDir="x64" />
 		<_ItemToPack Include="$(PkgSvg2VectorDrawable_Net)\lib\netstandard2.0\Svg2VectorDrawable.Net.dll" />
 		<_ItemToPack Include="$(PkgNewtonsoft_Json)\lib\netstandard2.0\Newtonsoft.Json.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="$(TargetPath)" Visible="False" Pack="True" PackagePath="buildTransitive;build" />
-		<None Include="@(_ItemToPack)" Visible="False" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="@(_ItemToPack)" Visible="False" Pack="True" PackagePath="buildTransitive\%(SubDir);build\%(SubDir)" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="Resizetizer.NT.targets" Pack="True" PackagePath="buildTransitive;build" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
