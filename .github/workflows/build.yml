@@ -13,6 +13,7 @@ jobs:
       name: Build
       env:
         NUPKG_MAJOR: 0.3
+        CODESIGN_PFX: ${{ secrets.CODESIGN_PFX }}
       runs-on: macos-latest
       steps:
       - name: Checkout
