@@ -33,6 +33,7 @@ jobs:
           echo "PACKAGE VERSION: $VERSION"
 
           New-Item -ItemType Directory -Force -Path .\artifacts
+          dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
           dotnet pack --output ./artifacts --configuration Release -p:PackageVersion=$VERSION ./Resizetizer.NT/Resizetizer.NT.csproj
           $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
           [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($env:CODESIGN_PFX))
