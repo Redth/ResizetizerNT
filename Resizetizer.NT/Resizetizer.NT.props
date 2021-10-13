@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<ItemGroup>
+		<AvailableItemName Include="SharedImage" />
+		<AvailableItemName Include="SharedFont" />
+	</ItemGroup>
+
+	<!--
+	<ItemGroup Condition="'$(EnableDefaultItems)'=='True'">
+		<SharedImage Include="**\*.svg"/>
+		<SharedFont Include="**\*.otf"/>
+		<SharedFont Include="**\*.ttf"/>
+		<SharedFont Include="**\*.woff"/>
+		<SharedFont Include="**\*.woff2"/>
+	</ItemGroup>
+	-->
+
+
+	<PropertyGroup>
+		<_ResizetizerTaskAssemblyName>Resizetizer.NT.dll</_ResizetizerTaskAssemblyName>
+	</PropertyGroup>
+	
+	<UsingTask
+		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+		TaskName="Resizetizer.ResizetizeSharedImages" />
+
+	<UsingTask
+		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+		TaskName="Resizetizer.DetectInvalidResourceOutputFilenamesTask" />
+
+	<UsingTask
+		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
+		TaskName="Resizetizer.CreatePartialInfoPlistTask" />
+
+	
+</Project>

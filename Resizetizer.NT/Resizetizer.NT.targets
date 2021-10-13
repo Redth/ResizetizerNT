@@ -2,26 +2,17 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<ItemGroup>
-		<AvailableItemName Include="SharedImage" />
-		<AvailableItemName Include="SharedFont" />
+		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules/ProjectItemsSchema.xaml">
+			<Context>File;BrowseObject;</Context>
+		</PropertyPageSchema>
+		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules/SharedImage.xaml">
+			<Context>File;BrowseObject;</Context>
+		</PropertyPageSchema>
+		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules/SharedFont.xaml">
+			<Context>File;BrowseObject;</Context>
+		</PropertyPageSchema>
 	</ItemGroup>
-
-	<PropertyGroup>
-		<_ResizetizerTaskAssemblyName>Resizetizer.NT.dll</_ResizetizerTaskAssemblyName>
-	</PropertyGroup>
 	
-	<UsingTask
-		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-		TaskName="Resizetizer.ResizetizeSharedImages" />
-
-	<UsingTask
-		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-		TaskName="Resizetizer.DetectInvalidResourceOutputFilenamesTask" />
-
-	<UsingTask
-		AssemblyFile="$(_ResizetizerTaskAssemblyName)"
-		TaskName="Resizetizer.CreatePartialInfoPlistTask" />
-
 	<PropertyGroup>
 		<CleanDependsOn>
 			$(CleanDependsOn);

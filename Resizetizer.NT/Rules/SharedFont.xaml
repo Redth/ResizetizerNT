@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+    Name="SharedFont"
+    DisplayName="General"
+    PageTemplate="generic"
+    Description="Shared Font"
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+    <Rule.Categories>
+        <Category Name="Advanced" DisplayName="Advanced" />
+        <Category Name="Misc" DisplayName="Misc" />
+        <Category Name="ResizetizerNT" DisplayName="Resizetizer.NT" />
+    </Rule.Categories>
+
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" ItemType="SharedFont" />
+    </Rule.DataSource>
+
+    <DynamicEnumProperty Name="{}{ItemType}" DisplayName="Build Action"  Category="Advanced"
+                   Description="How the file relates to the build and deployment processes."
+                   EnumProvider="ItemTypes" />
+
+    <StringProperty Name="Identity" DisplayName="File Name" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" ItemType="SharedFont" PersistedName="Identity" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <StringProperty Name="FullPath" DisplayName="Full Path" ReadOnly="true" Category="Misc">
+        <StringProperty.DataSource>
+            <DataSource Persistence="ProjectFile" ItemType="SharedFont" PersistedName="FullPath" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+
+    <StringProperty Name="Alias" DisplayName="Font Alias" Category="ResizetizerNT">
+        <StringProperty.DataSource>
+            <DataSource ItemType="SharedFont"
+                  HasConfigurationCondition="False"
+                  PersistedName="Alias"
+                  Persistence="ProjectFile"
+                  SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <BoolProperty Name="Visible" Visible="false" />
+    <StringProperty Name="DependentUpon" Visible="false" />
+    <StringProperty Name="Link" Visible="false" />
+</Rule>
