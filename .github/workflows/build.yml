@@ -13,7 +13,8 @@ jobs:
       name: Build
       env:
         NUPKG_MAJOR: 0.3
-      runs-on: macos-latest
+        CODESIGN_PFX: ${{ secrets.CODESIGN_PFX }}
+      runs-on: windows-latest
       steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -33,6 +34,7 @@ jobs:
           echo "PACKAGE VERSION: $VERSION"
 
           New-Item -ItemType Directory -Force -Path .\artifacts
+          dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
           dotnet pack --output ./artifacts --configuration Release -p:PackageVersion=$VERSION ./Resizetizer.NT/Resizetizer.NT.csproj
           $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
           [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($env:CODESIGN_PFX))
