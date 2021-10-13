@@ -22,6 +22,7 @@
 		<PackageOutputPath>..\output</PackageOutputPath>
 		<IncludeBuildOutput>False</IncludeBuildOutput>
 		<NoWarn>NU5100;NU5128</NoWarn>
+		<DevelopmentDependency>true</DevelopmentDependency>
 	</PropertyGroup>
 
 	<ItemGroup>
