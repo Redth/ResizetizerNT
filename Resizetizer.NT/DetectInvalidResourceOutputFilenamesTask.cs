@@ -33,8 +33,12 @@ namespace Resizetizer
 					System.Threading.Tasks.Parallel.ForEach(Items, item =>
 					{
 						var filename = item.ItemSpec;
+						var alias = item.GetMetadata("Link");
+						var outputName = string.IsNullOrWhiteSpace(alias)
+							? filename
+							: alias;
 
-						if (!Utils.IsValidResourceFilename(filename) || ! File.Exists(filename))
+						if (!Utils.IsValidResourceFilename(outputName) || ! File.Exists(filename))
 							invalidFilenames.Add(filename);
 					});
 				}

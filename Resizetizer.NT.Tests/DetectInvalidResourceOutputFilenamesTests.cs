@@ -82,6 +82,19 @@ namespace Resizetizer.NT.Tests
 				AssertInvalidFilename(task, i);
 				Assert.False(success);
 			}
+			
+			[Fact]
+			public void ValidFileWithAliasSucceeds()
+			{
+				var i = new TaskItem("images/appiconfg-red-512.svg");
+				i.SetMetadata("Link", "appiconfg_red.png");
+				var task = GetNewTask(i);
+
+				var success = task.Execute();
+
+				AssertValidFilename(task, i);
+				Assert.True(success);
+			}
 		}
 	}
 }
