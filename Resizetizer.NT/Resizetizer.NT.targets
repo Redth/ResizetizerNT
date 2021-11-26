@@ -300,7 +300,9 @@
 		Outputs="$(IntermediateOutputPath)resizetizer.stamp"
 		AfterTargets="$(ResizetizeAfterTargets)"
 		BeforeTargets="$(ResizetizeBeforeTargets)"
-		DependsOnTargets="$(ResizetizeDependsOnTargets)">
+		DependsOnTargets="$(ResizetizeDependsOnTargets)"
+		Condition="'@(SharedImage)' != ''"
+		>
 
 		<DetectInvalidResourceOutputFilenamesTask
 			Items="@(SharedImage)"
