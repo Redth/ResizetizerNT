@@ -37,6 +37,13 @@ namespace Resizetizer
 				{
 					await DoExecute();
 				}
+				catch (AggregateException aggregate)
+                {
+					foreach (var innerException in aggregate.InnerExceptions)
+                    {
+						Log.LogErrorFromException(innerException);
+                    }
+                }
 				catch (Exception ex)
 				{
 					Log.LogErrorFromException(ex);
