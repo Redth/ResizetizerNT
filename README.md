@@ -163,7 +163,7 @@ There is an opportunity with things like vectors to provide some other interesti
       <OutputSize Scale="5.0" FileNamePostfix="@5x" />
     </SharedImage>
     ```
-- AppIcons - on iOS these are asset catalogs? Maybe there should be an attribute or a new build action specifically for app icons which generates mipmap drawables on android and asset catalogs on iOS since this is a pretty specific use case
+- AppIcons - The instructions to use this package as your App Icons is [in this article](http://prototypemakers.medium.com/using-svg-files-as-your-app-icon-in-your-ios-android-xamarin-apps-22a747a5144e), which also contains a video walkthrough.
 
 # Progress
 
