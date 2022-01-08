@@ -6,14 +6,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Resizetizer
 {
 	public class ResizetizeSharedImages : AsyncTask, ILogger
 	{
+		string platformType;
+
 		[Required]
-		public string PlatformType { get; set; } = "android";
+		public string PlatformType
+		{
+			get => platformType;
+			set => platformType = value?.Trim().ToLowerInvariant();
+		}
 
 		[Required]
 		public string IntermediateOutputPath { get; set; }
@@ -107,8 +112,6 @@ namespace Resizetizer
 				catch (Exception ex)
 				{
 					Log.LogErrorFromException(ex);
-
-					throw;
 				}
 			});
 
@@ -206,10 +209,10 @@ namespace Resizetizer
 		void ProcessImageCopy(SharedImageInfo img, DpiPath originalScaleDpi, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{
 			var resizer = new Resizer(img, IntermediateOutputPath, this);
-			
+
 			Log.LogMessage(MessageImportance.Low, $"Copying {img.Filename}");
 
-			var r = resizer.CopyFile(originalScaleDpi, InputsFile, PlatformType.ToLower().Equals("android"));
+			var r = resizer.CopyFile(originalScaleDpi, InputsFile, PlatformType == "android");
 			resizedImages.Add(r);
 
 			Log.LogMessage(MessageImportance.Low, $"Copied {img.Filename}");
