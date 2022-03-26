@@ -19,7 +19,7 @@
 		<PackageProjectUrl>https://github.com/redth/Resizetizer</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/redth/ResizetizerNT</RepositoryUrl>
-		<PackageOutputPath>..\output</PackageOutputPath>
+		<PackageOutputPath>..\artifacts</PackageOutputPath>
 		<IncludeBuildOutput>False</IncludeBuildOutput>
 		<NoWarn>NU5100;NU5128</NoWarn>
 		<DevelopmentDependency>true</DevelopmentDependency>

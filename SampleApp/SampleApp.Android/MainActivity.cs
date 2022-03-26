@@ -23,7 +23,7 @@ namespace SampleApp.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
 
-            var r = Resource.Drawable.camera;
+            //var r = Resource.Drawable.camera; // not found 
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

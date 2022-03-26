@@ -5,39 +5,54 @@ using System.Text.RegularExpressions;
 
 namespace Resizetizer
 {
-	internal class SharedImageInfo
-	{
-		public string Alias { get; set; }
+    internal class SharedImageInfo
+    {
+        public string Alias { get; set; }
 
-		public string Filename { get; set; }
+        public string Filename { get; set; }
 
-		public string OutputName =>
-			string.IsNullOrWhiteSpace(Alias)
-				? Path.GetFileNameWithoutExtension(Filename)
-				: Path.GetFileNameWithoutExtension(Alias);
+        public ImageFormat OutputFormat { get; set; }
 
-		public string OutputExtension =>
-			string.IsNullOrWhiteSpace(Alias) || !Path.HasExtension(Alias)
-				? Path.GetExtension(Filename)
-				: Path.GetExtension(Alias);
+        public string OutputName =>
+            string.IsNullOrWhiteSpace(Alias)
+                ? Path.GetFileNameWithoutExtension(Filename)
+                : Path.GetFileNameWithoutExtension(Alias);
 
-		public Size? BaseSize { get; set; }
+        public string OutputExtension =>
+            string.IsNullOrWhiteSpace(Alias) || !Path.HasExtension(Alias)
+                ? Path.GetExtension(Filename)
+                : Path.GetExtension(Alias);
 
-		public bool Resize { get; set; } = true;
+        public Size? BaseSize { get; set; }
 
-		public Color? TintColor { get; set; }
+        public bool Resize { get; set; } = true;
 
-		public bool IsVector => IsVectorFilename(Filename);
+        public Color? TintColor { get; set; }
 
-		public bool IsAppIcon { get; set; }
+        public bool IsVector => IsVectorFilename(Filename);
 
-		public string ForegroundFilename { get; set; }
+        public bool IsAppIcon { get; set; }
 
-		public bool ForegroundIsVector => IsVectorFilename(ForegroundFilename);
+        public string ForegroundFilename { get; set; }
 
-		public double ForegroundScale { get; set; } = 1.0;
+        public bool ForegroundIsVector => IsVectorFilename(ForegroundFilename);
 
-		private static bool IsVectorFilename(string filename)
-			=> Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
-	}
+        public double ForegroundScale { get; set; } = 1.0;
+
+        private static bool IsVectorFilename(string filename)
+            => Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
+    }
+
+    internal class ImageFormat
+    {
+        public Formats Format { get; set; } = Formats.Default;
+        public int Quality { get; set; } = -1;
+
+        public enum Formats
+        {
+            Default,
+            Png,
+            Jpeg,
+        }
+    }
 }

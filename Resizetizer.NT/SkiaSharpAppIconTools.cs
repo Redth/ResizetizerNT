@@ -17,9 +17,9 @@ namespace Resizetizer
 			hasForeground = File.Exists(info.ForegroundFilename);
 
 			if (hasForeground)
-				foregroundTools = SkiaSharpTools.Create(info.ForegroundIsVector, info.ForegroundFilename, null, info.TintColor, logger);
+				foregroundTools = SkiaSharpTools.Create(info.ForegroundIsVector, info.ForegroundFilename, info.OutputFormat, null, info.TintColor, logger);
 
-			backgroundTools = SkiaSharpTools.Create(info.IsVector, info.Filename, null, null, logger);
+			backgroundTools = SkiaSharpTools.Create(info.IsVector, info.Filename, info.OutputFormat, null, null, logger);
 
 			backgroundOriginalSize = backgroundTools.GetOriginalSize();
 
