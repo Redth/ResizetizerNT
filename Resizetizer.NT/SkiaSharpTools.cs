@@ -6,6 +6,7 @@ using System.IO;
 
 namespace Resizetizer
 {
+    
     internal abstract class SkiaSharpTools
     {
         public static SkiaSharpTools Create(bool isVector, string filename, ImageFormat format, Size? baseSize, Color? tintColor, ILogger logger)
