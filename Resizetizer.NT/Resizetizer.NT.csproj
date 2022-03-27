@@ -6,7 +6,7 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
-		<PackageId>Resizetizer.NT.Jpeg</PackageId>
+		<PackageId>Resizetizer.NT</PackageId>
 		<Title>An Jpeg output support of Resizetizer NT for Xamarin Image Assets</Title>
 		<Version>0.99.0</Version>
 		<Authors>Redth, Dmytro Bondarenko</Authors>
