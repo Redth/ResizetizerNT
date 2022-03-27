@@ -6,19 +6,19 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
-		<PackageId>Resizetizer.NT</PackageId>
-		<Title>Resizetizer NT for Xamarin Image Assets</Title>
+		<PackageId>Resizetizer.NT.Jpeg</PackageId>
+		<Title>An Jpeg output support of Resizetizer NT for Xamarin Image Assets</Title>
 		<Version>0.99.0</Version>
-		<Authors>Redth</Authors>
+		<Authors>Redth, Dmytro Bondarenko</Authors>
 		<Owners>Redth</Owners>
 		<summary>Easily and automatically resize your source image assets as part of your build process.</summary>
 		<PackageDescription>
 			Easily and automatically resize your source image assets as part of your build process.
 		</PackageDescription>
 		<Copyright>Copyright © Redth</Copyright>
-		<PackageProjectUrl>https://github.com/redth/Resizetizer</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/bondarenkod/ResizetizerNT</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<RepositoryUrl>https://github.com/redth/ResizetizerNT</RepositoryUrl>
+		<RepositoryUrl>https://github.com/bondarenkod/ResizetizerNT</RepositoryUrl>
 		<PackageOutputPath>..\artifacts</PackageOutputPath>
 		<IncludeBuildOutput>False</IncludeBuildOutput>
 		<NoWarn>NU5100;NU5128</NoWarn>

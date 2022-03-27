@@ -6,7 +6,7 @@ on:
     types: [published]
   pull_request:
     branches:
-    - master
+    - r-impr-nuget-build
     
 jobs:
     build:
