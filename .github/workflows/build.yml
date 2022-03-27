@@ -13,7 +13,7 @@ jobs:
       name: Build
       env:
         NUPKG_MAJOR: 0.3
-        CODESIGN_PFX: ${{ secrets.CODESIGN_PFX }}
+        # CODESIGN_PFX: ${{ secrets.CODESIGN_PFX }}
       runs-on: windows-latest
       steps:
       - name: Checkout
@@ -36,9 +36,9 @@ jobs:
           New-Item -ItemType Directory -Force -Path .\artifacts
           dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
           dotnet pack --output ./artifacts --configuration Release -p:PackageVersion=$VERSION ./Resizetizer.NT/Resizetizer.NT.csproj
-          $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
-          [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($env:CODESIGN_PFX))
-          nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
+          # $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
+          # [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($env:CODESIGN_PFX))
+          # nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
       
       - name: Run Tests
         run: dotnet test --configuration Release ./Resizetizer.NT.Tests/Resizetizer.NT.Tests.csproj
