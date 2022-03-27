@@ -72,16 +72,17 @@ namespace Resizetizer
                 var pFormat = SKEncodedImageFormat.Png;
                 int pQuality = 100;
 
-                switch (this.ImageFormat.Format)
-                {
-                    case ImageFormat.Formats.Png:
-                        pQuality = this.ImageFormat.Quality;
-                        break;
-                    case ImageFormat.Formats.Jpeg:
-                        pFormat = SKEncodedImageFormat.Jpeg;
-                        pQuality = this.ImageFormat.Quality;
-                        break;
-                }
+                if (ImageFormat != null)
+                    switch (this.ImageFormat.Format)
+                    {
+                        case ImageFormat.Formats.Png:
+                            pQuality = this.ImageFormat.Quality;
+                            break;
+                        case ImageFormat.Formats.Jpeg:
+                            pFormat = SKEncodedImageFormat.Jpeg;
+                            pQuality = this.ImageFormat.Quality;
+                            break;
+                    }
 
                 tempBitmap.Encode(stream, pFormat, pQuality);
             }
