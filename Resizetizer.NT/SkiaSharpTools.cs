@@ -31,7 +31,15 @@ namespace Resizetizer
 
 				Paint = new SKPaint
 				{
+					IsAntialias = true,
 					ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.SrcIn)
+				};
+			}
+			else
+			{
+				Paint = new SKPaint
+				{
+					IsAntialias = true
 				};
 			}
 		}
