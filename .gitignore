@@ -1,8 +1,9 @@
 ## Custom for the project
 
-packages/
-artifacts/
-
+packages/*
+!packages/.gitkeep
+artifacts/*
+!artifacts/.gitkeep
 
 
 ## Ignore Visual Studio temporary files, build results, and
