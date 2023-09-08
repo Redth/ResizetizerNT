@@ -30,7 +30,7 @@ namespace Resizetizer.NT.Tests
 				};
 
 			protected ITaskItem GetCopiedResource(ResizetizeSharedImages task, string path) =>
-				task.CopiedResources.Single(c => c.ItemSpec.Replace("\\", "/").EndsWith(path));
+				task.CopiedResources.Single(c => c.ItemSpec.Replace("\\", "/", StringComparison.InvariantCultureIgnoreCase).EndsWith(path));
 
 			protected void AssertFileSize(string file, int width, int height)
 			{
@@ -57,7 +57,7 @@ namespace Resizetizer.NT.Tests
 				var content = File.ReadAllText(file);
 
 				foreach (var snip in snippet)
-					Assert.Contains(snip, content);
+					Assert.Contains(snip, content, StringComparison.InvariantCultureIgnoreCase);
 			}
 		}
 

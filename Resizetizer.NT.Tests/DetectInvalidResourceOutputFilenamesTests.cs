@@ -24,7 +24,7 @@ namespace Resizetizer.NT.Tests
 				};
 
 			protected ITaskItem GetInvalidFilename(DetectInvalidResourceOutputFilenamesTask task, string path) =>
-				task.InvalidItems.Single(c => c.ItemSpec.Replace("\\", "/").EndsWith(path));
+				task.InvalidItems.Single(c => c.ItemSpec.Replace("\\", "/", StringComparison.InvariantCultureIgnoreCase).EndsWith(path));
 
 			protected void AssertValidFilename(DetectInvalidResourceOutputFilenamesTask task, ITaskItem item)
 				=> Assert.DoesNotContain(task.InvalidItems, c => c.ItemSpec == item.ItemSpec);
