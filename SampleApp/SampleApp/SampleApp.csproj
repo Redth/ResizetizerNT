@@ -32,6 +32,11 @@
 		<SharedImage Include="fullscreen_landscape_best_q.png" BaseSize="360,640" Format="Jpeg,10" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Update="Xamarin.Essentials" Version="1.8.0" />
+	  <PackageReference Update="Xamarin.Forms" Version="5.0.0.2612" />
+	</ItemGroup>
+
 	<!--<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">
 		<SharedImage Include="fullscreen_landscape_best_q.png" BaseSize="360,640" Format="Jpeg,80" />
 	</ItemGroup>-->

@@ -56,9 +56,11 @@ namespace Resizetizer
                 Logger.Log("Converting SVG to Android Drawable Vector: " + Info.Filename);
 
                 // Transform into an android vector drawable
-                var convertErr = Svg2VectorDrawable.Svg2Vector.Convert(Info.Filename, destination);
-                if (!string.IsNullOrEmpty(convertErr))
-                    throw new Svg2AndroidDrawableConversionException(convertErr, Info.Filename);
+                // void after package update
+                /*var convertErr = */
+                Svg2VectorDrawable.Svg2Vector.Convert(Info.Filename, destination);
+                //if (!string.IsNullOrEmpty(convertErr))
+                //    throw new Svg2AndroidDrawableConversionException(convertErr, Info.Filename);
             }
             else
             {

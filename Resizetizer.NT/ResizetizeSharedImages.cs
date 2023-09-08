@@ -53,7 +53,8 @@ namespace Resizetizer
 
         System.Threading.Tasks.Task DoExecute()
         {
-            Svg.SvgDocument.SkipGdiPlusCapabilityCheck = true;
+            // do not exist after packages were updated
+            // Svg.SvgDocument.SkipGdiPlusCapabilityCheck = true;
 
             var images = ParseImageTaskItems(SharedImages);
 
