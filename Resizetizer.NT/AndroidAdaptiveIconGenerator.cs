@@ -49,7 +49,7 @@ namespace Resizetizer
 			var foregroundExists = File.Exists(foregroundFile);
 
 			Logger.Log("Looking for Foreground File: " + foregroundFile);
-			
+
 			// If we have vectors we can emit an adaptive icon
 			if (backgroundIsVector && (foregroundIsVector || !foregroundExists))
 			{
@@ -60,7 +60,8 @@ namespace Resizetizer
 
 				Logger.Log("Converting Background SVG to Android Drawable Vector: " + backgroundFile);
 				// void after package update
-				/*var bgConvertErr = */Svg2VectorDrawable.Svg2Vector.Convert(backgroundFile, backgroundDestination);
+				/*var bgConvertErr = */
+				Svg2VectorDrawable.Svg2Vector.Convert(backgroundFile, backgroundDestination);
 				//if (!string.IsNullOrEmpty(bgConvertErr))
 				//	throw new Svg2AndroidDrawableConversionException(bgConvertErr, backgroundFile);
 
@@ -73,8 +74,9 @@ namespace Resizetizer
 				if (foregroundExists)
 				{
 					Logger.Log("Converting Foreground SVG to Android Drawable Vector: " + foregroundFile);
-                    // void after package update
-                    /*var fgConvertErr = */Svg2VectorDrawable.Svg2Vector.Convert(foregroundFile, foregroundDestination);
+					// void after package update
+					/*var fgConvertErr = */
+					Svg2VectorDrawable.Svg2Vector.Convert(foregroundFile, foregroundDestination);
 					//if (!string.IsNullOrEmpty(fgConvertErr))
 					//	throw new Svg2AndroidDrawableConversionException(fgConvertErr, foregroundFile);
 				}

@@ -1,136 +1,136 @@
-﻿using SkiaSharp;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using SkiaSharp;
 
 namespace Resizetizer
 {
-    
-    internal abstract class SkiaSharpTools
-    {
-        public static SkiaSharpTools Create(bool isVector, string filename, ImageFormat format, Size? baseSize, Color? tintColor, ILogger logger)
-            => isVector
-                ? new SkiaSharpSvgTools(filename, format, baseSize, tintColor, logger) as SkiaSharpTools
-                : new SkiaSharpBitmapTools(filename, format, baseSize, tintColor, logger);
 
-        public SkiaSharpTools(SharedImageInfo info, ILogger logger)
-            : this(info.Filename, info.OutputFormat, info.BaseSize, info.TintColor, logger)
-        {
-        }
+	internal abstract class SkiaSharpTools
+	{
+		public static SkiaSharpTools Create(bool isVector, string filename, ImageFormat format, Size? baseSize, Color? tintColor, ILogger logger)
+			=> isVector
+				? new SkiaSharpSvgTools(filename, format, baseSize, tintColor, logger) as SkiaSharpTools
+				: new SkiaSharpBitmapTools(filename, format, baseSize, tintColor, logger);
 
-        public SkiaSharpTools(string filename, ImageFormat imageFormat, Size? baseSize, Color? tintColor,
-            ILogger logger)
-        {
-            Logger = logger;
-            Filename = filename;
-            ImageFormat = imageFormat;
-            BaseSize = baseSize;
+		public SkiaSharpTools(SharedImageInfo info, ILogger logger)
+			: this(info.Filename, info.OutputFormat, info.BaseSize, info.TintColor, logger)
+		{
+		}
 
-            if (tintColor is Color tint)
-            {
-                var color = new SKColor(unchecked((uint)tint.ToArgb()));
-                Logger?.Log($"Detected a tint color of {color}");
+		public SkiaSharpTools(string filename, ImageFormat imageFormat, Size? baseSize, Color? tintColor,
+			ILogger logger)
+		{
+			Logger = logger;
+			Filename = filename;
+			ImageFormat = imageFormat;
+			BaseSize = baseSize;
 
-                Paint = new SKPaint
-                {
-                    ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.SrcIn)
-                };
-            }
-        }
+			if (tintColor is Color tint)
+			{
+				var color = new SKColor(unchecked((uint)tint.ToArgb()));
+				Logger?.Log($"Detected a tint color of {color}");
 
-        public string Filename { get; }
-        public ImageFormat ImageFormat { get; }
+				Paint = new SKPaint
+				{
+					ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.SrcIn)
+				};
+			}
+		}
 
-        public Size? BaseSize { get; }
-        public ILogger Logger { get; }
+		public string Filename { get; }
+		public ImageFormat ImageFormat { get; }
 
-        public SKPaint Paint { get; }
+		public Size? BaseSize { get; }
+		public ILogger Logger { get; }
 
-        public void Resize(DpiPath dpi, string destination)
-        {
-            var originalSize = GetOriginalSize();
-            var (scaledSize, scale) = GetScaledSize(originalSize, dpi.Scale);
+		public SKPaint Paint { get; }
 
-            var sw = new Stopwatch();
-            sw.Start();
+		public void Resize(DpiPath dpi, string destination)
+		{
+			var originalSize = GetOriginalSize();
+			var (scaledSize, scale) = GetScaledSize(originalSize, dpi.Scale);
 
-            // Allocate
-            using (var tempBitmap = new SKBitmap(scaledSize.Width, scaledSize.Height))
-            {
-                // Draw (copy)
-                using (var canvas = new SKCanvas(tempBitmap))
-                {
-                    canvas.Clear(SKColors.Transparent);
-                    canvas.Save();
-                    canvas.Scale(scale, scale);
-                    DrawUnscaled(canvas, scale);
-                }
+			var sw = new Stopwatch();
+			sw.Start();
 
-                // Save (encode)
-                using var stream = File.Create(destination);
+			// Allocate
+			using (var tempBitmap = new SKBitmap(scaledSize.Width, scaledSize.Height))
+			{
+				// Draw (copy)
+				using (var canvas = new SKCanvas(tempBitmap))
+				{
+					canvas.Clear(SKColors.Transparent);
+					canvas.Save();
+					canvas.Scale(scale, scale);
+					DrawUnscaled(canvas, scale);
+				}
 
-                var pFormat = SKEncodedImageFormat.Png;
-                int pQuality = 100;
+				// Save (encode)
+				using var stream = File.Create(destination);
 
-                if (ImageFormat != null)
-                    switch (this.ImageFormat.Format)
-                    {
-                        case ImageFormat.Formats.Png:
-                            pQuality = this.ImageFormat.Quality;
-                            break;
-                        case ImageFormat.Formats.Jpeg:
-                            pFormat = SKEncodedImageFormat.Jpeg;
-                            pQuality = this.ImageFormat.Quality;
-                            break;
-                    }
+				var pFormat = SKEncodedImageFormat.Png;
+				int pQuality = 100;
 
-                tempBitmap.Encode(stream, pFormat, pQuality);
-            }
+				if (ImageFormat != null)
+					switch (this.ImageFormat.Format)
+					{
+						case ImageFormat.Formats.Png:
+							pQuality = this.ImageFormat.Quality;
+							break;
+						case ImageFormat.Formats.Jpeg:
+							pFormat = SKEncodedImageFormat.Jpeg;
+							pQuality = this.ImageFormat.Quality;
+							break;
+					}
 
-            sw.Stop();
-            Logger?.Log($"Save Image took {sw.ElapsedMilliseconds}ms ({destination})");
-        }
+				tempBitmap.Encode(stream, pFormat, pQuality);
+			}
 
-        public abstract SKSize GetOriginalSize();
+			sw.Stop();
+			Logger?.Log($"Save Image took {sw.ElapsedMilliseconds}ms ({destination})");
+		}
 
-        public abstract void DrawUnscaled(SKCanvas canvas, float scale);
+		public abstract SKSize GetOriginalSize();
 
-        public (SKSizeI, float) GetScaledSize(SKSize originalSize, DpiPath dpi)
-        {
-            if (dpi.Size.HasValue)
-                return GetScaledSize(originalSize, dpi.Scale, dpi.Size.Value);
-            else
-                return GetScaledSize(originalSize, dpi.Scale);
-        }
+		public abstract void DrawUnscaled(SKCanvas canvas, float scale);
 
-        (SKSizeI, float) GetScaledSize(SKSize originalSize, decimal scale, SizeF absoluteSize)
-        {
-            var ratio = (decimal)absoluteSize.Width / (decimal)originalSize.Width;
+		public (SKSizeI, float) GetScaledSize(SKSize originalSize, DpiPath dpi)
+		{
+			if (dpi.Size.HasValue)
+				return GetScaledSize(originalSize, dpi.Scale, dpi.Size.Value);
+			else
+				return GetScaledSize(originalSize, dpi.Scale);
+		}
 
-            return GetScaledSize(originalSize, ratio * scale);
-        }
+		(SKSizeI, float) GetScaledSize(SKSize originalSize, decimal scale, SizeF absoluteSize)
+		{
+			var ratio = (decimal)absoluteSize.Width / (decimal)originalSize.Width;
 
-        public (SKSizeI, float) GetScaledSize(SKSize originalSize, decimal resizeRatio)
-        {
-            int sourceNominalWidth = BaseSize?.Width ?? (int)originalSize.Width;
-            int sourceNominalHeight = BaseSize?.Height ?? (int)originalSize.Height;
+			return GetScaledSize(originalSize, ratio * scale);
+		}
 
-            // Find the actual size of the image
-            var sourceActualWidth = originalSize.Width;
-            var sourceActualHeight = originalSize.Height;
+		public (SKSizeI, float) GetScaledSize(SKSize originalSize, decimal resizeRatio)
+		{
+			int sourceNominalWidth = BaseSize?.Width ?? (int)originalSize.Width;
+			int sourceNominalHeight = BaseSize?.Height ?? (int)originalSize.Height;
 
-            // Figure out what the ratio to convert the actual image size to the nominal size is
-            var nominalRatio = Math.Max(sourceNominalWidth / sourceActualWidth, sourceNominalHeight / sourceActualHeight);
+			// Find the actual size of the image
+			var sourceActualWidth = originalSize.Width;
+			var sourceActualHeight = originalSize.Height;
 
-            // Multiply nominal ratio by the resize ratio to get our final ratio we actually adjust by
-            var adjustRatio = nominalRatio * (float)resizeRatio;
+			// Figure out what the ratio to convert the actual image size to the nominal size is
+			var nominalRatio = Math.Max(sourceNominalWidth / sourceActualWidth, sourceNominalHeight / sourceActualHeight);
 
-            // Figure out our scaled width and height to make a new canvas for
-            var scaledWidth = sourceActualWidth * adjustRatio;
-            var scaledHeight = sourceActualHeight * adjustRatio;
+			// Multiply nominal ratio by the resize ratio to get our final ratio we actually adjust by
+			var adjustRatio = nominalRatio * (float)resizeRatio;
 
-            return (new SKSizeI((int)scaledWidth, (int)scaledHeight), adjustRatio);
-        }
-    }
+			// Figure out our scaled width and height to make a new canvas for
+			var scaledWidth = sourceActualWidth * adjustRatio;
+			var scaledHeight = sourceActualHeight * adjustRatio;
+
+			return (new SKSizeI((int)scaledWidth, (int)scaledHeight), adjustRatio);
+		}
+	}
 }
