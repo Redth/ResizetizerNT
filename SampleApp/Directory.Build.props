@@ -4,6 +4,6 @@
     <RestorePackagesPath>..\packages</RestorePackagesPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Resizetizer.NT" Version="0.99.0" />
+    <PackageReference Include="Resizetizer.NT.Updated" Version="0.99.0" />
   </ItemGroup>
 </Project>
