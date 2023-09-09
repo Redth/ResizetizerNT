@@ -1,6 +1,9 @@
-# Resizetizer.NT
+# What's changed?
 
 This is the fork of the https://github.com/Redth/ResizetizerNT/tree/master repo with additionaly added features.
+- All the libraries updated to the most recent versions;
+- Added attribute `Format='Jpeg,Quality'`  for SharedImage;
+- Improved error logging, included additional details into error messages;
 
 ## NuGet
 TBD
