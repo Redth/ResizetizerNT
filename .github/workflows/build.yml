@@ -39,26 +39,16 @@ jobs:
           New-Item -ItemType Directory -Force -Path .\artifacts
           dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
           dotnet pack --output ./artifacts --configuration Release -p:PackageVersion=$VERSION ./Resizetizer.NT/Resizetizer.NT.csproj
-          # $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
-          # [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($env:CODESIGN_PFX))
-          # nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
-          try {
-              # Get NuGet Version
-              $nugetVersion = nuget help | Select-String "NuGet Version:" | % { $_.ToString().Split(":")[1].Trim() }
-              Write-Output "NuGet Version: $nugetVersion"
-
-              # Path operations
-              $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
-
-              # Convert and write the certificate
-              [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($Env:CODESIGN_PFX))
-
-              # Sign the package
-              nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -CertificatePassword "$Env:CODESIGN_PWD" -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
-          }
-          catch {
-              Write-Output "$_.Exception.Message"
-          }
+          # try {
+          #     $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
+          #     # Convert and write the certificate
+          #     [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($Env:CODESIGN_PFX))
+          #     # Sign the package
+          #     nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -CertificatePassword "$Env:CODESIGN_PWD" -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
+          # }
+          # catch {
+          #     Write-Output "$_.Exception.Message"
+          # }
       - name: Run Tests
         run: dotnet test --configuration Release ./Resizetizer.NT.Tests/Resizetizer.NT.Tests.csproj
 
@@ -75,7 +65,6 @@ jobs:
       runs-on: windows-latest
       if: github.event_name == 'release'
       env:
-        NUPKG_MAJOR: 0.3.1
         NUGET_ORG_API_KEY: ${{ secrets.NUGET_ORG_API_KEY }}
       environment: Prod
       steps:
