@@ -74,15 +74,19 @@ jobs:
       needs: build
       runs-on: windows-latest
       if: github.event_name == 'release'
+      env:
+        NUPKG_MAJOR: 0.3.1
+        NUGET_ORG_API_KEY: ${{ secrets.NUGET_ORG_API_KEY }}
+      environment: Prod
       steps:
         - name: Download Artifacts
           uses: actions/download-artifact@v1
           with:
             name: NuGet
         - name: Setup .NET Core
-          uses: actions/setup-dotnet@v1
+          uses: actions/setup-dotnet@v3
           with:
-            dotnet-version: '5.0.x'
+            dotnet-version: '7.0.x'
         - name: Push NuGet
           run: |
-            dotnet nuget push NuGet\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_ORG_API_KEY }}
+            dotnet nuget push NuGet\*.nupkg --source https://api.nuget.org/v3/index.json --api-key "$Env:NUGET_ORG_API_KEY"
