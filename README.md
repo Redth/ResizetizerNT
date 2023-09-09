@@ -9,7 +9,7 @@ This is the fork of the https://github.com/Redth/ResizetizerNT/tree/master repo 
 # Where is full ReadMe?
 To read the full readme file, please follow this link https://github.com/Redth/ResizetizerNT
 ## NuGet
-TBD
+NuGet package is listed under a new name `Resizetizer.NT.2023` here - https://www.nuget.org/packages/Resizetizer.NT.2023
 
 ## Jpeg output format and Jpeg Quality
 If you want to use PNG source image, but you don't want to include PNG into your mobile application project, now you can set the output image format as JPEG, plus set the Jpeg Quality.
