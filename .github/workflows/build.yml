@@ -78,4 +78,4 @@ jobs:
             dotnet-version: '7.0.x'
         - name: Push NuGet
           run: |
-            dotnet nuget push NuGet\*.nupkg --source https://api.nuget.org/v3/index.json --api-key "$Env:NUGET_ORG_API_KEY"
+            dotnet nuget push .\*.nupkg --source https://api.nuget.org/v3/index.json --api-key "$Env:NUGET_ORG_API_KEY"
