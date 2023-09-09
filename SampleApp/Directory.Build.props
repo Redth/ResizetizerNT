@@ -4,7 +4,7 @@
     <RestorePackagesPath>..\..\packages</RestorePackagesPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Resizetizer.NT" Version="0.99.0">
+    <PackageReference Include="Resizetizer.NT.2023" Version="0.99.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

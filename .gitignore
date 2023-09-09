@@ -4,6 +4,9 @@ packages/*
 !packages/.gitkeep
 artifacts/*
 !artifacts/.gitkeep
+# ignore pfx files
+*.pfx
+*.pfx.base64
 
 
 ## Ignore Visual Studio temporary files, build results, and

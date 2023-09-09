@@ -2,9 +2,12 @@
 
 This is the fork of the https://github.com/Redth/ResizetizerNT/tree/master repo with additionaly added features.
 - All the libraries updated to the most recent versions;
-- Added attribute `Format='Jpeg,Quality'`  for SharedImage;
+- Added support for attribute `Format='Jpeg,Quality'` for `<SharedImage/>` and logic behind;
 - Improved error logging, included additional details into error messages;
+- Package Id changed Resizetizer.NT -> Resizetizer.NT.2023, to be able to publish it to the NuGet.
 
+# Where is full ReadMe?
+To read the full readme file, please follow this link https://github.com/Redth/ResizetizerNT
 ## NuGet
 TBD
 

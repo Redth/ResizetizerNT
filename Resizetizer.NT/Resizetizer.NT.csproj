@@ -6,18 +6,17 @@
 
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
-    <PackageId>Resizetizer.NT</PackageId>
+    <PackageId>Resizetizer.NT.2023</PackageId>
     <Title>Refreshed Resizetizer NT</Title>
     <Version>0.99.0</Version>
     <Authors>Dmytro Bondarenko</Authors>
     <Owners>Redth</Owners>
     <summary>Explore the repository; the enhancements might make you happy</summary>
     <PackageDescription>
-      Easily and automatically resize your source image assets as part of your build process.
+      Easily and automatically resize your source image assets as part of your build process. Based on the original Resizetizer.NT project by Redth.
     </PackageDescription>
     <Copyright>Copyright © Redth</Copyright>
     <PackageProjectUrl>https://github.com/bondarenkod/ResizetizerNT</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/bondarenkod/ResizetizerNT</RepositoryUrl>
     <PackageOutputPath>..\artifacts</PackageOutputPath>
     <IncludeBuildOutput>False</IncludeBuildOutput>
@@ -25,6 +24,12 @@
     <DevelopmentDependency>true</DevelopmentDependency>
     <AssemblyName>Resizetizer.NT</AssemblyName>
     <RootNamespace>Resizetizer.NT</RootNamespace>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>Take SVG's and PNG's and automagically have them resized to all the different resolutions and included in your Xamarin Android, iOS, UWP, and WPF projects!</Description>
+    <PackageIcon>pkg-icon.jpg</PackageIcon>
+    <PackageTags>Xamarin;iOS;Android;XamarinForms;Forms;UWP;WPF;SVG;PNG;ImageResizing;AutoResize;SharedImage;</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -61,12 +66,20 @@
 
   <ItemGroup>
     <None Include="$(TargetPath)" Visible="False" Pack="True" PackagePath="buildTransitive" />
+    <None Include="..\pkg-icon.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="@(_ItemToPack)" Visible="False" Pack="True" PackagePath="buildTransitive\%(SubDir)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Resizetizer.NT.targets" Pack="True" PackagePath="buildTransitive" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Resizetizer.NT.props" Pack="True" PackagePath="buildTransitive" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="Rules\ProjectItemsSchema.xaml" Pack="True" PackagePath="buildTransitive" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="Rules\SharedFont.xaml" Pack="True" PackagePath="buildTransitive" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="Rules\SharedImage.xaml" Pack="True" PackagePath="buildTransitive" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Resizetizer.NT.2023.targets" Pack="True" PackagePath="buildTransitive" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Resizetizer.NT.2023.props" Pack="True" PackagePath="buildTransitive" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="ProjectItemsSchema.xaml" Pack="True" PackagePath="buildTransitive" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="SharedFont.xaml" Pack="True" PackagePath="buildTransitive" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="SharedImage.xaml" Pack="True" PackagePath="buildTransitive" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

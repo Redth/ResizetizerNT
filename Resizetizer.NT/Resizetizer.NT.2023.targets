@@ -2,13 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<ItemGroup>
-		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules/ProjectItemsSchema.xaml">
+		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)ProjectItemsSchema.xaml">
 			<Context>File;BrowseObject;</Context>
 		</PropertyPageSchema>
-		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules/SharedImage.xaml">
+		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)SharedImage.xaml">
 			<Context>File;BrowseObject;</Context>
 		</PropertyPageSchema>
-		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules/SharedFont.xaml">
+		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)SharedFont.xaml">
 			<Context>File;BrowseObject;</Context>
 		</PropertyPageSchema>
 	</ItemGroup>

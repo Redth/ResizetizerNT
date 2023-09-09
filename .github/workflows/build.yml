@@ -13,8 +13,10 @@ jobs:
       name: Build
       env:
         NUPKG_MAJOR: 0.3.1
-        # CODESIGN_PFX: ${{ secrets.CODESIGN_PFX }}
+        CODESIGN_PFX: ${{ secrets.CODESIGN_PFX }}
+        CODESIGN_PWD: ${{ secrets.CODESIGN_PWD }}
       runs-on: windows-latest
+      environment: Prod
       steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -25,6 +27,7 @@ jobs:
       
       - name: Build
         shell: pwsh
+       
         run: |
           $VERSION="$env:NUPKG_MAJOR-ci$env:GITHUB_RUN_ID"
           if ($env:GITHUB_EVENT_NAME -eq "release") {
@@ -39,7 +42,23 @@ jobs:
           # $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
           # [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($env:CODESIGN_PFX))
           # nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
-      
+          try {
+              # Get NuGet Version
+              $nugetVersion = nuget help | Select-String "NuGet Version:" | % { $_.ToString().Split(":")[1].Trim() }
+              Write-Output "NuGet Version: $nugetVersion"
+
+              # Path operations
+              $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
+
+              # Convert and write the certificate
+              [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($Env:CODESIGN_PFX))
+
+              # Sign the package
+              nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -CertificatePassword "$Env:CODESIGN_PWD" -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
+          }
+          catch {
+              Write-Output "$_.Exception.Message"
+          }
       - name: Run Tests
         run: dotnet test --configuration Release ./Resizetizer.NT.Tests/Resizetizer.NT.Tests.csproj
 
