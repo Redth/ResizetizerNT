@@ -11,16 +11,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<SharedImage Include="camera.svg" BaseSize="44" />
-		<SharedImage Include="camera2.svg" BaseSize="44" TintColor="#FF00FF00" />
-		<SharedImage Include="loginbg.png" BaseSize="123,105" />
-		<SharedImage Include="loginbg.png" BaseSize="123,105" Link="changed_name.png" />
+		<SharedImage Include="SharedImages\camera.svg" BaseSize="44" />
+		<SharedImage Include="SharedImages\camera2.svg" BaseSize="44" TintColor="#FF00FF00" />
+		<SharedImage Include="SharedImages\loginbg.png" BaseSize="123,105" />
+		<SharedImage Include="SharedImages\loginbg.png" BaseSize="123,105" Link="changed_name.png" />
 
-		<SharedImage Include="appicon.svg" IsAppIcon="true" ForegroundFile="appiconfg.svg" ForegroundScale="0.65" />
-		<SharedImage Include="camera.svg" IsAppIcon="true" ForegroundFile="appiconfg.svg" ForegroundScale="0.65" />
-		<SharedImage Include="camera.svg" IsAppIcon="true" ForegroundFile="appiconfg.svg" ForegroundScale="0.65" Link="new_name" />
+		<SharedImage Include="SharedImages\appicon.svg" IsAppIcon="true" ForegroundFile="appiconfg.svg" ForegroundScale="0.65" />
+		<SharedImage Include="SharedImages\camera.svg" IsAppIcon="true" ForegroundFile="appiconfg.svg" ForegroundScale="0.65" />
+		<SharedImage Include="SharedImages\camera.svg" IsAppIcon="true" ForegroundFile="appiconfg.svg" ForegroundScale="0.65" Link="new_name" />
 
-		<SharedFont Include="feather.ttf" Alias="Feather" />
+		<SharedFont Include="SharedFonts\feather.ttf" Alias="Feather" />
 
 		<!--https://www.ios-resolution.com/-->
 		<!--iPad Pro logical 1024*1366 phisical 2048*2732-->
@@ -30,7 +30,7 @@
 		<SharedImage Include="large2.jpg" BaseSize="44"  />-->
 
     <!--resize large png image to jpeg format with 10% quality-->
-		<SharedImage Include="fullscreen_landscape_best_q.png" BaseSize="640,640" Format="Jpeg,10" />
+		<SharedImage Include="SharedImages\fullscreen_landscape_best_q.png" BaseSize="640,640" Format="Jpeg,10" />
 	</ItemGroup>
 
 	<ItemGroup>

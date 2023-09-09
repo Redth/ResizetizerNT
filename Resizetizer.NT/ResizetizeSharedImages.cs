@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -35,11 +36,25 @@ namespace Resizetizer
 			{
 				try
 				{
+					Log.LogMessage(MessageImportance.Low, $"Hello from Resizetizer.NT");
 					await DoExecute();
+				}
+				// suggestion related a better logging by @r2d2rigo:
+				// https://github.com/Redth/ResizetizerNT/issues/69#issuecomment-979908021
+				// https://github.com/rotorsoft-ltd/ResizetizerNT/commit/029476d44975677af5b002ae89863a04fb597b93
+				catch (AggregateException aggregate)
+				{
+					foreach (var innerException in aggregate.InnerExceptions)
+					{
+						Log.LogErrorFromException(innerException);
+					}
+
+					Log.LogWarning($"Additional log details to the previously logged exception: PlatformType=[{PlatformType}],IntermediateOutputPath=[{IntermediateOutputPath}],InputsFile=[{InputsFile}],IsMacEnabled=[{IsMacEnabled}]");
 				}
 				catch (Exception ex)
 				{
-					Log.LogErrorFromException(ex);
+					Log.LogErrorFromException(ex, true, true, GetFileNameToLogError());
+					Log.LogWarning($"Additional log details to the previously logged exception: PlatformType=[{PlatformType}],IntermediateOutputPath=[{IntermediateOutputPath}],InputsFile=[{InputsFile}],IsMacEnabled=[{IsMacEnabled}]");
 				}
 				finally
 				{
@@ -105,10 +120,24 @@ namespace Resizetizer
 
 					Log.LogMessage(MessageImportance.Low, $"{op} took {opStopwatch.ElapsedMilliseconds}ms");
 				}
+				// suggestion related a better logging by @r2d2rigo:
+				// https://github.com/Redth/ResizetizerNT/issues/69#issuecomment-979908021
+				// https://github.com/rotorsoft-ltd/ResizetizerNT/commit/029476d44975677af5b002ae89863a04fb597b93
+				catch (AggregateException aggregate)
+				{
+					foreach (var innerException in aggregate.InnerExceptions)
+					{
+						Log.LogErrorFromException(innerException);
+					}
+
+					Log.LogWarning(
+						$"Additional log details to the previously logged exception for SharedImageInfo: Alias=[{img.Alias}] BaseSize=[{img.BaseSize?.ToString()}] Filename=[{img.Filename}] ForegroundFilename=[{img.ForegroundFilename}] ForegroundIsVector=[{img.ForegroundIsVector}] ForegroundScale=[{img.ForegroundScale}] OutputName=[{img.OutputName}] OutputExtension=[{img.OutputExtension}] OutputFormat=[{img.OutputFormat}] Resize=[{img.Resize}] TintColor=[{img.TintColor}]");
+				}
 				catch (Exception ex)
 				{
-					Log.LogErrorFromException(ex);
-
+					Log.LogErrorFromException(ex, true, true, GetFileNameToLogError());
+					Log.LogWarning(
+						$"Additional log details to the previously logged exception for SharedImageInfo: Alias=[{img.Alias}] BaseSize=[{img.BaseSize?.ToString()}] Filename=[{img.Filename}] ForegroundFilename=[{img.ForegroundFilename}] ForegroundIsVector=[{img.ForegroundIsVector}] ForegroundScale=[{img.ForegroundScale}] OutputName=[{img.OutputName}] OutputExtension=[{img.OutputExtension}] OutputFormat=[{img.OutputFormat}] Resize=[{img.Resize}] TintColor=[{img.TintColor}]");
 					throw;
 				}
 			});
@@ -135,6 +164,9 @@ namespace Resizetizer
 
 			return System.Threading.Tasks.Task.CompletedTask;
 		}
+
+		private string GetFileNameToLogError([CallerFilePath] string filePath = "",
+			[CallerLineNumber] int lineNumber = 0) => $"{filePath}:{lineNumber}";
 
 		void ProcessAppIcon(SharedImageInfo img, ConcurrentBag<ResizedImageInfo> resizedImages)
 		{

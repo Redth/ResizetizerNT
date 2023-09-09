@@ -1,9 +1,12 @@
 <Project>
   <PropertyGroup>
     <RestoreNoCache>true</RestoreNoCache>
-    <RestorePackagesPath>..\packages</RestorePackagesPath>
+    <RestorePackagesPath>..\..\packages</RestorePackagesPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Resizetizer.NT.Updated" Version="0.99.0" />
+    <PackageReference Include="Resizetizer.NT" Version="0.99.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>
