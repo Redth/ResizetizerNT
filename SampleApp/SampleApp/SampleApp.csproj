@@ -10,7 +10,10 @@
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
-	<ItemGroup>
+  <Import Project="$(MSBuildThisFileDirectory)..\ExternalFeature\Resources\SharedImages.props" />
+
+
+  <ItemGroup>
 		<SharedImage Include="SharedImages\camera.svg" BaseSize="44" />
 		<SharedImage Include="SharedImages\camera2.svg" BaseSize="44" TintColor="#FF00FF00" />
 		<SharedImage Include="SharedImages\loginbg.png" BaseSize="123,105" />
@@ -36,6 +39,10 @@
 	<ItemGroup>
 	  <PackageReference Include="Xamarin.Essentials" Version="1.8.0" />
 	  <PackageReference Include="Xamarin.Forms" Version="5.0.0.2612" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ExternalFeature\ExternalFeature.csproj" />
 	</ItemGroup>
 
 	<!--<ItemGroup Condition="'$(_ResizetizerIsAndroidApp)' == 'True'">

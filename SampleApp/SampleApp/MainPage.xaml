@@ -7,6 +7,7 @@
     <Grid BackgroundColor="LightGray">
         <ScrollView>
             <StackLayout VerticalOptions="Start">
+                <Button Text="Open Gallery Page from External Feature" Clicked="Button_OnClicked" />
                 <!--  Place new controls here  -->
                 <Label
                     HorizontalOptions="Center"

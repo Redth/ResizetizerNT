@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ExternalFeature.GalleryPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ScrollView>
+        <StackLayout>
+
+            <Label
+                HorizontalOptions="CenterAndExpand"
+                Text="A tent with a campfire outside in the mountains on a beautiful night with constellations in the sky:"
+                VerticalOptions="Start" />
+            <Image
+                Aspect="AspectFit"
+                HeightRequest="250"
+                HorizontalOptions="Center"
+                Source="large_image.jpg"
+                WidthRequest="250" />
+
+
+            <Label
+                Margin="0,10,0,0"
+                HorizontalOptions="CenterAndExpand"
+                Text="Shopping cart with heart:"
+                VerticalOptions="Start" />
+            <Image
+                Aspect="AspectFit"
+                HeightRequest="150"
+                HorizontalOptions="Center"
+                Source="primary_icon.png"
+                WidthRequest="150" />
+
+
+            <Label
+                Margin="0,10,0,0"
+                HorizontalOptions="CenterAndExpand"
+                Text="Two birds in love:"
+                VerticalOptions="Start" />
+            <Image
+                Aspect="AspectFit"
+                HeightRequest="150"
+                HorizontalOptions="Center"
+                Source="secondary_icon.png"
+                WidthRequest="150" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
