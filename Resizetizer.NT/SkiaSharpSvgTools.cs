@@ -1,32 +1,32 @@
-﻿using SkiaSharp;
-using Svg.Skia;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using SkiaSharp;
+using Svg.Skia;
 
 namespace Resizetizer
 {
 	public class Svg2AndroidDrawableConversionException : Exception
 	{
-		public Svg2AndroidDrawableConversionException(string message, string file) : base ("Failed to Convert SVG to Android Drawable: " + message + " in [" + file + "]")
+		public Svg2AndroidDrawableConversionException(string message, string file) : base("Failed to Convert SVG to Android Drawable: " + message + " in [" + file + "]")
 		{
 			Filename = file;
 		}
 
 		public string Filename { get; }
 	}
-	
+
 	internal class SkiaSharpSvgTools : SkiaSharpTools, IDisposable
 	{
 		SKSvg svg;
 
 		public SkiaSharpSvgTools(SharedImageInfo info, ILogger logger)
-			: this(info.Filename, info.BaseSize, info.TintColor, logger)
+			: this(info.Filename, info.OutputFormat, info.BaseSize, info.TintColor, logger)
 		{
 		}
 
-		public SkiaSharpSvgTools(string filename, Size? baseSize, Color? tintColor, ILogger logger)
-			: base(filename, baseSize, tintColor, logger)
+		public SkiaSharpSvgTools(string filename, ImageFormat format, Size? baseSize, Color? tintColor, ILogger logger)
+			: base(filename, format, baseSize, tintColor, logger)
 		{
 			var sw = new Stopwatch();
 			sw.Start();

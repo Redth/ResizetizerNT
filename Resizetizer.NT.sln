@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29709.97
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{5EDBA070-2832-4FEE-A1A5-5D0EEE10DF5B}"
 EndProject
@@ -17,7 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resizetizer.NT", "Resizetiz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp.WPF", "SampleApp\SampleApp.WPF\SampleApp.WPF.csproj", "{62DBB813-E489-45D7-BF32-E64D04649CC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resizetizer.NT.Tests", "Resizetizer.NT.Tests\Resizetizer.NT.Tests.csproj", "{4A03955E-12C2-4D4C-91E0-FE735FCDA65E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resizetizer.NT.Tests", "Resizetizer.NT.Tests\Resizetizer.NT.Tests.csproj", "{4A03955E-12C2-4D4C-91E0-FE735FCDA65E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47C168C9-68E7-4E31-8C1C-974BC6E003CC}"
+	ProjectSection(SolutionItems) = preProject
+		SampleApp\Directory.Build.props = SampleApp\Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,6 +101,7 @@ Global
 		{9BCC46FD-2A36-4A92-8A57-B1451E1AFBF7}.Release|x86.Build.0 = Release|Any CPU
 		{9BCC46FD-2A36-4A92-8A57-B1451E1AFBF7}.Release|x86.Deploy.0 = Release|Any CPU
 		{6E4DAA20-F554-4E91-9F14-42EFB1815644}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{6E4DAA20-F554-4E91-9F14-42EFB1815644}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
 		{6E4DAA20-F554-4E91-9F14-42EFB1815644}.Debug|ARM.ActiveCfg = Debug|iPhone
 		{6E4DAA20-F554-4E91-9F14-42EFB1815644}.Debug|iPhone.ActiveCfg = Debug|iPhone
 		{6E4DAA20-F554-4E91-9F14-42EFB1815644}.Debug|iPhone.Build.0 = Debug|iPhone
@@ -111,7 +117,6 @@ Global
 		{6E4DAA20-F554-4E91-9F14-42EFB1815644}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 		{6E4DAA20-F554-4E91-9F14-42EFB1815644}.Release|x64.ActiveCfg = Release|iPhone
 		{6E4DAA20-F554-4E91-9F14-42EFB1815644}.Release|x86.ActiveCfg = Release|iPhone
-		{6E4DAA20-F554-4E91-9F14-42EFB1815644}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
 		{77222192-B12F-4708-8EE1-CA02927518B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77222192-B12F-4708-8EE1-CA02927518B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77222192-B12F-4708-8EE1-CA02927518B6}.Debug|ARM.ActiveCfg = Debug|Any CPU

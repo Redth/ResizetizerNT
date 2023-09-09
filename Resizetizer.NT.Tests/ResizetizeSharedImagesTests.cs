@@ -1,11 +1,11 @@
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
-using SkiaSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
+using SkiaSharp;
 using Xunit;
 
 namespace Resizetizer.NT.Tests
@@ -30,7 +30,7 @@ namespace Resizetizer.NT.Tests
 				};
 
 			protected ITaskItem GetCopiedResource(ResizetizeSharedImages task, string path) =>
-				task.CopiedResources.Single(c => c.ItemSpec.Replace("\\", "/").EndsWith(path));
+				task.CopiedResources.Single(c => c.ItemSpec.Replace("\\", "/", StringComparison.InvariantCultureIgnoreCase).EndsWith(path));
 
 			protected void AssertFileSize(string file, int width, int height)
 			{
@@ -57,7 +57,7 @@ namespace Resizetizer.NT.Tests
 				var content = File.ReadAllText(file);
 
 				foreach (var snip in snippet)
-					Assert.Contains(snip, content);
+					Assert.Contains(snip, content, StringComparison.InvariantCultureIgnoreCase);
 			}
 		}
 
@@ -70,6 +70,76 @@ namespace Resizetizer.NT.Tests
 
 			ResizetizeSharedImages GetNewTask(params ITaskItem[] items) =>
 				GetNewTask("android", items);
+
+			//[Theory]
+			//[InlineData("large1", "large1")]
+			//public void SingleImageWithFormatSucceeds(string alias, string outputName)
+			//{
+			//    var items = new[]
+			//    {
+			//        new TaskItem("images/large1.png", new Dictionary<string, string>
+			//        {
+			//            ["BaseSize"] = "1024,1366",
+			//            ["Link"] = alias,
+			//            ["Format"] = "jpeg,80",
+			//        }),
+			//    };
+
+			//    var task = GetNewTask(items);
+			//    var success = task.Execute();
+			//    Assert.True(success);
+
+			//    AssertFileExists($"drawable-mdpi/{outputName}.jpg");
+
+			//    //AssertFileSize($"drawable-mdpi/{outputName}.png", 44, 44);
+			//    //AssertFileSize($"drawable-xhdpi/{outputName}.png", 88, 88);
+			//}
+
+			[Fact]
+			public void FormatJpegSucceed()
+			{
+				//var items = new[]
+				//{
+				//    new TaskItem("images/images/large1.png" new dic)
+				//    {
+				//        ["BaseSize"] = "1024,1366",
+				//        ["Link"] = alias,
+				//        ["Format"] = "jpeg,80",
+				//    },
+				//    //new TaskItem("images/camera_color.png"),
+				//};
+
+				var items = new[]
+				{
+						new TaskItem("images/large1.png", new Dictionary<string, string>
+						{
+                            //["BaseSize"] = "1024,1366", //ios
+                            ["BaseSize"] = "360,640", //android mdpi baseline size
+                            ["Format"] = "Jpeg,80",
+						}),
+					};
+
+				var task = GetNewTask(items);
+				var success = task.Execute();
+				Assert.True(success);
+
+
+				//AssertFileExists($"drawable-mdpi/large1.jpg");
+				//AssertFileExists($"drawable-xhdpi/large1.jpg");
+
+				AssertFileSize($"drawable-mdpi/large1.jpg", 960, 640);
+				AssertFileSize($"drawable-xhdpi/large1.jpg", 1920, 1280);
+
+				//AssertFileSize($"drawable-mdpi/{outputName}.png", 44, 44);
+				//AssertFileSize($"drawable-xhdpi/{outputName}.png", 88, 88);
+
+				//AssertFileSize("drawable-mdpi/camera.png", 1792, 1792);
+				//AssertFileSize("drawable-mdpi/camera_color.png", 256, 256);
+
+				//AssertFileSize("drawable-xhdpi/camera.png", 3584, 3584);
+				//AssertFileSize("drawable-xhdpi/camera_color.png", 512, 512);
+			}
+
 
 			[Fact]
 			public void NoItemsSucceed()

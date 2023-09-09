@@ -11,6 +11,8 @@ namespace Resizetizer
 
 		public string Filename { get; set; }
 
+		public ImageFormat OutputFormat { get; set; }
+
 		public string OutputName =>
 			string.IsNullOrWhiteSpace(Alias)
 				? Path.GetFileNameWithoutExtension(Filename)
@@ -39,5 +41,18 @@ namespace Resizetizer
 
 		private static bool IsVectorFilename(string filename)
 			=> Path.GetExtension(filename)?.Equals(".svg", StringComparison.OrdinalIgnoreCase) ?? false;
+	}
+
+	internal class ImageFormat
+	{
+		public Formats Format { get; set; } = Formats.Default;
+		public int Quality { get; set; } = -1;
+
+		public enum Formats
+		{
+			Default,
+			Png,
+			Jpeg,
+		}
 	}
 }

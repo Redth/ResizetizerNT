@@ -1,11 +1,11 @@
-﻿using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
-using SkiaSharp;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
+using SkiaSharp;
 using Xunit;
 
 namespace Resizetizer.NT.Tests
@@ -24,7 +24,7 @@ namespace Resizetizer.NT.Tests
 				};
 
 			protected ITaskItem GetInvalidFilename(DetectInvalidResourceOutputFilenamesTask task, string path) =>
-				task.InvalidItems.Single(c => c.ItemSpec.Replace("\\", "/").EndsWith(path));
+				task.InvalidItems.Single(c => c.ItemSpec.Replace("\\", "/", StringComparison.InvariantCultureIgnoreCase).EndsWith(path));
 
 			protected void AssertValidFilename(DetectInvalidResourceOutputFilenamesTask task, ITaskItem item)
 				=> Assert.DoesNotContain(task.InvalidItems, c => c.ItemSpec == item.ItemSpec);

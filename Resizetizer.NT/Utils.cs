@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -50,6 +51,56 @@ namespace Resizetizer
 			}
 
 			return null;
+		}
+
+
+		public static ImageFormat ParseFormatString(string input)
+		{
+			ImageFormat Parse(string format)
+			{
+				if (string.IsNullOrEmpty(format))
+					return new ImageFormat();
+
+				var parts = format.Split(new char[] { ',', ';' }, 2);
+
+
+				if (parts.Length > 0 && Enum.TryParse(parts[0], out ImageFormat.Formats imgFormat))
+				{
+					if (parts.Length > 1 && int.TryParse(parts[1], out var compression))
+						return new ImageFormat()
+						{
+							Format = imgFormat,
+							Quality = compression
+						};
+					else
+						return new ImageFormat()
+						{
+							Format = imgFormat
+						};
+				}
+
+				return new ImageFormat();
+			}
+
+			var res = Parse(input);
+
+			switch (res.Format)
+			{
+				case ImageFormat.Formats.Default:
+					break;
+				case ImageFormat.Formats.Png:
+					if (res.Quality == -1)
+						res.Quality = 100;
+					break;
+				case ImageFormat.Formats.Jpeg:
+					if (res.Quality == -1)
+						res.Quality = 80;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+
+			return res;
 		}
 	}
 }

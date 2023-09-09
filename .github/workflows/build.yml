@@ -6,22 +6,22 @@ on:
     types: [published]
   pull_request:
     branches:
-    - master
+    - r-impr-nuget-build
     
 jobs:
     build:
       name: Build
       env:
-        NUPKG_MAJOR: 0.3
-        CODESIGN_PFX: ${{ secrets.CODESIGN_PFX }}
+        NUPKG_MAJOR: 0.3.1
+        # CODESIGN_PFX: ${{ secrets.CODESIGN_PFX }}
       runs-on: windows-latest
       steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '5.0.x'
+          dotnet-version: '7.0.x'
       
       - name: Build
         shell: pwsh
@@ -36,9 +36,9 @@ jobs:
           New-Item -ItemType Directory -Force -Path .\artifacts
           dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
           dotnet pack --output ./artifacts --configuration Release -p:PackageVersion=$VERSION ./Resizetizer.NT/Resizetizer.NT.csproj
-          $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
-          [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($env:CODESIGN_PFX))
-          nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
+          # $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
+          # [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($env:CODESIGN_PFX))
+          # nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
       
       - name: Run Tests
         run: dotnet test --configuration Release ./Resizetizer.NT.Tests/Resizetizer.NT.Tests.csproj

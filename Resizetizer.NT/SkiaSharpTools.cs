@@ -1,27 +1,30 @@
-﻿using SkiaSharp;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using SkiaSharp;
 
 namespace Resizetizer
 {
+
 	internal abstract class SkiaSharpTools
 	{
-		public static SkiaSharpTools Create(bool isVector, string filename, Size? baseSize, Color? tintColor, ILogger logger)
+		public static SkiaSharpTools Create(bool isVector, string filename, ImageFormat format, Size? baseSize, Color? tintColor, ILogger logger)
 			=> isVector
-				? new SkiaSharpSvgTools(filename, baseSize, tintColor, logger) as SkiaSharpTools
-				: new SkiaSharpBitmapTools(filename, baseSize, tintColor, logger);
+				? new SkiaSharpSvgTools(filename, format, baseSize, tintColor, logger) as SkiaSharpTools
+				: new SkiaSharpBitmapTools(filename, format, baseSize, tintColor, logger);
 
 		public SkiaSharpTools(SharedImageInfo info, ILogger logger)
-			: this(info.Filename, info.BaseSize, info.TintColor, logger)
+			: this(info.Filename, info.OutputFormat, info.BaseSize, info.TintColor, logger)
 		{
 		}
 
-		public SkiaSharpTools(string filename, Size? baseSize, Color? tintColor, ILogger logger)
+		public SkiaSharpTools(string filename, ImageFormat imageFormat, Size? baseSize, Color? tintColor,
+			ILogger logger)
 		{
 			Logger = logger;
 			Filename = filename;
+			ImageFormat = imageFormat;
 			BaseSize = baseSize;
 
 			if (tintColor is Color tint)
@@ -37,6 +40,7 @@ namespace Resizetizer
 		}
 
 		public string Filename { get; }
+		public ImageFormat ImageFormat { get; }
 
 		public Size? BaseSize { get; }
 		public ILogger Logger { get; }
@@ -65,7 +69,23 @@ namespace Resizetizer
 
 				// Save (encode)
 				using var stream = File.Create(destination);
-				tempBitmap.Encode(stream, SKEncodedImageFormat.Png, 100);
+
+				var pFormat = SKEncodedImageFormat.Png;
+				int pQuality = 100;
+
+				if (ImageFormat != null)
+					switch (this.ImageFormat.Format)
+					{
+						case ImageFormat.Formats.Png:
+							pQuality = this.ImageFormat.Quality;
+							break;
+						case ImageFormat.Formats.Jpeg:
+							pFormat = SKEncodedImageFormat.Jpeg;
+							pQuality = this.ImageFormat.Quality;
+							break;
+					}
+
+				tempBitmap.Encode(stream, pFormat, pQuality);
 			}
 
 			sw.Stop();

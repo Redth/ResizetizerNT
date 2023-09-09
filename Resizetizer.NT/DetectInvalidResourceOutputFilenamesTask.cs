@@ -1,12 +1,12 @@
-﻿using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 
 namespace Resizetizer
 {
@@ -34,7 +34,7 @@ namespace Resizetizer
 					{
 						var filename = item.ItemSpec;
 
-						if (!Utils.IsValidResourceFilename(filename) || ! File.Exists(filename))
+						if (!Utils.IsValidResourceFilename(filename) || !File.Exists(filename))
 							invalidFilenames.Add(filename);
 					});
 				}
