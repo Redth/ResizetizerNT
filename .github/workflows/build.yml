@@ -19,7 +19,7 @@ jobs:
       environment: Prod
       steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
@@ -27,7 +27,6 @@ jobs:
       
       - name: Build
         shell: pwsh
-       
         run: |
           $VERSION="$env:NUPKG_MAJOR-ci$env:GITHUB_RUN_ID"
           if ($env:GITHUB_EVENT_NAME -eq "release") {
@@ -38,17 +37,16 @@ jobs:
 
           New-Item -ItemType Directory -Force -Path .\artifacts
           dotnet build --configuration Release ./Resizetizer.NT/Resizetizer.NT.csproj
-          dotnet pack --output ./artifacts --configuration Release -p:PackageVersion=$VERSION ./Resizetizer.NT/Resizetizer.NT.csproj
-          # try {
-          #     $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
-          #     # Convert and write the certificate
-          #     [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($Env:CODESIGN_PFX))
-          #     # Sign the package
-          #     nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -CertificatePassword "$Env:CODESIGN_PWD" -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
-          # }
-          # catch {
-          #     Write-Output "$_.Exception.Message"
-          # }
+          
+          # remove all the packages produces by dotnet build in a current directory and subdirectories
+          Get-ChildItem -Path .\ -Filter *.nupkg -Recurse | Remove-Item -Force
+
+          dotnet pack --output ./artifacts --configuration Release -p:PackageVersion=$VERSION ./Resizetizer.NT/Resizetizer.NT.csproj --no-build
+
+          # code signing is disabled for now
+          # $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
+          # [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($Env:CODESIGN_PFX))
+          # nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -CertificatePassword "$Env:CODESIGN_PWD" -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
       - name: Run Tests
         run: dotnet test --configuration Release ./Resizetizer.NT.Tests/Resizetizer.NT.Tests.csproj
 
@@ -69,9 +67,11 @@ jobs:
       environment: Prod
       steps:
         - name: Download Artifacts
-          uses: actions/download-artifact@v1
+          uses: actions/download-artifact@v2.1.1
           with:
             name: NuGet
+        - name: Display structure of downloaded files
+          run: ls -R
         - name: Setup .NET Core
           uses: actions/setup-dotnet@v3
           with:
