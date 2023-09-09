@@ -13,7 +13,7 @@ NuGet package is listed under a new name `Resizetizer.NT.2023` here - https://ww
 
 ## Jpeg output format and Jpeg Quality
 If you want to use PNG source image, but you don't want to include PNG into your mobile application project, now you can set the output image format as JPEG, plus set the Jpeg Quality.
-This is very useful when you was proveded with PNG based screen backgrounds for your application and you don't want to spend any time in the image editing software.
+This is very useful when you were proveded with PNG based screen backgrounds for your application and you don't want to spend any time in the image editing software.
 
 ```xml
 <ItemGroup>
