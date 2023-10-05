@@ -14,7 +14,7 @@
                 Aspect="AspectFit"
                 HeightRequest="250"
                 HorizontalOptions="Center"
-                Source="large_image.jpg"
+                Source="generic_image.jpg"
                 WidthRequest="250" />
 
 

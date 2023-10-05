@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <SharedImage Include="$(MSBuildThisFileDirectory)primary_icon.svg">
-      <Link>SharedImages\ExternalFeature\primary_icon.svg</Link>
-    </SharedImage>
-    <SharedImage Include="$(MSBuildThisFileDirectory)secondary_icon.svg">
-      <Link>SharedImages\ExternalFeature\secondary_icon.svg</Link>
-    </SharedImage>
-    <SharedImage Include="$(MSBuildThisFileDirectory)large_image.jpg">
-      <Link>SharedImages\ExternalFeature\large_image.jpg</Link>
-    </SharedImage>
+    <SharedImage Include="$(MSBuildThisFileDirectory)primary_icon.svg"/>
+    <!--<Link>SharedImages\ExternalFeature\primary_icon.svg</Link>
+    </SharedImage>-->
+    <SharedImage Include="$(MSBuildThisFileDirectory)secondary_icon.svg"/>
+    <!--<Link>SharedImages\ExternalFeature\secondary_icon.svg</Link>
+    </SharedImage>-->
+    <SharedImage Include="$(MSBuildThisFileDirectory)generic_image.jpg"/>
+    <!--<Link>SharedImages\ExternalFeature\large_image.jpg</Link>
+    </SharedImage>-->
   </ItemGroup>
 </Project>

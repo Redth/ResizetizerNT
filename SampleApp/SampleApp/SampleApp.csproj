@@ -14,7 +14,12 @@
 
 
   <ItemGroup>
-		<SharedImage Include="SharedImages\camera.svg" BaseSize="44" />
+
+    <!--So, in some cases I'd like to override image defined in other project.
+    e.g. you have generic image for all apps, but for some app you want to use different image.-->
+    <SharedImage Include="SharedImages\generic_image_customized.jpg" Link="generic_image" />
+
+    <SharedImage Include="SharedImages\camera.svg" BaseSize="44" />
 		<SharedImage Include="SharedImages\camera2.svg" BaseSize="44" TintColor="#FF00FF00" />
 		<SharedImage Include="SharedImages\loginbg.png" BaseSize="123,105" />
 		<SharedImage Include="SharedImages\loginbg.png" BaseSize="123,105" Link="changed_name.png" />

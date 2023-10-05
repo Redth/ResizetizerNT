@@ -13,6 +13,8 @@ namespace Resizetizer
 
 		public ImageFormat OutputFormat { get; set; }
 
+		public string OutputFileName => $"{OutputName}{OutputExtension}";
+
 		public string OutputName =>
 			string.IsNullOrWhiteSpace(Alias)
 				? Path.GetFileNameWithoutExtension(Filename)

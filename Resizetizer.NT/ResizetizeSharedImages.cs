@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -72,6 +73,31 @@ namespace Resizetizer
 			// Svg.SvgDocument.SkipGdiPlusCapabilityCheck = true;
 
 			var images = ParseImageTaskItems(SharedImages);
+
+			// dump images objects to the log file
+
+			foreach (var img in images)
+			{
+				Log.LogMessage(MessageImportance.Low, $"SharedImageInfo: Alias=[{img.Alias}] BaseSize=[{img.BaseSize?.ToString()}] Filename=[{img.Filename}] ForegroundFilename=[{img.ForegroundFilename}] ForegroundIsVector=[{img.ForegroundIsVector}] ForegroundScale=[{img.ForegroundScale}] OutputName=[{img.OutputName}] OutputExtension=[{img.OutputExtension}] OutputFileName=[{img.OutputFileName}] OutputFormat=[{img.OutputFormat}] Resize=[{img.Resize}] TintColor=[{img.TintColor}]");
+			}
+
+			// distinct images by OutputFilename,
+			// select only last one,
+			// this should be the right one in the provided hierarchy of images
+
+			var groups = images
+				.GroupBy(i => i.OutputFileName).ToArray();
+
+			// dump groups to the log file if there are more than one image with the same OutputFilename
+			foreach (var group in groups.Where(x => x.Count() > 1))
+			{
+				var img = group.Last();
+				Log.LogMessage(MessageImportance.Low, $"SharedImageInfo: Found two SharedImage records with the same OutputFilename=[{group.Key}] Count=[{group.Count()}], the last will be chosen: Alias=[{img.Alias}] BaseSize=[{img.BaseSize?.ToString()}] Filename=[{img.Filename}] ForegroundFilename=[{img.ForegroundFilename}] ForegroundIsVector=[{img.ForegroundIsVector}] ForegroundScale=[{img.ForegroundScale}] OutputName=[{img.OutputName}] OutputExtension=[{img.OutputExtension}] OutputFilename=[{img.OutputFileName}] OutputFormat=[{img.OutputFormat}] Resize=[{img.Resize}] TintColor=[{img.TintColor}]");
+			}
+
+			images = groups
+				.Select(g => g.Last())
+				.ToList();
 
 			var dpis = DpiPath.GetDpis(PlatformType);
 
@@ -155,7 +181,7 @@ namespace Resizetizer
 
 				// Add DPI info to the itemspec so we can use it in the targets
 				attr.Add("_ResizetizerDpiPath", img.Dpi.Path);
-				attr.Add("_ResizetizerDpiScale", img.Dpi.Scale.ToString());
+				attr.Add("_ResizetizerDpiScale", img.Dpi.Scale.ToString("0.0", CultureInfo.InvariantCulture));
 
 				copiedResources.Add(new TaskItem(itemSpec, attr));
 			}
